@@ -4,6 +4,9 @@
 #include <QSizePolicy>
 #include <QFont>
 #include <QtDebug>
+#include <QColor>
+#include <QColorDialog>
+#include <QString>
 
 RouteWidget::RouteWidget(QWidget *parent)
     : QWidget{parent}
@@ -14,6 +17,13 @@ RouteWidget::RouteWidget(QWidget *parent)
     auto route_name_label = new QLabel("Route name:", this);
     route_name_label->setFont(bold_font);
     name_line_edit_ = new QLineEdit("enter the name of the route", this);
+
+    auto color_label = new QLabel("Color", this);
+    color_label->setFont(bold_font);
+    color_change_button_ = new QPushButton(this);
+    color_change_button_->setStyleSheet("background-color: green;");
+
+    color_dialog_ = new QColorDialog(QColor("green"), this);
 
     auto start_name_label = new QLabel("Start point", this);
     start_name_label->setFont(bold_font);
@@ -51,8 +61,17 @@ RouteWidget::RouteWidget(QWidget *parent)
     stop_coord_lay->addSpacing(10);
     stop_coord_lay->addWidget(end_point_lng_);
 
+    QHBoxLayout* color_lay = new QHBoxLayout();
+    color_lay->setAlignment(Qt::AlignLeft);
+    color_lay->addWidget(color_label);
+    color_lay->setSpacing(10);
+    color_lay->addWidget(color_change_button_);
+    //color_lay->addWidget(color_dialog_);
+
     layout()->addWidget(route_name_label);
     layout()->addWidget(name_line_edit_);
+
+    layout()->addItem(color_lay);
 
     layout()->addWidget(start_name_label);
     layout()->addItem(start_coord_lay);
@@ -66,6 +85,7 @@ RouteWidget::RouteWidget(QWidget *parent)
     layout()->addItem(verticalSpacer);
 
     connect(add_route_button_, SIGNAL(clicked(bool)), this, SLOT(onAddRouteButtonClicked()));
+    connect(color_change_button_, SIGNAL(clicked(bool)), this, SLOT(onColorChangeButtonClicked()));
 
 }
 
@@ -80,7 +100,12 @@ void RouteWidget::onAddRouteButtonClicked()
     route_model.SetEndPoint(end_point_lat_->text().toDouble(), end_point_lng_->text().toDouble());
 
     emit route_model.add_route_();
-    //route_model.lat = 55.908961;
-    //route_model.lng = 37.391218;
-    //qDebug() << route_model.lat << " " << route_model.lng;
+}
+
+void RouteWidget::onColorChangeButtonClicked()
+{
+    color_dialog_->exec();
+    auto color  =color_dialog_->selectedColor().name();
+    color_change_button_->setStyleSheet("background-color: " + color + QString(";"));
+    route_model.SetRouteColor(color);
 }

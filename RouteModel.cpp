@@ -36,6 +36,16 @@ double RouteModel::EndLng()
     return end_route_point_.second;
 }
 
+QString RouteModel::RouteColor()
+{
+    return route_color_;
+}
+
+void RouteModel::SetRouteColor(QString& color)
+{
+    route_color_ = color;
+}
+
 //newRoute.startPosLat = 55.908961;
 //newRoute.startPosLng = 37.391218;
 //newRoute.endPosLat = 55.9833043;

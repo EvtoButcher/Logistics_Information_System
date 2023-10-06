@@ -36,7 +36,7 @@ Rectangle {
             }
 
             path: routeModel.status === RouteModel.Ready ? routeModel.get(0).path : null
-            line.color: "green"
+            line.color: color
             smooth:true
             line.width: 5
             opacity: 0.8
@@ -59,10 +59,12 @@ Rectangle {
            target: app
            onAdd_route_:{
                var newRoute = {};
+               //console.log(app.RouteColor);
                newRoute.startPosLat = app.StartLat;
                newRoute.startPosLng = app.StartLng;
                newRoute.endPosLat = app.EndLat;
                newRoute.endPosLng = app.EndLng;
+               newRoute.color = app.RouteColor;
                routeListModel.append(newRoute);
 
            }
