@@ -12,7 +12,7 @@ Rectangle {
     ListModel{
         id: routeListModel
     }
-    //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
+
     Component {
         id: routeDelegate
 
