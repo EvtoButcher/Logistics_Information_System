@@ -6,12 +6,41 @@ import QtQml.Models 2.15
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
-
 Rectangle {
+    id: mapBox
+
+    property double centrMapLat: 55.7514399474066;
+    property double centrMapLng: 37.61889172533533;
+
+    Plugin{
+        id: osmPlugin
+        name:"osm"
+    }
+
 
     ListModel{
         id: routeListModel
     }
+
+    Connections {
+           target: app
+           onAdd_route_:{
+               var newRoute = {};
+               newRoute.startPosLat = app.StartLat;
+               newRoute.startPosLng = app.StartLng;
+               newRoute.endPosLat = app.EndLat;
+               newRoute.endPosLng = app.EndLng;
+               newRoute.color = app.RouteColor;
+               routeListModel.append(newRoute);
+
+               if(centrMapLat !== app.StartLat){
+                   centrMapLat = app.StartLat;
+               }
+               if(centrMapLng !== app.StartLng){
+                   centrMapLng = app.StartLng;
+               }
+           }
+       }
 
     Component {
         id: routeDelegate
@@ -21,14 +50,12 @@ Rectangle {
             RouteModel{
                 id: routeModel
                 autoUpdate:false
-                plugin: Plugin{name:"osm"}
+                plugin: osmPlugin
                 query: RouteQuery{
                     id : routeQuery
                 }
 
                 Component.onCompleted:{
-                    //console.log(startPosLat)
-
                     routeQuery.addWaypoint(QtPositioning.coordinate(startPosLat, startPosLng));
                     routeQuery.addWaypoint(QtPositioning.coordinate(endPosLat, endPosLng));
                     update();
@@ -41,7 +68,6 @@ Rectangle {
             line.width: 5
             opacity: 0.8
 
-
             MouseArea{
                 anchors.fill: parent
 
@@ -49,98 +75,128 @@ Rectangle {
 
                 onClicked: {
                     //console.log("right click")
-                    routeListModel.remove(index);
+                    if(routeListModel.count > 0){
+                        routeListModel.remove(index);
+                    }
                 }
             }
         }
     }
 
-    Connections {
-           target: app
-           onAdd_route_:{
-               var newRoute = {};
-               //console.log(app.RouteColor);
-               newRoute.startPosLat = app.StartLat;
-               newRoute.startPosLng = app.StartLng;
-               newRoute.endPosLat = app.EndLat;
-               newRoute.endPosLng = app.EndLng;
-               newRoute.color = app.RouteColor;
-               routeListModel.append(newRoute);
+    Component{
+        id: endPointDelegate
 
-           }
-       }
+        MapQuickItem {
 
-    Map{
+            RouteModel{
+                id: routeModel
+                autoUpdate:true
+                plugin: osmPlugin
+                query: RouteQuery{
+                    id : routeQuery
+                }
+
+                Component.onCompleted:{
+                    routeQuery.addWaypoint(QtPositioning.coordinate(startPosLat, startPosLng));
+                    routeQuery.addWaypoint(QtPositioning.coordinate(endPosLat, endPosLng));
+                    update();
+                }
+            }
+
+               anchorPoint.x: startPathMarker.width / 2
+               anchorPoint.y: startPathMarker.height / 2
+               coordinate: routeModel.status === RouteModel.Ready ?
+                               routeModel.get(0).path[routeModel.get(0).path.length - 1] : QtPositioning.coordinate()
+
+               sourceItem: Rectangle {
+                   id: startPathMarker
+                   width: 1.5 * map.zoomLevel
+                   height: 1.5 * map.zoomLevel
+                   radius: 180
+                   border.width: 5
+                   border.color: "gray"
+                   color: "white"
+               }
+         }
+    }
+
+    Component{
+        id: startPointDelegate
+
+        MapQuickItem {
+
+            RouteModel{
+                id: routeModel
+                autoUpdate:true
+                plugin: osmPlugin
+                query: RouteQuery{
+                    id : routeQuery
+                }
+
+                Component.onCompleted:{
+                    routeQuery.addWaypoint(QtPositioning.coordinate(startPosLat, startPosLng));
+                    routeQuery.addWaypoint(QtPositioning.coordinate(endPosLat, endPosLng));
+                    update();
+                }
+            }
+
+               anchorPoint.x: startPathMarker.width / 2
+               anchorPoint.y: startPathMarker.height / 2
+               coordinate: routeModel.status === RouteModel.Ready ? routeModel.get(0).path[0] : QtPositioning.coordinate()
+
+               sourceItem: Rectangle {
+                   id: startPathMarker
+                   width: 1.5 * map.zoomLevel
+                   height: 1.5 * map.zoomLevel
+                   radius: 180
+                   border.width: 5
+                   border.color: "red"
+                   color: "white"
+               }
+         }
+    }
+
+    Map {
         id: map
         anchors.fill:  parent
         plugin: Plugin{name: "mapboxgl"}
-        center: QtPositioning.coordinate(55.908961, 37.391218)
-        zoomLevel: 12.5
+        center: QtPositioning.coordinate(centrMapLat, centrMapLng)
+        zoomLevel: zoomBar.currentScale
 
+        onZoomLevelChanged: {
+            console.log(map.zoomLevel);
+        }
 
         MapItemView{
+            id: route
             model:routeListModel
             delegate: routeDelegate
         }
 
+        MapItemView {
+            id: startPoint
+           model: routeListModel
+           delegate: startPointDelegate
+        }
 
+        MapItemView {
+            id: endPoint
+           model: routeListModel
+           delegate: endPointDelegate
+        }
 
-//        MapItemView {
-//                   model:routeDelegate. routeModel.status == RouteModel.Ready ? routeModel.get(0).path : null
-//                   delegate: MapQuickItem {
-//                       anchorPoint.x: pathMarker.width / 2
-//                       anchorPoint.y: pathMarker.height / 2
-//                       coordinate: modelData
+    }
 
-//                       sourceItem: Rectangle {//MapPolyline
-//                           id: pathMarker
-//                           width: 4
-//                           height: 4
-//                           radius: 180
-//                           border.width: 1
-//                           border.color: "black"
-//                           color: "white"
-//                       }
-//                   }
-//        }
-
-//        MapItemView {
-//                   model: routeModel.status == RouteModel.Ready ? routeModel.get(0).path : null
-//                   delegate: MapQuickItem {
-//                       anchorPoint.x: startPathMarker.width / 2
-//                       anchorPoint.y: startPathMarker.height / 2
-//                       coordinate: routeModel.get(0).path[0]
-
-//                       sourceItem: Rectangle {
-//                           id: startPathMarker
-//                           width: 2 * map.zoomLevel
-//                           height: 2 * map.zoomLevel
-//                           radius: 180
-//                           border.width: 1
-//                           border.color: "black"
-//                           color: "red"
-//                       }
-//                   }
-//        }
-
-//        MapItemView {
-//                   model: routeModel.status == RouteModel.Ready ? routeModel.get(0).path : null
-//                   delegate: MapQuickItem {
-//                       anchorPoint.x: endPathMarker.width / 2
-//                       anchorPoint.y: endPathMarker.height / 2
-//                       coordinate: routeModel.get(0).path[routeModel.get(0).path.length-1]
-
-//                       sourceItem: Rectangle {
-//                           id: endPathMarker
-//                           width: 2 * map.zoomLevel
-//                           height: 2 * map.zoomLevel
-//                           radius: 180
-//                           border.width: 1
-//                           border.color: "black"
-//                           color: "blue"
-//                       }
-//                   }
-//        }
+    Scaler {
+        id:zoomBar
+        minimumScale: map.minimumZoomLevel
+        maximumScale: map.maximumZoomLevel
+        currentScale: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.leftMargin: 15
+        anchors.topMargin: (parent.height / 2) - (height / 2)
+        z:1
     }
 
 }

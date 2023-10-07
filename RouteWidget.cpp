@@ -12,6 +12,8 @@ RouteWidget::RouteWidget(QWidget *parent)
     : QWidget{parent}
     , route_model(parent)
 {
+
+
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
     auto route_name_label = new QLabel("Route name:", this);
