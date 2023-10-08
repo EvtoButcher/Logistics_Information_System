@@ -3,7 +3,6 @@
 #include <QDebug>
 #include <QQmlContext>
 
-#include "RouteModel.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

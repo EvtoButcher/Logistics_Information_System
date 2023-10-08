@@ -1,5 +1,5 @@
-#ifndef ROUTEWIDGET_H
-#define ROUTEWIDGET_H
+#ifndef ROUTECONTROLWIDGET_H
+#define ROUTECONTROLWIDGET_H
 
 #include <QWidget>
 
@@ -45,4 +45,4 @@ public slots:
     void onColorChangeButtonClicked();
 };
 
-#endif // ROUTEWIDGET_H
+#endif // ROUTECONTROLWIDGET_H

@@ -57,6 +57,22 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="RouteTable" name="widget_2" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>450</width>
+          <height>300</height>
+         </size>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -122,7 +138,13 @@
   <customwidget>
    <class>RouteWidget</class>
    <extends>QWidget</extends>
-   <header>RouteWidget.h</header>
+   <header>RouteControlWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RouteTable</class>
+   <extends>QWidget</extends>
+   <header>RouteTableWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
