@@ -31,17 +31,14 @@ public:
     explicit RouteWidget(QWidget *parent = nullptr);
     ~RouteWidget() = default;
 
-    RouteModel& GetRouteModel();
-
 private:
-    RouteModel route_model;
+    bool color_changed_ = false;
 
+signals:
+     void addRouteToTable(const RouteInfo);
 
-//signals:
-//    void routeAdded();
-
-public slots:
-    void onAddRouteButtonClicked();
+private slots:
+    void onAddButtonClicked();
     void onColorChangeButtonClicked();
 };
 

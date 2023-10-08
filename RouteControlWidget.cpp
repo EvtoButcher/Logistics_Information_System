@@ -10,7 +10,6 @@
 
 RouteWidget::RouteWidget(QWidget *parent)
     : QWidget{parent}
-    , route_model(parent)
 {
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
@@ -84,22 +83,23 @@ RouteWidget::RouteWidget(QWidget *parent)
     QSpacerItem* verticalSpacer = new QSpacerItem(20, 40 , QSizePolicy::Minimum, QSizePolicy::Expanding);
     layout()->addItem(verticalSpacer);
 
-    connect(add_route_button_, SIGNAL(clicked(bool)), this, SLOT(onAddRouteButtonClicked()));
+    connect(add_route_button_, SIGNAL(clicked(bool)), this, SLOT(onAddButtonClicked()));
     connect(color_change_button_, SIGNAL(clicked(bool)), this, SLOT(onColorChangeButtonClicked()));
 
 }
 
-RouteModel& RouteWidget::GetRouteModel()
-{
-    return route_model;
-}
 
-void RouteWidget::onAddRouteButtonClicked()
+void RouteWidget::onAddButtonClicked()
 {
-    route_model.SetStartPoint(start_point_lat_->text().toDouble(), start_point_lng_->text().toDouble());
-    route_model.SetEndPoint(end_point_lat_->text().toDouble(), end_point_lng_->text().toDouble());
-
-    emit route_model.add_route_();
+    RouteInfo route_info(name_line_edit_->text(),
+                        start_point_lat_->text().toDouble(),
+                        start_point_lng_->text().toDouble(),
+                        end_point_lat_->text().toDouble(),
+                        end_point_lng_->text().toDouble());
+    if(color_changed_){
+        route_info.route_color_ = color_dialog_->selectedColor().name();
+    }
+    emit addRouteToTable(route_info);
 }
 
 void RouteWidget::onColorChangeButtonClicked()
@@ -107,5 +107,5 @@ void RouteWidget::onColorChangeButtonClicked()
     color_dialog_->exec();
     auto color  =color_dialog_->selectedColor().name();
     color_change_button_->setStyleSheet("background-color: " + color + QString(";"));
-    route_model.SetRouteColor(color);
+    color_changed_ = true;
 }

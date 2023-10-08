@@ -17,34 +17,31 @@ RouteDB::RouteDB()
 
     query = new QSqlQuery(db);
 
-    //if(!fileExists("./routesDB.db")){
+    if(!fileExists("./routesDB.db")){
         query->exec("CREATE TABLE "
                     "RoutesStartPosition ("
-                                        "id int, "
+                                        "id int AUTO_INCREMENT PRIMARY KEY, "
                                         "s_lat DOUBLE, "
-                                        "s_lng DOUBLE, "
-                                        "PRIMARY KEY (id));");
+                                        "s_lng DOUBLE"
+                    "                   );");
 
         query->exec("CREATE TABLE "
                     "RoutesEndPosition ("
-                                    "id int, "
+                                    "id int AUTO_INCREMENT PRIMARY KEY, "
                                     "e_lat DOUBLE, "
-                                    "e_lng DOUBLE, "
-                                    "PRIMARY KEY (id));");
+                                    "e_lng DOUBLE"
+                                    ");");
 
         query->exec("CREATE TABLE "
                     "Routes ("
-                    "id int, "
+                    "id int AUTO_INCREMENT PRIMARY KEY, "
                     "name char, "
                     "start_p POINT, "
                     "end_p POINT, "
                     "time DateTime, "
-                    "PRIMARY KEY (id), "
                     "FOREIGN KEY (start_p) REFERENCES RoutesStartPosition(id), "
                     "FOREIGN KEY (end_p) REFERENCES RoutesEndPosition(id));");
-    //}
-
-
+    }
 }
 
 RouteDB::~RouteDB()

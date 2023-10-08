@@ -8,7 +8,6 @@ RouteTable::RouteTable(QWidget *parent)
     , route_model_(parent)
     , route_db_()
 {       
-
     auto table_ray = new QHBoxLayout(this);
 
     table_model_ = new QSqlTableModel(this, route_db_.DB());
@@ -19,6 +18,23 @@ RouteTable::RouteTable(QWidget *parent)
     table_view_->setModel(table_model_);
 
     table_ray->addWidget(table_view_);
-    //table_ray->addWidget(route_table_);
+}
+
+RouteModel &RouteTable::GetRouteModel()
+{
+    return route_model_;
+}
+
+void RouteTable::AddNewRow()
+{
 
 }
+
+void RouteTable::onAddRoute(const RouteInfo info)
+{
+    route_model_.setRoute(info);
+
+    emit route_model_.add_route_();
+}
+
+

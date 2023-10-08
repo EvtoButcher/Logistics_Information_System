@@ -90,7 +90,7 @@ Rectangle {
 
             RouteModel{
                 id: routeModel
-                autoUpdate:true
+                autoUpdate:false
                 plugin: osmPlugin
                 query: RouteQuery{
                     id : routeQuery
@@ -127,7 +127,7 @@ Rectangle {
 
             RouteModel{
                 id: routeModel
-                autoUpdate:true
+                autoUpdate:false
                 plugin: osmPlugin
                 query: RouteQuery{
                     id : routeQuery
@@ -163,9 +163,13 @@ Rectangle {
         center: QtPositioning.coordinate(centrMapLat, centrMapLng)
         zoomLevel: zoomBar.currentScale
 
-        onZoomLevelChanged: {
-            console.log(map.zoomLevel);
+        onCenterChanged: {
+            console.log(centrMapLat);
         }
+
+//        onZoomLevelChanged: {
+//            console.log(center);
+//        }
 
         MapItemView{
             id: route
