@@ -1,3 +1,4 @@
 # Logistics_Information_System
-![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/01211eb9-ec69-4725-9b5f-1cd9eba91fb2)
+![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/cb719b98-729c-443b-a5b1-3c5c131c8748)
+
 
