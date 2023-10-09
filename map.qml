@@ -163,13 +163,13 @@ Rectangle {
         center: QtPositioning.coordinate(centrMapLat, centrMapLng)
         zoomLevel: zoomBar.currentScale
 
-        onCenterChanged: {
-            console.log(centrMapLat);
-        }
-
-//        onZoomLevelChanged: {
-//            console.log(center);
+//        onCenterChanged: {
+//            console.log(centrMapLat);
 //        }
+
+        onZoomLevelChanged: {
+            zoomBar.currentScale = map.zoomLevel;
+        }
 
         MapItemView{
             id: route

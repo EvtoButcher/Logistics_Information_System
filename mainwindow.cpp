@@ -14,9 +14,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->verticalLayout->setAlignment(Qt::AlignTop);
 
-    ui->quickWidget->rootContext()->setContextProperty("app", &ui->widget_2->GetRouteModel());
+    ui->quickWidget->rootContext()->setContextProperty("app", &ui->widget_2->getRouteModel());
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/map.qml")));
     ui->quickWidget->show();
+    ui->widget_2->restoreRoutOnMap();
 }
 
 MainWindow::~MainWindow()

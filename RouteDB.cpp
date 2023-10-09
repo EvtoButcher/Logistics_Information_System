@@ -3,6 +3,7 @@
 
 #include <QDebug>
 #include <QFileInfo>
+#include <QLocale>
 
 RouteDB::RouteDB(QObject *parent)
      : QObject(parent)
@@ -31,21 +32,24 @@ bool RouteDB::inserIntoTable(const RouteInfo info)
     query.prepare("INSERT INTO " MAIN_TABLE "(name,"
                                          " start_p,"
                                          " end_p,"
-                                         " time) "
-               "VALUES (:Name, :StartPos, :EndPos, :DATE )");
+                                         " time, "
+                                         " color) "
+               "VALUES (:Name, :StartPos, :EndPos, :DATE, :RouteColor)");
 
     double tmp_s_lat = info.start_route_point_.first;
     double tmp_s_lng = info.start_route_point_.second;
-    QString start = QString::number(tmp_s_lat) + " " + QString::number(tmp_s_lng);
+    QString start = QString::number(tmp_s_lat, 'f', 6) + " " + QString::number(tmp_s_lng,'f', 6);
+    qDebug() << start;
 
     double tmp_e_lat = info.end_route_point_.first;
     double tmp_e_lng = info.end_route_point_.second;
-    QString end = QString::number(tmp_e_lat) + " " + QString::number(tmp_e_lng);
+    QString end = QString::number(tmp_e_lat, 'f', 6) + " " + QString::number(tmp_e_lng, 'f', 6);
 
     query.bindValue(":Name",     info.name_);
     query.bindValue(":StartPos", start);
     query.bindValue(":EndPos", end);
     query.bindValue(":DATE", "");
+    query.bindValue(":RouteColor", info.route_color_);
 
 //                "VALUES ('" + info.name_ + "', "
 //                "POINT(" + info.start_route_point_.first + "," + info.start_route_point_.second + "), "
@@ -84,7 +88,8 @@ bool RouteDB::createTable()
                             "name char, "
                             "start_p char, "
                             "end_p char, "
-                            "time DateTime);"
+                            "time DateTime, "
+                            "color char);"
 //                            "FOREIGN KEY (start_p) REFERENCES RoutesStartPosition(id), "
                             //"FOREIGN KEY (end_p) REFERENCES RoutesEndPosition(id));"
                         )){

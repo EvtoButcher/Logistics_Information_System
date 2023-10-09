@@ -19,7 +19,9 @@ class RouteTable : public QWidget
 public:
     explicit RouteTable(QWidget *parent = nullptr);
 
-    RouteModel& GetRouteModel();
+    RouteModel& getRouteModel();
+    void restoreRoutOnMap();
+
 
 private:
     RouteModel      route_model_;

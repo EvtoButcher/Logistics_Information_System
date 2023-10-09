@@ -22,6 +22,7 @@ Item {
         color:"lightgray"
         border.color: "gray"
         border.width: 2
+        z:1
         //anchors.leftMargin: 15
 
         Rectangle{
@@ -31,8 +32,10 @@ Item {
             color:"lightgray"
             border.color: "gray"
             border.width: 2
+            radius: 5
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.top
+            z:2
 
             Text {
                 text: qsTr("-")
@@ -93,8 +96,10 @@ Item {
             color:"lightgray"
             border.color: "gray"
             border.width: 2
+            radius: 5
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.bottom
+            z:2
 
             Text {
                 text: qsTr("+")
