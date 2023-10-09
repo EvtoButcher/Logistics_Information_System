@@ -23,14 +23,12 @@ public:
 
 private:
     RouteModel      route_model_;
-    RouteDB         route_db_;
-
-    void AddNewRow();
+    RouteDB*         route_db_;
 
 signals:
 
 public slots:
-    void onAddRoute(const RouteInfo info);
+    void onAddRoute(const RouteInfo& info);
 };
 
 #endif // ROUTETABLE_H

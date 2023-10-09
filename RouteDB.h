@@ -1,20 +1,38 @@
 #ifndef ROUTEDB_H
 #define ROUTEDB_H
 
-#include <QSqlDatabase>
+#include <QObject>
+#include <QSql>
 #include <QSqlQuery>
+#include <QSqlError>
+#include <QSqlDatabase>
+#include <QFile>
+#include <QDate>
+#include <QDebug>
 
-class RouteDB
+#include "RouteModel.h"
+
+#define DATABASE_NAME       "routesDB.db"
+#define MAIN_TABLE           "Routes"
+
+class RouteDB : public QObject
 {
-public:
-    RouteDB();
-    ~RouteDB();
+    Q_OBJECT
 
-    const QSqlDatabase &DB();
+public:
+    RouteDB(QObject *parent = nullptr);
+    ~RouteDB() = default;
+
+    const QSqlDatabase &DB() const;
+
+    bool inserIntoTable(const RouteInfo info);
 
 private:
     QSqlDatabase db;
-    QSqlQuery*   query;
+
+    bool createTable();
+    bool openDB();
+    bool restoreDB();
 };
 
 #endif // ROUTEDB_H

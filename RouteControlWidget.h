@@ -35,7 +35,7 @@ private:
     bool color_changed_ = false;
 
 signals:
-     void addRouteToTable(const RouteInfo);
+     void addRouteToTable(const RouteInfo&);
 
 private slots:
     void onAddButtonClicked();
