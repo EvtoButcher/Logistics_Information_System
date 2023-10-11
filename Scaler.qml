@@ -23,6 +23,7 @@ Item {
         border.color: "gray"
         border.width: 2
         z:1
+
         //anchors.leftMargin: 15
 
         Rectangle{
@@ -48,7 +49,7 @@ Item {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton
                 onClicked: {
-                    console.log(currentScale);
+                    //console.log(currentScale);
                     currentScale -= 0.5;
                 }
             }

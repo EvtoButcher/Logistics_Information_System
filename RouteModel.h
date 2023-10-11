@@ -12,6 +12,10 @@ struct RouteInfo{
     RouteInfo(QString name, double s_lat, double s_lng,
               double e_lat, double e_lng,
               QString color = "#008000" /*green*/);
+
+    RouteInfo(QString name, Position start, Position end,
+              QString color = "#008000" /*green*/);
+
     QString name_;
     Position start_route_point_;
     Position end_route_point_;
@@ -32,7 +36,6 @@ public:
 
     double StartLat();
     double StartLng();
-
     double EndLat();
     double EndLng();
 

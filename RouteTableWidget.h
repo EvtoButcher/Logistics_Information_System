@@ -5,7 +5,6 @@
 #include <QSqlTableModel>
 #include <QTableView>
 
-
 #include "RouteModel.h"
 #include "RouteDB.h"
 
@@ -22,12 +21,9 @@ public:
     RouteModel& getRouteModel();
     void restoreRoutOnMap();
 
-
 private:
     RouteModel      route_model_;
     RouteDB*         route_db_;
-
-signals:
 
 public slots:
     void onAddRoute(const RouteInfo& info);

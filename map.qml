@@ -24,13 +24,14 @@ Rectangle {
 
     Connections {
            target: app
-           onAdd_route_:{
+           function onAdd_route_() {
                var newRoute = {};
                newRoute.startPosLat = app.StartLat;
                newRoute.startPosLng = app.StartLng;
                newRoute.endPosLat = app.EndLat;
                newRoute.endPosLng = app.EndLng;
                newRoute.color = app.RouteColor;
+
                routeListModel.append(newRoute);
 
                if(centrMapLat !== app.StartLat){
@@ -41,6 +42,7 @@ Rectangle {
                }
            }
        }
+
 
     Component {
         id: routeDelegate
@@ -56,9 +58,10 @@ Rectangle {
                 }
 
                 Component.onCompleted:{
-                    routeQuery.addWaypoint(QtPositioning.coordinate(startPosLat, startPosLng));
-                    routeQuery.addWaypoint(QtPositioning.coordinate(endPosLat, endPosLng));
+                    routeQuery.addWaypoint(QtPositioning.coordinate(model.startPosLat, model.startPosLng));
+                    routeQuery.addWaypoint(QtPositioning.coordinate(model.endPosLat, model.endPosLng));
                     update();
+                    console.log("start " + model.startPosLat + " " + model.startPosLng);
                 }
             }
 
@@ -74,7 +77,6 @@ Rectangle {
                 acceptedButtons: Qt.LeftButton
 
                 onClicked: {
-                    //console.log("right click")
                     if(routeListModel.count > 0){
                         routeListModel.remove(index);
                     }
@@ -92,15 +94,7 @@ Rectangle {
                 id: routeModel
                 autoUpdate:false
                 plugin: osmPlugin
-                query: RouteQuery{
-                    id : routeQuery
-                }
 
-                Component.onCompleted:{
-                    routeQuery.addWaypoint(QtPositioning.coordinate(startPosLat, startPosLng));
-                    routeQuery.addWaypoint(QtPositioning.coordinate(endPosLat, endPosLng));
-                    update();
-                }
             }
 
                anchorPoint.x: startPathMarker.width / 2
@@ -126,18 +120,9 @@ Rectangle {
         MapQuickItem {
 
             RouteModel{
-                id: routeModel
-                autoUpdate:false
-                plugin: osmPlugin
-                query: RouteQuery{
-                    id : routeQuery
-                }
-
-                Component.onCompleted:{
-                    routeQuery.addWaypoint(QtPositioning.coordinate(startPosLat, startPosLng));
-                    routeQuery.addWaypoint(QtPositioning.coordinate(endPosLat, endPosLng));
-                    update();
-                }
+               id: routeModel
+               autoUpdate:false
+               plugin: osmPlugin
             }
 
                anchorPoint.x: startPathMarker.width / 2
@@ -163,10 +148,6 @@ Rectangle {
         center: QtPositioning.coordinate(centrMapLat, centrMapLng)
         zoomLevel: zoomBar.currentScale
 
-//        onCenterChanged: {
-//            console.log(centrMapLat);
-//        }
-
         onZoomLevelChanged: {
             zoomBar.currentScale = map.zoomLevel;
         }
@@ -175,6 +156,10 @@ Rectangle {
             id: route
             model:routeListModel
             delegate: routeDelegate
+
+            Component.onCompleted: {
+                console.log("route completed");
+            }
         }
 
         MapItemView {
@@ -187,6 +172,9 @@ Rectangle {
             id: endPoint
            model: routeListModel
            delegate: endPointDelegate
+        }
+        Component.onCompleted: {
+            console.log("map completed");
         }
 
     }

@@ -2,10 +2,8 @@
 #define ROUTECONTROLWIDGET_H
 
 #include <QWidget>
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>

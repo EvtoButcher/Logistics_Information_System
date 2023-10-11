@@ -65,7 +65,6 @@ RouteWidget::RouteWidget(QWidget *parent)
     color_lay->addWidget(color_label);
     color_lay->setSpacing(10);
     color_lay->addWidget(color_change_button_);
-    //color_lay->addWidget(color_dialog_);
 
     layout()->addWidget(route_name_label);
     layout()->addWidget(name_line_edit_);
@@ -87,7 +86,6 @@ RouteWidget::RouteWidget(QWidget *parent)
     connect(color_change_button_, SIGNAL(clicked(bool)), this, SLOT(onColorChangeButtonClicked()));
 
 }
-
 
 void RouteWidget::onAddButtonClicked()
 {

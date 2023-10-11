@@ -2,10 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <unordered_map>
-#include <QString>
-#include <utility>
-#include <RouteModel.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

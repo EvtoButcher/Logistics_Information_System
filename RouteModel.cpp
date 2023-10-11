@@ -21,7 +21,6 @@ double RouteModel::StartLng()
     return route.start_route_point_.second;
 }
 
-
 double RouteModel::EndLat()
 {
     return route.end_route_point_.first;
@@ -43,6 +42,12 @@ RouteInfo::RouteInfo(QString name, double s_lat, double s_lng, double e_lat, dou
 {
     start_route_point_ = std::make_pair(s_lat, s_lng);
     end_route_point_   = std::make_pair(e_lat, e_lng);
+}
 
-    //route_color_ = color;
+RouteInfo::RouteInfo(QString name, Position start, Position end, QString color)
+   : name_(name)
+   , route_color_(color)
+{
+    start_route_point_ = start;
+    end_route_point_   = end;
 }
