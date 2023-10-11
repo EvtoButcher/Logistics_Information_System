@@ -9,6 +9,7 @@ SOURCES += \
     RouteDB.cpp \
     RouteModel.cpp \
     RouteTableWidget.cpp \
+    TableDelegate.cpp \
     common.cpp \
     main.cpp \
     mainwindow.cpp
@@ -18,6 +19,7 @@ HEADERS += \
     RouteDB.h \
     RouteModel.h \
     RouteTableWidget.h \
+    TableDelegate.h \
     common.h \
     mainwindow.h
 

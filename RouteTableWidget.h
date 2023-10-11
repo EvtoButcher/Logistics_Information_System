@@ -7,6 +7,8 @@
 
 #include "RouteModel.h"
 #include "RouteDB.h"
+#include "TableDelegate.h"
+
 
 class RouteTable : public QWidget
 {
@@ -23,10 +25,12 @@ public:
 
 private:
     RouteModel      route_model_;
+    TableDelegate table_delegate;
     RouteDB*         route_db_;
 
 public slots:
     void onAddRoute(const RouteInfo& info);
+    void onTableViewClicked(const QModelIndex& index);
 };
 
 #endif // ROUTETABLE_H

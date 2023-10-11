@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1029</width>
+    <width>1078</width>
     <height>681</height>
    </rect>
   </property>
@@ -24,7 +24,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
-       <number>9</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="RouteWidget" name="widget" native="true">
@@ -111,7 +111,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1029</width>
+     <width>1078</width>
      <height>22</height>
     </rect>
    </property>

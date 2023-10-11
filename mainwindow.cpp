@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->widget, &RouteWidget::addRouteToTable, ui->widget_2, &RouteTable::onAddRoute);
 
     ui->verticalLayout->setAlignment(Qt::AlignTop);
+    //ui->verticalLayout->set
 
     ui->quickWidget->rootContext()->setContextProperty("app", &ui->widget_2->getRouteModel());
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/map.qml")));
