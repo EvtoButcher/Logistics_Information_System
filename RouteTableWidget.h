@@ -23,15 +23,22 @@ public slots:
     void onAddRoute(const RouteInfo& info);
     void onTableViewClicked(const QModelIndex& index);
 
-private:
-    QSqlTableModel*     table_model_;
-    QTableView*         table_view_;
-    TableDelegate table_delegate;
-    RouteDB*         route_db_;
-    RouteModel      route_model_;
+signals:
+    void openRouteDialog();
 
-    QPushButton* add_route_button_;
-    QPushButton* remove_route_button_;
+private slots:
+    void addRouteButtonClicked();
+    void removeRouteButtonClicked();
+
+private:
+    QSqlTableModel*  table_model_;
+    QTableView*      table_view_;
+    TableDelegate    table_delegate;
+    RouteDB*         route_db_;
+    RouteModel       route_model_;
+
+    QPushButton*     add_route_button_;
+    QPushButton*     remove_route_button_;
 };
 
 #endif // ROUTETABLE_H

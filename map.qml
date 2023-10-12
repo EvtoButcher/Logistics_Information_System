@@ -24,7 +24,7 @@ Rectangle {
 
     Connections {
            target: app
-           function onAdd_route_() {
+           function onAddRoute() {
                var newRoute = {};
                newRoute.startPosLat = app.StartLat;
                newRoute.startPosLng = app.StartLng;
@@ -40,6 +40,11 @@ Rectangle {
                if(centrMapLng !== app.StartLng){
                    centrMapLng = app.StartLng;
                }
+           }
+
+           function onRemoveRoute(index){
+               //console.log(index)
+               routeListModel.remove(index);
            }
        }
 

@@ -11,19 +11,28 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    route_table_ = new RouteTable(this);
+    ui->dockWidget->setWidget(route_table_);
 
-    connect(ui->widget, &RouteWidget::addRouteToTable, ui->widget_2, &RouteTable::onAddRoute);
-    //ui->verticalLayout->setAlignment(Qt::AlignTop);
+    route_dialog_ = new RouteDialog(this);
 
-    ui->quickWidget->rootContext()->setContextProperty("app", &ui->widget_2->getRouteModel());
+    connect(route_table_, &RouteTable::openRouteDialog, this, &MainWindow::openRouteDialog);
+    connect(route_dialog_, &RouteDialog::addRouteToTable, route_table_, &RouteTable::onAddRoute);
+
+    ui->quickWidget->rootContext()->setContextProperty("app", &route_table_->getRouteModel());
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/map.qml")));
     ui->quickWidget->show();
 
-    ui->widget_2->restoreRoutOnMap(); //TODO: fix incorrect display of routes during
+    route_table_->restoreRoutOnMap(); //TODO: fix incorrect display of routes during
                                       //      deserialization from the database.
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::openRouteDialog()
+{
+    route_dialog_->exec();
 }

@@ -89,7 +89,7 @@ bool RouteDB::createTable()
                                                 "end_p char, "
                                                 "time DateTime, "
                                                 "color char);"
-//                            "FOREIGN KEY (start_p) REFERENCES RoutesStartPosition(id), "
+                            //"FOREIGN KEY (start_p) REFERENCES RoutesStartPosition(id), "
                             //"FOREIGN KEY (end_p) REFERENCES RoutesEndPosition(id));"
                         )){
         qDebug() << "DataBase: error of create " << MAIN_TABLE;

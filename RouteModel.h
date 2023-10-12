@@ -1,4 +1,4 @@
-#ifndef ROUTEMODEL_H
+﻿#ifndef ROUTEMODEL_H
 #define ROUTEMODEL_H
 
 #include <QObject>
@@ -44,7 +44,8 @@ public:
     void setRoute(const RouteInfo &newRoute);
 
 signals:
-    void add_route_();
+    void addRoute();
+    void removeRoute(int index);
 
 private:
     RouteInfo route;

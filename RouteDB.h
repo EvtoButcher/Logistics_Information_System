@@ -13,7 +13,7 @@
 #include "RouteModel.h"
 
 #define DATABASE_NAME       "routesDB.db"
-#define MAIN_TABLE           "Routes"
+#define MAIN_TABLE          "Routes"
 
 class RouteDB : public QObject
 {

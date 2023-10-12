@@ -1,4 +1,4 @@
-#include "RouteControlWidget.h"
+#include "RouteAddDialog.h"
 
 #include <QSpacerItem>
 #include <QSizePolicy>
@@ -8,8 +8,8 @@
 #include <QColorDialog>
 #include <QString>
 
-RouteWidget::RouteWidget(QWidget *parent)
-    : QWidget{parent}
+RouteDialog::RouteDialog(QWidget *parent)
+    : QDialog{parent}
 {
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
@@ -39,10 +39,11 @@ RouteWidget::RouteWidget(QWidget *parent)
     end_point_lng_ = new QLineEdit("37.2106466", this);
 
     add_route_button_ = new QPushButton("Add Route", this);
+    close_dialog_button_ = new QPushButton("Close", this);
 
     setLayout(new QVBoxLayout);
 
-    QHBoxLayout* start_coord_lay = new QHBoxLayout();
+    auto start_coord_lay = new QHBoxLayout();
     start_coord_lay->addWidget(start_lat_label);
     start_coord_lay->addSpacing(10);
     start_coord_lay->addWidget(start_point_lat_);
@@ -51,7 +52,7 @@ RouteWidget::RouteWidget(QWidget *parent)
     start_coord_lay->addSpacing(10);
     start_coord_lay->addWidget(start_point_lng_);
 
-    QHBoxLayout* stop_coord_lay = new QHBoxLayout();
+    auto stop_coord_lay = new QHBoxLayout();
     stop_coord_lay->addWidget(stop_lat_label);
     stop_coord_lay->addSpacing(10);
     stop_coord_lay->addWidget(end_point_lat_);
@@ -60,11 +61,16 @@ RouteWidget::RouteWidget(QWidget *parent)
     stop_coord_lay->addSpacing(10);
     stop_coord_lay->addWidget(end_point_lng_);
 
-    QHBoxLayout* color_lay = new QHBoxLayout();
+    auto color_lay = new QHBoxLayout();
     color_lay->setAlignment(Qt::AlignLeft);
     color_lay->addWidget(color_label);
     color_lay->setSpacing(10);
     color_lay->addWidget(color_change_button_);
+
+    auto button_lay = new QHBoxLayout();
+    button_lay->addWidget(add_route_button_);
+    button_lay->addWidget(close_dialog_button_);
+    button_lay->setSpacing(10);
 
     layout()->addWidget(route_name_label);
     layout()->addWidget(name_line_edit_);
@@ -77,9 +83,10 @@ RouteWidget::RouteWidget(QWidget *parent)
     layout()->addWidget(stop_name_label);
     layout()->addItem(stop_coord_lay);
 
-    layout()->addWidget(add_route_button_);
-
-    QSpacerItem* verticalSpacer = new QSpacerItem(20, 40 , QSizePolicy::Minimum, QSizePolicy::Expanding);
+    //layout()->addWidget(add_route_button_);
+    //layout()->addWidget(close_dialog_button_);
+    layout()->addItem(button_lay);
+    QSpacerItem* verticalSpacer = new QSpacerItem(10, 10 , QSizePolicy::Minimum, QSizePolicy::Expanding);
     layout()->addItem(verticalSpacer);
 
     connect(add_route_button_, SIGNAL(clicked(bool)), this, SLOT(onAddButtonClicked()));
@@ -87,7 +94,7 @@ RouteWidget::RouteWidget(QWidget *parent)
 
 }
 
-void RouteWidget::onAddButtonClicked()
+void RouteDialog::onAddButtonClicked()
 {
     RouteInfo route_info(name_line_edit_->text(),
                         start_point_lat_->text().toDouble(),
@@ -99,7 +106,7 @@ void RouteWidget::onAddButtonClicked()
     emit addRouteToTable(route_info);
 }
 
-void RouteWidget::onColorChangeButtonClicked()
+void RouteDialog::onColorChangeButtonClicked()
 {
     color_dialog_->exec();
     auto color = color_dialog_->currentColor().name();

@@ -20,9 +20,6 @@ RouteTable::RouteTable(QWidget *parent)
     table_model_->setTable(MAIN_TABLE);
     table_model_->select();
 
-    auto table_label = new QLabel("Route table", this);
-    table_label->setFont(QFont("Ubuntu", 11, QFont::Bold));
-
     table_view_ = new QTableView(this);
     table_view_->setModel(table_model_);
     table_view_->setItemDelegate(&table_delegate);
@@ -38,11 +35,12 @@ RouteTable::RouteTable(QWidget *parent)
     button_lay->addWidget(add_route_button_);
     button_lay->addWidget(remove_route_button_);
 
-    table_lay->addWidget(table_label);
     table_lay->addWidget(table_view_);
     table_lay->addItem(button_lay);
 
-    connect(table_view_, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(onTableViewClicked(const QModelIndex&)));
+    connect(remove_route_button_, SIGNAL(clicked(bool)), this, SLOT(removeRouteButtonClicked()));
+    connect(add_route_button_, SIGNAL(clicked(bool)), this, SLOT(addRouteButtonClicked()));
+    connect(this, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(onTableViewClicked(const QModelIndex&)));
 }
 
 RouteModel &RouteTable::getRouteModel()
@@ -64,7 +62,7 @@ void RouteTable::restoreRoutOnMap()
                        table_model_->data(table_model_->index(row, 5)).toString());
 
         route_model_.setRoute(info);
-        emit route_model_.add_route_();
+        emit route_model_.addRoute();
     }
 }
 
@@ -75,13 +73,35 @@ void RouteTable::onAddRoute(const RouteInfo& info)
     table_model_->select();
 
     route_model_.setRoute(info);
-    emit route_model_.add_route_();
+    emit route_model_.addRoute();
 }
 
 void RouteTable::onTableViewClicked(const QModelIndex &index)
 {
     table_view_->selectRow(index.row());
     qDebug() << "click" << index.row();
+}
+
+void RouteTable::addRouteButtonClicked()
+{
+    emit openRouteDialog();
+}
+
+void RouteTable::removeRouteButtonClicked()
+{
+    QItemSelectionModel* selectionModel = table_view_->selectionModel();
+    QModelIndexList indexes = selectionModel->selectedRows();
+
+    if(indexes.isEmpty()){
+        return; //TODO: add error handling
+    }
+
+    int route_index_to_delete = indexes.at(0).row();
+
+    table_model_->removeRow(route_index_to_delete);
+    table_model_->select();
+
+    emit route_model_.removeRoute(route_index_to_delete);
 }
 
 

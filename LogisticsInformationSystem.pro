@@ -5,7 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quickwidgets
 CONFIG += c++17
 
 SOURCES += \
-    RouteControlWidget.cpp \
+    RouteAddDialog.cpp \
     RouteDB.cpp \
     RouteModel.cpp \
     RouteTableWidget.cpp \
@@ -15,7 +15,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    RouteControlWidget.h \
+    RouteAddDialog.h \
     RouteDB.h \
     RouteModel.h \
     RouteTableWidget.h \
