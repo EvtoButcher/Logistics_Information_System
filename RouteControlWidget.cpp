@@ -93,17 +93,16 @@ void RouteWidget::onAddButtonClicked()
                         start_point_lat_->text().toDouble(),
                         start_point_lng_->text().toDouble(),
                         end_point_lat_->text().toDouble(),
-                        end_point_lng_->text().toDouble());
-    if(color_changed_){
-        route_info.route_color_ = color_dialog_->selectedColor().name();
-    }
+                        end_point_lng_->text().toDouble(),
+                        color_dialog_->currentColor().name());
+
     emit addRouteToTable(route_info);
 }
 
 void RouteWidget::onColorChangeButtonClicked()
 {
     color_dialog_->exec();
-    auto color  =color_dialog_->selectedColor().name();
+    auto color = color_dialog_->currentColor().name();
     color_change_button_->setStyleSheet("background-color: " + color + QString(";"));
     color_changed_ = true;
 }

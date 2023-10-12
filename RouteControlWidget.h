@@ -15,22 +15,9 @@ class RouteWidget : public QWidget
 {
     Q_OBJECT
 
-    QLineEdit*      name_line_edit_;
-    QLineEdit*      start_point_lat_;
-    QLineEdit*      start_point_lng_;
-    QLineEdit*      end_point_lat_;
-    QLineEdit*      end_point_lng_;
-    QPushButton*    add_route_button_;
-    QPushButton*    color_change_button_;
-    QColorDialog* color_dialog_;
-
-
 public:
     explicit RouteWidget(QWidget *parent = nullptr);
     ~RouteWidget() = default;
-
-private:
-    bool color_changed_ = false;
 
 signals:
      void addRouteToTable(const RouteInfo&);
@@ -38,6 +25,17 @@ signals:
 private slots:
     void onAddButtonClicked();
     void onColorChangeButtonClicked();
+
+private:
+    QLineEdit*      name_line_edit_;
+    QLineEdit*      start_point_lat_;
+    QLineEdit*      start_point_lng_;
+    QLineEdit*      end_point_lat_;
+    QLineEdit*      end_point_lng_;
+    QPushButton*    add_route_button_;
+    QPushButton*    color_change_button_;
+    QColorDialog*   color_dialog_;
+    bool color_changed_ = false;
 };
 
 #endif // ROUTECONTROLWIDGET_H

@@ -9,8 +9,8 @@ using Position = std::pair<double, double>;
 
 struct RouteInfo{
     RouteInfo() = default;
-    RouteInfo(QString name, double s_lat, double s_lng,
-              double e_lat, double e_lng,
+    RouteInfo(QString name, double start_lat, double satrt_lng,
+              double end_lat, double end_lng,
               QString color = "#008000" /*green*/);
 
     RouteInfo(QString name, Position start, Position end,
@@ -25,30 +25,29 @@ struct RouteInfo{
 class RouteModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(double StartLat READ StartLat)
-    Q_PROPERTY(double StartLng READ StartLng)
-    Q_PROPERTY(double EndLat READ EndLat)
-    Q_PROPERTY(double EndLng READ EndLng)
-    Q_PROPERTY(QString RouteColor READ RouteColor)
+    Q_PROPERTY(double StartLat READ startLat)
+    Q_PROPERTY(double StartLng READ startLng)
+    Q_PROPERTY(double EndLat READ endLat)
+    Q_PROPERTY(double EndLng READ endLng)
+    Q_PROPERTY(QString RouteColor READ routeColor)
 
 public:
     explicit RouteModel(QObject *parent = nullptr);
 
-    double StartLat();
-    double StartLng();
-    double EndLat();
-    double EndLng();
+    double startLat();
+    double startLng();
+    double endLat();
+    double endLng();
 
-    QString RouteColor();
+    QString routeColor();
 
     void setRoute(const RouteInfo &newRoute);
-
-private:
-    RouteInfo route;
 
 signals:
     void add_route_();
 
+private:
+    RouteInfo route;
 };
 
 #endif // ROUTEMODEL_H

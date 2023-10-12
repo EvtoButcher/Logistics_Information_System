@@ -28,11 +28,12 @@ public:
     bool inserIntoTable(const RouteInfo info);
 
 private:
-    QSqlDatabase db;
-
     bool createTable();
     bool openDB();
     bool restoreDB();
+
+private:
+    QSqlDatabase db;
 };
 
 #endif // ROUTEDB_H

@@ -111,12 +111,6 @@ bool RouteDB::openDB()
 bool RouteDB::restoreDB()
 {
     if(openDB()){
-//           if(!this->createTable()){
-//               return false;
-//           }
-//           else{
-//               return true;
-//           }
         return !createTable();
     }
     else{
