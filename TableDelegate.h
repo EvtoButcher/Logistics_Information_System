@@ -4,8 +4,9 @@
 #include <QObject>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
-#include <QPainter>
 #include <QItemDelegate>
+
+class QPainter;
 
 class TableDelegate : public QStyledItemDelegate
 {

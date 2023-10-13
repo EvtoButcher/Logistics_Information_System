@@ -3,6 +3,10 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QLocale>
+#include <QDate>
+#include <QSqlError>
+#include <QSql>
+#include <QSqlQuery>
 
 #include "common.h"
 
@@ -10,6 +14,7 @@ RouteDB::RouteDB(QObject *parent)
      : QObject(parent)
      , db(QSqlDatabase::addDatabase("QSQLITE"))
 {
+    query = new QSqlQuery(db);
 
     if(fileExists("./" DATABASE_NAME)){
         openDB();           //TODO: incorrect display of routes during
@@ -30,9 +35,7 @@ const QSqlDatabase &RouteDB::DB() const
 
 bool RouteDB::inserIntoTable(const RouteInfo info)
 {
-    QSqlQuery query;
-
-    query.prepare("INSERT INTO " MAIN_TABLE "("
+    query->prepare("INSERT INTO " MAIN_TABLE "("
                                               "name, "
                                               "start_p, "
                                               "end_p, "
@@ -48,52 +51,53 @@ bool RouteDB::inserIntoTable(const RouteInfo info)
     double tmp_e_lng = info.end_route_point_.second;
     QString end = QString::number(tmp_e_lat, 'f', 6) + " " + QString::number(tmp_e_lng, 'f', 6);
 
-    query.bindValue(":Name",       info.name_);
-    query.bindValue(":StartPos",   start);
-    query.bindValue(":EndPos",     end);
-    query.bindValue(":DATE",       "");
-    query.bindValue(":RouteColor", info.route_color_);
+    query->bindValue(":Name",       info.name_);
+    query->bindValue(":StartPos",   start);
+    query->bindValue(":EndPos",     end);
+    query->bindValue(":DATE",       "");
+    query->bindValue(":RouteColor", info.route_color_);
 
-    if(!query.exec()){
+    if(!query->exec()){
         qDebug() << "error insert into " << MAIN_TABLE;
-        qDebug() << query.lastError().text();
+        qDebug() << query->lastError().text();
         return false;
      }
      else{
+        qDebug() << query->lastQuery();
         return true;
      }
-     return false;
+    return false;
+}
+
+bool RouteDB::deleteFromTable(const int index)
+{
+    query->prepare("DELETE FROM " MAIN_TABLE " WHERE id = :Index");
+    query->bindValue(":Index", index);
+
+    if(!query->exec()){
+        qDebug() << "error delete " << MAIN_TABLE;
+        qDebug() << query->lastError().text();
+        return false;
+     }
+     else{
+        qDebug() << "acept delete";
+        return true;
+     }
+    return false;
 }
 
 bool RouteDB::createTable()
 {
-    QSqlQuery query(db);
 
-//    query.exec("CREATE TABLE "
-//                        "RoutesStartPosition ("
-//                                            "id int AUTO_INCREMENT PRIMARY KEY, "
-//                                            "s_lat DOUBLE, "
-//                                            "s_lng DOUBLE"
-//                                            ");");    
-//    query.exec("CREATE TABLE "
-//                "RoutesEndPosition ("
-//                                "id int AUTO_INCREMENT PRIMARY KEY, "
-//                                "e_lat DOUBLE, "
-//                                "e_lng DOUBLE"
-//                                ");");
-
-    if(!query.exec("CREATE TABLE " MAIN_TABLE "("
-                                                "id int AUTO_INCREMENT PRIMARY KEY, "
+    if(!query->exec("CREATE TABLE " MAIN_TABLE "("
+                                                "id INTEGER PRIMARY KEY, "
                                                 "name char, "
                                                 "start_p char, "
                                                 "end_p char, "
                                                 "time DateTime, "
-                                                "color char);"
-                            //"FOREIGN KEY (start_p) REFERENCES RoutesStartPosition(id), "
-                            //"FOREIGN KEY (end_p) REFERENCES RoutesEndPosition(id));"
-                        )){
+                                                "color char)")){
         qDebug() << "DataBase: error of create " << MAIN_TABLE;
-        qDebug() << query.lastError().text();
+        qDebug() << query->lastError().text();
         return false;
     }
     else {
@@ -105,6 +109,7 @@ bool RouteDB::createTable()
 bool RouteDB::openDB()
 {
     db.setDatabaseName("./" DATABASE_NAME);
+
     return db.open();
 }
 

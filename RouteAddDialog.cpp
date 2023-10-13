@@ -1,5 +1,3 @@
-#include "RouteAddDialog.h"
-
 #include <QSpacerItem>
 #include <QSizePolicy>
 #include <QFont>
@@ -7,6 +5,15 @@
 #include <QColor>
 #include <QColorDialog>
 #include <QString>
+#include <QLineEdit>
+#include <QDockWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QColorDialog>
+
+#include "RouteAddDialog.h"
 
 RouteDialog::RouteDialog(QWidget *parent)
     : QDialog{parent}
@@ -83,14 +90,13 @@ RouteDialog::RouteDialog(QWidget *parent)
     layout()->addWidget(stop_name_label);
     layout()->addItem(stop_coord_lay);
 
-    //layout()->addWidget(add_route_button_);
-    //layout()->addWidget(close_dialog_button_);
     layout()->addItem(button_lay);
     QSpacerItem* verticalSpacer = new QSpacerItem(10, 10 , QSizePolicy::Minimum, QSizePolicy::Expanding);
     layout()->addItem(verticalSpacer);
 
-    connect(add_route_button_, SIGNAL(clicked(bool)), this, SLOT(onAddButtonClicked()));
-    connect(color_change_button_, SIGNAL(clicked(bool)), this, SLOT(onColorChangeButtonClicked()));
+    connect(close_dialog_button_, &QAbstractButton::clicked, this, &RouteDialog::onCloseButtonClicked);
+    connect(add_route_button_, &QAbstractButton::clicked, this, &RouteDialog::onAddButtonClicked);
+    connect(color_change_button_, &QAbstractButton::clicked, this, &RouteDialog::onColorChangeButtonClicked);
 
 }
 
@@ -112,4 +118,9 @@ void RouteDialog::onColorChangeButtonClicked()
     auto color = color_dialog_->currentColor().name();
     color_change_button_->setStyleSheet("background-color: " + color + QString(";"));
     color_changed_ = true;
+}
+
+void RouteDialog::onCloseButtonClicked()
+{
+    this->close();
 }

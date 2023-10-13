@@ -1,15 +1,17 @@
 #ifndef ROUTEADDDIALOG_H
 #define ROUTEADDDIALOG_H
 
-#include <QDockWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QColorDialog>
+#include <QDialog>
 
 #include "RouteModel.h"
+
+class QLineEdit;
+class QDockWidget;
+class QHBoxLayout;
+class QVBoxLayout;
+class QLabel;
+class QPushButton;
+class QColorDialog;
 
 class RouteDialog : public QDialog
 {
@@ -25,6 +27,7 @@ signals:
 private slots:
     void onAddButtonClicked();
     void onColorChangeButtonClicked();
+    void onCloseButtonClicked();
 
 private:
     QLineEdit*      name_line_edit_;

@@ -2,13 +2,14 @@
 #define ROUTETABLE_H
 
 #include <QWidget>
-#include <QSqlTableModel>
-#include <QTableView>
-#include <QPushButton>
 
 #include "RouteModel.h"
 #include "RouteDB.h"
 #include "TableDelegate.h"
+
+class QSqlTableModel;
+class QTableView;
+class QPushButton;
 
 class RouteTable : public QWidget
 {

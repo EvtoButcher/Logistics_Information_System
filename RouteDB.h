@@ -2,15 +2,11 @@
 #define ROUTEDB_H
 
 #include <QObject>
-#include <QSql>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QSqlDatabase>
-#include <QFile>
-#include <QDate>
-#include <QDebug>
 
 #include "RouteModel.h"
+
+class QSqlQuery;
 
 #define DATABASE_NAME       "routesDB.db"
 #define MAIN_TABLE          "Routes"
@@ -26,6 +22,7 @@ public:
     const QSqlDatabase &DB() const;
 
     bool inserIntoTable(const RouteInfo info);
+    bool deleteFromTable(const int index);
 
 private:
     bool createTable();
@@ -34,6 +31,7 @@ private:
 
 private:
     QSqlDatabase db;
+    QSqlQuery* query;
 };
 
 #endif // ROUTEDB_H

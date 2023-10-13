@@ -4,7 +4,11 @@
 #include <QHBoxLayout>
 #include <QDebug>
 #include <QSqlRecord>
+#include <QModelIndex>
 #include <QLabel>
+#include <QSqlTableModel>
+#include <QTableView>
+#include <QPushButton>
 
 #include "common.h"
 
@@ -16,8 +20,9 @@ RouteTable::RouteTable(QWidget *parent)
     auto table_lay = new QVBoxLayout(this);
 
     route_db_ = new RouteDB(this);
-    table_model_ = new QSqlTableModel(this/*, route_db_->DB()*/);
+    table_model_ = new QSqlTableModel(this, route_db_->DB());
     table_model_->setTable(MAIN_TABLE);
+    table_model_->setEditStrategy(QSqlTableModel::OnFieldChange);
     table_model_->select();
 
     table_view_ = new QTableView(this);
@@ -38,9 +43,9 @@ RouteTable::RouteTable(QWidget *parent)
     table_lay->addWidget(table_view_);
     table_lay->addItem(button_lay);
 
-    connect(remove_route_button_, SIGNAL(clicked(bool)), this, SLOT(removeRouteButtonClicked()));
-    connect(add_route_button_, SIGNAL(clicked(bool)), this, SLOT(addRouteButtonClicked()));
-    connect(this, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(onTableViewClicked(const QModelIndex&)));
+    connect(remove_route_button_, &QAbstractButton::clicked, this, &RouteTable::removeRouteButtonClicked);
+    connect(add_route_button_, &QAbstractButton::clicked, this, &RouteTable::addRouteButtonClicked);
+    connect(table_view_, &QAbstractItemView::doubleClicked, this, &RouteTable::onTableViewClicked);
 }
 
 RouteModel &RouteTable::getRouteModel()
@@ -96,12 +101,12 @@ void RouteTable::removeRouteButtonClicked()
         return; //TODO: add error handling
     }
 
-    int route_index_to_delete = indexes.at(0).row();
+    auto route_index_to_delete = indexes.at(0).data(Qt::DisplayRole).toInt();
 
-    table_model_->removeRow(route_index_to_delete);
+    route_db_->deleteFromTable(route_index_to_delete);
     table_model_->select();
 
-    emit route_model_.removeRoute(route_index_to_delete);
+    emit route_model_.removeRoute(indexes.at(0).row());
 }
 
 

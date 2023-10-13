@@ -1,3 +1,5 @@
+#include <QPainter>
+
 #include "TableDelegate.h"
 
 TableDelegate::TableDelegate(QObject* parent)
