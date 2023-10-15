@@ -22,6 +22,14 @@ public:
 private slots:
     void openRouteDialog();
 
+    void on_menuFileExit_triggered();
+    void on_menuHelpAboutProgram_triggered();
+    void on_menuHelpGoSourse_triggered();
+    void on_menuVievShowRouteTable_changed();
+
+
+    void on_menuFileCloseDB_triggered();
+
 private:
     Ui::MainWindow *ui;
 

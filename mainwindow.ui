@@ -23,6 +23,9 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QQuickWidget" name="quickWidget">
         <property name="sizePolicy">
@@ -34,7 +37,7 @@
         <property name="minimumSize">
          <size>
           <width>600</width>
-          <height>600</height>
+          <height>610</height>
          </size>
         </property>
         <property name="cursor">
@@ -61,17 +64,43 @@
      <height>22</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
+   <property name="autoFillBackground">
     <bool>false</bool>
-   </attribute>
+   </property>
+   <widget class="QMenu" name="menuFIle">
+    <property name="title">
+     <string>FIle</string>
+    </property>
+    <addaction name="menuFileOpenDB"/>
+    <addaction name="menuFileCloseDB"/>
+    <addaction name="menuFileSaveDB"/>
+    <addaction name="separator"/>
+    <addaction name="menuFileExit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="menuVievShowRouteTable"/>
+    <addaction name="menuViewShowRouteAdd"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="menuToolsConnectToDB"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="menuHelpAboutProgram"/>
+    <addaction name="menuHelpGoSourse"/>
+   </widget>
+   <addaction name="menuFIle"/>
+   <addaction name="menuView"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget">
@@ -85,7 +114,7 @@
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea|Qt::TopDockWidgetArea</set>
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string>Routes table</string>
@@ -95,6 +124,75 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_5"/>
   </widget>
+  <action name="menuFileOpenDB">
+   <property name="text">
+    <string>Open Database</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="menuFileCloseDB">
+   <property name="text">
+    <string>Close Database</string>
+   </property>
+  </action>
+  <action name="menuFileSaveDB">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save Database</string>
+   </property>
+  </action>
+  <action name="menuFileExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="menuHelpAboutProgram">
+   <property name="text">
+    <string>About Program...</string>
+   </property>
+  </action>
+  <action name="menuToolsConnectToDB">
+   <property name="text">
+    <string>Connect to Database</string>
+   </property>
+  </action>
+  <action name="menuVievShowRouteTable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Route Table</string>
+   </property>
+  </action>
+  <action name="menuViewShowRouteAdd">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Show Route Add</string>
+   </property>
+  </action>
+  <action name="menuHelpGoSourse">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Go to Source...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

@@ -9,6 +9,7 @@
 #include <QSqlTableModel>
 #include <QTableView>
 #include <QPushButton>
+#include <QVector>
 
 #include "common.h"
 
@@ -53,23 +54,25 @@ RouteModel &RouteTable::getRouteModel()
     return route_model_;
 }
 
-void RouteTable::restoreRoutOnMap()
-{
-    if(!table_model_->rowCount()){
-        return;
-    }
+//void RouteTable::restoreRoutOnMap()
+//{
+//    if(!table_model_->rowCount()){
+//        return;
+//    }
 
-    for (int row = 0; row < table_model_->rowCount(); ++row) {
+//    for (int row = 0; row < table_model_->rowCount(); ++row) {
 
-        RouteInfo info(table_model_->data(table_model_->index(row, 1)).toString(),
-                       splitCoordinates(table_model_->data(table_model_->index(row, 2)).toString()),
-                       splitCoordinates(table_model_->data(table_model_->index(row, 3)).toString()),
-                       table_model_->data(table_model_->index(row, 5)).toString());
+//        RouteInfo info(table_model_->data(table_model_->index(row, 1)).toString(),
+//                       splitCoordinates(table_model_->data(table_model_->index(row, 2)).toString()),
+//                       splitCoordinates(table_model_->data(table_model_->index(row, 3)).toString()),
+//                       table_model_->data(table_model_->index(row, 5)).toString());
 
-        route_model_.setRoute(info);
-        emit route_model_.addRoute();
-    }
-}
+//        route_model_.setRoute(info);
+
+//        emit route_model_.addRoute();
+//        delay();
+//    }
+//}
 
 void RouteTable::onAddRoute(const RouteInfo& info)
 {
@@ -101,12 +104,47 @@ void RouteTable::removeRouteButtonClicked()
         return; //TODO: add error handling
     }
 
+//    for(const auto& index : indexes){
+//        int route_index_to_delete = index.data(Qt::DisplayRole).toInt();
+//        route_db_->deleteFromTable(route_index_to_delete);
+//        emit route_model_.removeRoute(index.row());
+//    }
+
     auto route_index_to_delete = indexes.at(0).data(Qt::DisplayRole).toInt();
 
     route_db_->deleteFromTable(route_index_to_delete);
     table_model_->select();
 
     emit route_model_.removeRoute(indexes.at(0).row());
+
+}
+
+void RouteTable::closeDbConnection()
+{
+    emit route_model_.removeAllRoutes();
+    route_db_->closeDB();
+    table_model_->select();
+    //table_view_->update();
 }
 
 
+
+void restoreRoutOnMap(RouteTable* const table)
+{
+    if(!table->table_model_->rowCount()){
+        return;
+    }
+
+    for (int row = 0; row < table->table_model_->rowCount(); ++row) {
+
+        RouteInfo info(table->table_model_->data(table->table_model_->index(row, 1)).toString(),
+                       splitCoordinates(table->table_model_->data(table->table_model_->index(row, 2)).toString()),
+                       splitCoordinates(table->table_model_->data(table->table_model_->index(row, 3)).toString()),
+                       table->table_model_->data(table->table_model_->index(row, 5)).toString());
+
+        table->route_model_.setRoute(info);
+
+        emit table->route_model_.addRoute();
+        delay();
+    }
+}

@@ -24,6 +24,8 @@ public:
     bool inserIntoTable(const RouteInfo info);
     bool deleteFromTable(const int index);
 
+    bool closeDB();
+
 private:
     bool createTable();
     bool openDB();

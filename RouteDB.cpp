@@ -109,8 +109,16 @@ bool RouteDB::createTable()
 bool RouteDB::openDB()
 {
     db.setDatabaseName("./" DATABASE_NAME);
-
     return db.open();
+}
+
+bool RouteDB::closeDB()
+{
+    if(!db.isOpen()){
+        return false;
+    }
+    db.close();
+    return true;
 }
 
 bool RouteDB::restoreDB()

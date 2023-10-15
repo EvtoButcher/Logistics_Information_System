@@ -15,11 +15,15 @@ class RouteTable : public QWidget
 {
     Q_OBJECT
 public:
+    friend void restoreRoutOnMap(RouteTable* table) ;
+
     explicit RouteTable(QWidget *parent = nullptr);
 
     RouteModel& getRouteModel();
-    void restoreRoutOnMap();
+    //void restoreRoutOnMap();
 
+    void closeDbConnection();
+    bool status = true;
 public slots:
     void onAddRoute(const RouteInfo& info);
     void onTableViewClicked(const QModelIndex& index);
@@ -41,5 +45,8 @@ private:
     QPushButton*     add_route_button_;
     QPushButton*     remove_route_button_;
 };
+
+
+void restoreRoutOnMap(RouteTable* table);
 
 #endif // ROUTETABLE_H

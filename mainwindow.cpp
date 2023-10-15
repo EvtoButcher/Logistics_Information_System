@@ -2,8 +2,13 @@
 #include "ui_mainwindow.h"
 
 #include <QQmlContext>
+#include <QMessageBox>
+#include <QDesktopServices>
+#include <QFuture>
+#include <QtConcurrent>
 
 #include "RouteModel.h"
+#include "TextMessage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,8 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/map.qml")));
     ui->quickWidget->show();
 
-    route_table_->restoreRoutOnMap(); //TODO: fix incorrect display of routes during
-                                      //      deserialization from the database.
+    QFuture<void> future = QtConcurrent::run(restoreRoutOnMap, route_table_);
 }
 
 MainWindow::~MainWindow()
@@ -36,3 +40,36 @@ void MainWindow::openRouteDialog()
 {
     route_dialog_->exec();
 }
+
+void MainWindow::on_menuFileExit_triggered()
+{
+    QApplication::quit();
+}
+
+
+void MainWindow::on_menuHelpAboutProgram_triggered()
+{
+    QMessageBox::information(this,
+                             "About Program",
+                             message_text::about_program);
+}
+
+
+void MainWindow::on_menuHelpGoSourse_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/EvtoButcher/Logistics_Information_System/",QUrl::TolerantMode));
+}
+
+
+void MainWindow::on_menuVievShowRouteTable_changed()
+{
+    qDebug() << ui->menuVievShowRouteTable->isChecked();
+    ui->menuVievShowRouteTable->isChecked() ? ui->dockWidget->show() : ui->dockWidget->hide();
+}
+
+
+void MainWindow::on_menuFileCloseDB_triggered()
+{
+    route_table_->closeDbConnection();
+}
+

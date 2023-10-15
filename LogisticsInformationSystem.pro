@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quickwidgets
 
@@ -20,6 +20,7 @@ HEADERS += \
     RouteModel.h \
     RouteTableWidget.h \
     TableDelegate.h \
+    TextMessage.h \
     common.h \
     mainwindow.h
 

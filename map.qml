@@ -26,6 +26,7 @@ Rectangle {
            target: app
            function onAddRoute() {
                var newRoute = {};
+               //console.log(app.StartLat);
                newRoute.startPosLat = app.StartLat;
                newRoute.startPosLng = app.StartLng;
                newRoute.endPosLat = app.EndLat;
@@ -46,6 +47,10 @@ Rectangle {
                //console.log(index)
                routeListModel.remove(index);
            }
+
+           function onRemoveAllRoutes(){
+               routeListModel.clear();
+           }
        }
 
 
@@ -63,10 +68,13 @@ Rectangle {
                 }
 
                 Component.onCompleted:{
+                    console.log(routeModel.status.toString());
                     routeQuery.addWaypoint(QtPositioning.coordinate(model.startPosLat, model.startPosLng));
                     routeQuery.addWaypoint(QtPositioning.coordinate(model.endPosLat, model.endPosLng));
                     update();
-                    console.log("start " + model.startPosLat + " " + model.startPosLng);
+                }
+                onStatusChanged:  {
+                    console.log(routeModel.status);
                 }
             }
 
@@ -162,8 +170,8 @@ Rectangle {
             model:routeListModel
             delegate: routeDelegate
 
-            Component.onCompleted: {
-                console.log("route completed");
+            Component.onObjectNameChanged: {
+                console.log("AAAAA");
             }
         }
 
@@ -178,10 +186,6 @@ Rectangle {
            model: routeListModel
            delegate: endPointDelegate
         }
-        Component.onCompleted: {
-            console.log("map completed");
-        }
-
     }
 
     Scaler {

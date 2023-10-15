@@ -46,6 +46,9 @@ public:
 signals:
     void addRoute();
     void removeRoute(int index);
+    void removeAllRoutes();
+
+    void statusChenged();
 
 private:
     RouteInfo route;

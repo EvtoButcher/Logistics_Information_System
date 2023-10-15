@@ -1,4 +1,5 @@
 #include "RouteModel.h"
+#include <QtDebug>
 
 RouteModel::RouteModel(QObject *parent)
     : QObject{parent}
