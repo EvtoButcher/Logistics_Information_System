@@ -30,6 +30,8 @@ private slots:
 
     void on_menuFileCloseDB_triggered();
 
+    void on_menuFileOpenDB_triggered();
+
 private:
     Ui::MainWindow *ui;
 

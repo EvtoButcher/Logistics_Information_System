@@ -7,6 +7,7 @@
 #include <QSqlError>
 #include <QSql>
 #include <QSqlQuery>
+#include <QFileDialog>
 
 #include "common.h"
 
@@ -17,9 +18,7 @@ RouteDB::RouteDB(QObject *parent)
     query = new QSqlQuery(db);
 
     if(fileExists("./" DATABASE_NAME)){
-        openDB();           //TODO: incorrect display of routes during
-                            //      deserialization from the database.
-                            //      it doesn't make sense at the moment
+        openDB();
         qDebug() << "open";
     }
     else{
@@ -108,7 +107,7 @@ bool RouteDB::createTable()
 
 bool RouteDB::openDB()
 {
-    db.setDatabaseName("./" DATABASE_NAME);
+    db.setDatabaseName(DATABASE_NAME);
     return db.open();
 }
 
@@ -119,6 +118,13 @@ bool RouteDB::closeDB()
     }
     db.close();
     return true;
+}
+
+bool RouteDB::importDB()
+{
+   QFile db_file = QFileDialog::getOpenFileName(nullptr ,tr("Open Database"), QDir::currentPath(),tr("*.db"));
+
+   qDebug() << db_file.Text;
 }
 
 bool RouteDB::restoreDB()

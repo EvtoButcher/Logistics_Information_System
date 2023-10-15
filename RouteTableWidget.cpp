@@ -44,6 +44,8 @@ RouteTable::RouteTable(QWidget *parent)
     table_lay->addWidget(table_view_);
     table_lay->addItem(button_lay);
 
+    connect(&route_model_, &RouteModel::selectRouteOnMap, this, &RouteTable::routeOnMapSelected);
+    connect(table_view_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RouteTable::rowSelected);
     connect(remove_route_button_, &QAbstractButton::clicked, this, &RouteTable::removeRouteButtonClicked);
     connect(add_route_button_, &QAbstractButton::clicked, this, &RouteTable::addRouteButtonClicked);
     connect(table_view_, &QAbstractItemView::doubleClicked, this, &RouteTable::onTableViewClicked);
@@ -54,25 +56,26 @@ RouteModel &RouteTable::getRouteModel()
     return route_model_;
 }
 
-//void RouteTable::restoreRoutOnMap()
-//{
-//    if(!table_model_->rowCount()){
-//        return;
-//    }
+void RouteTable::restoreRoutOnMap()
+{
+    if(!table_model_->rowCount()){
+        return;
+    }
 
-//    for (int row = 0; row < table_model_->rowCount(); ++row) {
+    for (int row = 0; row < table_model_->rowCount(); ++row) {
 
-//        RouteInfo info(table_model_->data(table_model_->index(row, 1)).toString(),
-//                       splitCoordinates(table_model_->data(table_model_->index(row, 2)).toString()),
-//                       splitCoordinates(table_model_->data(table_model_->index(row, 3)).toString()),
-//                       table_model_->data(table_model_->index(row, 5)).toString());
+        RouteInfo info(table_model_->data(table_model_->index(row, 1)).toString(),//name
+                       splitCoordinates(table_model_->data(table_model_->index(row, 2)).toString()),//start position
+                       splitCoordinates(table_model_->data(table_model_->index(row, 3)).toString()),//end position
+                       table_model_->data(table_model_->index(row, 5)).toString());//color
 
-//        route_model_.setRoute(info);
+        route_model_.setRoute(info);
 
-//        emit route_model_.addRoute();
-//        delay();
-//    }
-//}
+        emit route_model_.addRoute();
+
+        while(route_model_.checkStatus() != UploadStatus::Colpleted); //waiting for the route to be loaded on the map
+    }
+}
 
 void RouteTable::onAddRoute(const RouteInfo& info)
 {
@@ -119,6 +122,25 @@ void RouteTable::removeRouteButtonClicked()
 
 }
 
+void RouteTable::rowSelected()
+{
+    QItemSelectionModel* selectionModel = table_view_->selectionModel();
+    QModelIndexList indexes = selectionModel->selectedRows();
+
+    if(!indexes.empty()){
+        emit route_model_.selectRouteOnTable(indexes[0].row());
+    }
+    else{
+        route_model_.unSelectRouteOnTable();
+    }
+}
+
+void RouteTable::routeOnMapSelected(int index)
+{
+    table_view_->selectRow(index);
+}
+
+
 void RouteTable::closeDbConnection()
 {
     emit route_model_.removeAllRoutes();
@@ -127,24 +149,9 @@ void RouteTable::closeDbConnection()
     //table_view_->update();
 }
 
-
-
-void restoreRoutOnMap(RouteTable* const table)
+void RouteTable::importFromDB()
 {
-    if(!table->table_model_->rowCount()){
-        return;
-    }
-
-    for (int row = 0; row < table->table_model_->rowCount(); ++row) {
-
-        RouteInfo info(table->table_model_->data(table->table_model_->index(row, 1)).toString(),
-                       splitCoordinates(table->table_model_->data(table->table_model_->index(row, 2)).toString()),
-                       splitCoordinates(table->table_model_->data(table->table_model_->index(row, 3)).toString()),
-                       table->table_model_->data(table->table_model_->index(row, 5)).toString());
-
-        table->route_model_.setRoute(info);
-
-        emit table->route_model_.addRoute();
-        delay();
-    }
+    route_db_->importDB();
 }
+
+

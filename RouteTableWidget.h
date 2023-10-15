@@ -2,6 +2,7 @@
 #define ROUTETABLE_H
 
 #include <QWidget>
+#include <QTableView>
 
 #include "RouteModel.h"
 #include "RouteDB.h"
@@ -15,15 +16,14 @@ class RouteTable : public QWidget
 {
     Q_OBJECT
 public:
-    friend void restoreRoutOnMap(RouteTable* table) ;
-
     explicit RouteTable(QWidget *parent = nullptr);
 
     RouteModel& getRouteModel();
-    //void restoreRoutOnMap();
+    void restoreRoutOnMap();
 
     void closeDbConnection();
-    bool status = true;
+    void importFromDB();
+
 public slots:
     void onAddRoute(const RouteInfo& info);
     void onTableViewClicked(const QModelIndex& index);
@@ -34,6 +34,9 @@ signals:
 private slots:
     void addRouteButtonClicked();
     void removeRouteButtonClicked();
+
+    void rowSelected();
+    void routeOnMapSelected(int index);
 
 private:
     QSqlTableModel*  table_model_;
@@ -47,6 +50,6 @@ private:
 };
 
 
-void restoreRoutOnMap(RouteTable* table);
+//void restoreRoutOnMap(RouteTable* table);
 
 #endif // ROUTETABLE_H

@@ -12,6 +12,29 @@ void RouteModel::setRoute(const RouteInfo &newRoute)
     route = newRoute;
 }
 
+void RouteModel::routeSelectedOnMap(int index)
+{
+    emit selectRouteOnMap(index);
+}
+
+void RouteModel::routeUnselectedOnMap(){
+    emit unselectRouteOnMap();
+}
+
+void RouteModel::setStatus(int current_status)
+{
+    status = static_cast<UploadStatus>(current_status);
+}
+
+UploadStatus RouteModel::checkStatus()
+{
+    if(status == UploadStatus::Colpleted){//TODO add UploadStatus::Error handling
+           status = UploadStatus::Null;
+           return UploadStatus::Colpleted;
+    }
+    return status;
+}
+
 double RouteModel::startLat()
 {
     return route.start_route_point_.first;

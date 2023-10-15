@@ -11,6 +11,8 @@ Rectangle {
 
     property double centrMapLat: 55.7514399474066;
     property double centrMapLng: 37.61889172533533;
+    property double defOpasity: 0.5
+    property int    backSelectRoute;
 
     Plugin{
         id: osmPlugin
@@ -26,12 +28,14 @@ Rectangle {
            target: app
            function onAddRoute() {
                var newRoute = {};
-               //console.log(app.StartLat);
+
                newRoute.startPosLat = app.StartLat;
                newRoute.startPosLng = app.StartLng;
                newRoute.endPosLat = app.EndLat;
                newRoute.endPosLng = app.EndLng;
+
                newRoute.color = app.RouteColor;
+               newRoute.opacity = defOpasity;
 
                routeListModel.append(newRoute);
 
@@ -44,12 +48,22 @@ Rectangle {
            }
 
            function onRemoveRoute(index){
-               //console.log(index)
                routeListModel.remove(index);
            }
 
            function onRemoveAllRoutes(){
                routeListModel.clear();
+           }
+
+           function onSelectRouteOnTable(index){
+               routeListModel.get(index).opacity = 1;
+               backSelectRoute = index;
+               routeListModel.get(index).z = 100;
+           }
+
+           function onUnSelectRouteOnTable(){
+               routeListModel.get(backSelectRoute).opacity = defOpasity;
+               routeListModel.get(backSelectRoute).z = 0;
            }
        }
 
@@ -68,13 +82,12 @@ Rectangle {
                 }
 
                 Component.onCompleted:{
-                    console.log(routeModel.status.toString());
                     routeQuery.addWaypoint(QtPositioning.coordinate(model.startPosLat, model.startPosLng));
                     routeQuery.addWaypoint(QtPositioning.coordinate(model.endPosLat, model.endPosLng));
                     update();
                 }
                 onStatusChanged:  {
-                    console.log(routeModel.status);
+                    app.setStatus(routeModel.status);
                 }
             }
 
@@ -82,7 +95,7 @@ Rectangle {
             line.color: color
             smooth:true
             line.width: 5
-            opacity: 0.8
+            opacity: model.opacity
 
             MouseArea{
                 anchors.fill: parent
@@ -90,9 +103,9 @@ Rectangle {
                 acceptedButtons: Qt.LeftButton
 
                 onClicked: {
-                    if(routeListModel.count > 0){
-                        routeListModel.remove(index);
-                    }
+                    opacity = 1;
+                    backSelectRoute = index;
+                    app.onSelectRouteOnMap(index);
                 }
             }
         }
@@ -109,7 +122,6 @@ Rectangle {
                 plugin: osmPlugin
 
             }
-
                anchorPoint.x: startPathMarker.width / 2
                anchorPoint.y: startPathMarker.height / 2
                coordinate: routeModel.status === RouteModel.Ready ?
@@ -123,6 +135,7 @@ Rectangle {
                    border.width: 5
                    border.color: "gray"
                    color: "white"
+                   opacity: model.opacity
                }
          }
     }
@@ -150,6 +163,7 @@ Rectangle {
                    border.width: 5
                    border.color: "red"
                    color: "white"
+                   opacity: model.opacity
                }
          }
     }
@@ -157,6 +171,7 @@ Rectangle {
     Map {
         id: map
         anchors.fill:  parent
+        z:1
         plugin: Plugin{name: "mapboxgl"}
         center: QtPositioning.coordinate(centrMapLat, centrMapLng)
         zoomLevel: zoomBar.currentScale
@@ -168,6 +183,7 @@ Rectangle {
         MapItemView{
             id: route
             model:routeListModel
+            z:2
             delegate: routeDelegate
 
             Component.onObjectNameChanged: {
@@ -177,14 +193,26 @@ Rectangle {
 
         MapItemView {
             id: startPoint
-           model: routeListModel
-           delegate: startPointDelegate
+            model: routeListModel
+            delegate: startPointDelegate
+            z:3
         }
 
         MapItemView {
             id: endPoint
-           model: routeListModel
-           delegate: endPointDelegate
+            model: routeListModel
+            delegate: endPointDelegate
+            z:3
+        }
+
+        MouseArea{
+            anchors.fill: parent
+
+            acceptedButtons: Qt.LeftButton
+
+            onClicked: {
+                routeListModel.get(backSelectRoute).opacity = defOpasity;
+            }
         }
     }
 

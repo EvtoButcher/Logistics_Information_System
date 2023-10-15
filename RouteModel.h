@@ -22,6 +22,13 @@ struct RouteInfo{
     QString route_color_;
 };
 
+enum class UploadStatus{
+    Null,
+    Colpleted,
+    Loading,
+    Error
+};
+
 class RouteModel : public QObject
 {
     Q_OBJECT
@@ -38,20 +45,29 @@ public:
     double startLng();
     double endLat();
     double endLng();
-
     QString routeColor();
 
     void setRoute(const RouteInfo &newRoute);
+
+
+    Q_INVOKABLE void routeSelectedOnMap(int index);
+    Q_INVOKABLE void routeUnselectedOnMap();
+
+    Q_INVOKABLE void setStatus(int current_status /*UploadStatus*/);
+    UploadStatus checkStatus();
 
 signals:
     void addRoute();
     void removeRoute(int index);
     void removeAllRoutes();
-
-    void statusChenged();
+    void selectRouteOnTable(int index);
+    void unSelectRouteOnTable();
+    void selectRouteOnMap(int index);
+    void unselectRouteOnMap();
 
 private:
     RouteInfo route;
+    UploadStatus status = UploadStatus::Null;
 };
 
 #endif // ROUTEMODEL_H

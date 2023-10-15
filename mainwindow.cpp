@@ -28,7 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/map.qml")));
     ui->quickWidget->show();
 
-    QFuture<void> future = QtConcurrent::run(restoreRoutOnMap, route_table_);
+    //QFuture<void> future = QtConcurrent::run(restoreRoutOnMap, route_table_);
+
+    QFuture<void> future = QtConcurrent::run(route_table_, &RouteTable::restoreRoutOnMap);
 }
 
 MainWindow::~MainWindow()
@@ -71,5 +73,11 @@ void MainWindow::on_menuVievShowRouteTable_changed()
 void MainWindow::on_menuFileCloseDB_triggered()
 {
     route_table_->closeDbConnection();
+}
+
+
+void MainWindow::on_menuFileOpenDB_triggered()
+{
+    route_table_->importFromDB();
 }
 

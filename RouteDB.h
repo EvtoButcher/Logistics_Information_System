@@ -25,6 +25,7 @@ public:
     bool deleteFromTable(const int index);
 
     bool closeDB();
+    bool importDB();
 
 private:
     bool createTable();
