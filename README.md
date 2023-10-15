@@ -22,7 +22,8 @@
 
 ![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/d7854db0-816d-48f0-8102-2ad55a764b9a)
 
-![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/da9418fa-55a1-4419-ac28-e426633ebe9c)
+![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/7c37b942-024c-408b-892a-a4a49bb2ce0a)
+
 
 
 
