@@ -14,14 +14,14 @@ bool fileExists(QString path) {
     }
 }
 
-std::pair<double, double> splitCoordinates(const QString& input) {
+QGeoCoordinate splitCoordinates(const QString& input) {
     QStringList parts = input.split(" ");
-    return std::make_pair(parts[0].toDouble(), parts[1].toDouble());
+    return QGeoCoordinate(parts[0].toDouble(), parts[1].toDouble());
 }
 
 void delay()
 {
-    QTime dieTime= QTime::currentTime().addMSecs(500);
+    QTime dieTime= QTime::currentTime().addMSecs(10);
     while (QTime::currentTime() < dieTime){
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }

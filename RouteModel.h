@@ -1,11 +1,15 @@
 ﻿#ifndef ROUTEMODEL_H
 #define ROUTEMODEL_H
 
+#include <QVariant>
 #include <QObject>
 #include <utility>
 #include <QString>
+#include <QJSValue>
+#include <QVector>
+#include <QGeoCoordinate>
 
-using Position = std::pair<double, double>;
+//using Position = std::pair<double, double>;
 
 struct RouteInfo{
     RouteInfo() = default;
@@ -13,13 +17,15 @@ struct RouteInfo{
               double end_lat, double end_lng,
               QString color = "#008000" /*green*/);
 
-    RouteInfo(QString name, Position start, Position end,
-              QString color = "#008000" /*green*/);
+    RouteInfo(const QString name, const QGeoCoordinate start, const QGeoCoordinate end,
+              const QString& path_cache, QString color = "#008000" /*green*/);
 
-    QString name_;
-    Position start_route_point_;
-    Position end_route_point_;
+    QString code_;
+    QGeoCoordinate start_route_point_;
+    QGeoCoordinate end_route_point_;
     QString route_color_;
+
+    QVector<QGeoCoordinate> path_cache_;
 };
 
 enum class UploadStatus{
@@ -32,11 +38,12 @@ enum class UploadStatus{
 class RouteModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(double StartLat READ startLat)
-    Q_PROPERTY(double StartLng READ startLng)
-    Q_PROPERTY(double EndLat READ endLat)
-    Q_PROPERTY(double EndLng READ endLng)
+    Q_PROPERTY(double  StartLat   READ startLat)
+    Q_PROPERTY(double  StartLng   READ startLng)
+    Q_PROPERTY(double  EndLat     READ endLat)
+    Q_PROPERTY(double  EndLng     READ endLng)
     Q_PROPERTY(QString RouteColor READ routeColor)
+    Q_PROPERTY(QVariantList RoutePath READ routePath CONSTANT)
 
 public:
     explicit RouteModel(QObject *parent = nullptr);
@@ -46,28 +53,32 @@ public:
     double endLat();
     double endLng();
     QString routeColor();
+    QVariantList routePath();
 
     void setRoute(const RouteInfo &newRoute);
 
+    Q_INVOKABLE void setPathCache(QJSValue path);
+    Q_INVOKABLE void setRouteStatus(int current_status /*UploadStatus*/);
+    Q_INVOKABLE void setPathCacheStatus(int current_status /*UploadStatus*/);
 
-    Q_INVOKABLE void routeSelectedOnMap(int index);
-    Q_INVOKABLE void routeUnselectedOnMap();
-
-    Q_INVOKABLE void setStatus(int current_status /*UploadStatus*/);
-    UploadStatus checkStatus();
+    UploadStatus checkPathCacheStatus();
+    UploadStatus checkRouteStatus();
+    const RouteInfo& getInfo();
 
 signals:
+    void restorRoute();
     void addRoute();
-    void removeRoute(int index);
+    void removeRoute(int);
     void removeAllRoutes();
-    void selectRouteOnTable(int index);
+    void selectRouteOnTable(int);
     void unSelectRouteOnTable();
-    void selectRouteOnMap(int index);
+    void selectRouteOnMap(int);
     void unselectRouteOnMap();
 
 private:
-    RouteInfo route;
-    UploadStatus status = UploadStatus::Null;
+    RouteInfo route_;
+    UploadStatus route_status_ = UploadStatus::Null;
+    UploadStatus path_cache_status_ = UploadStatus::Null;
 };
 
 #endif // ROUTEMODEL_H

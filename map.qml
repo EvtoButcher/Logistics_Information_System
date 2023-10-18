@@ -37,6 +37,13 @@ Rectangle {
                newRoute.color = app.RouteColor;
                newRoute.opacity = defOpasity;
 
+               newRoute.isCachePath = false;
+
+               console.log(newRoute.startPosLat);
+               console.log(newRoute.startPosLng);
+               console.log(newRoute.endPosLat);
+               console.log(newRoute.endPosLng);
+
                routeListModel.append(newRoute);
 
                if(centrMapLat !== app.StartLat){
@@ -65,6 +72,23 @@ Rectangle {
                routeListModel.get(backSelectRoute).opacity = defOpasity;
                routeListModel.get(backSelectRoute).z = 0;
            }
+
+           function onRestorRoute(){
+               var oldRoute = {};
+
+               oldRoute.startPosLat = app.StartLat;
+               oldRoute.startPosLng = app.StartLng;
+               oldRoute.endPosLat = app.EndLat;
+               oldRoute.endPosLng = app.EndLng;
+
+               oldRoute.path = app.RoutePath;
+               oldRoute.color = app.RouteColor;
+               oldRoute.opacity = defOpasity;
+               oldRoute.isCachePath = true;
+
+               routeListModel.append(oldRoute);
+
+           }
        }
 
 
@@ -78,24 +102,37 @@ Rectangle {
                 autoUpdate:false
                 plugin: osmPlugin
                 query: RouteQuery{
-                    id : routeQuery
+                    id: routeQuery
                 }
 
                 Component.onCompleted:{
-                    routeQuery.addWaypoint(QtPositioning.coordinate(model.startPosLat, model.startPosLng));
-                    routeQuery.addWaypoint(QtPositioning.coordinate(model.endPosLat, model.endPosLng));
-                    update();
+                    if(model.isCachePath === false){
+//                        console.log(model.color);
+//                        console.log(model.isCachePath);
+//                        console.log(model.startPosLat);
+//                        console.log(model.startPosLng);
+                        routeQuery.addWaypoint(QtPositioning.coordinate(model.startPosLat, model.startPosLng));
+                        routeQuery.addWaypoint(QtPositioning.coordinate(model.endPosLat, model.endPosLng));
+                        update();
+                    }
                 }
                 onStatusChanged:  {
-                    app.setStatus(routeModel.status);
+                    app.setRouteStatus(routeModel.status);
+                    if(routeModel.status === RouteModel.Ready){
+                        app.setPathCache(routeModel.get(0).path);
+                    }
                 }
             }
 
-            path: routeModel.status === RouteModel.Ready ? routeModel.get(0).path : null
-            line.color: color
+            path: model.isCachePath ? app.RoutePath : routeModel.status === RouteModel.Ready ? routeModel.get(0).path : null
+            line.color: model.color
             smooth:true
             line.width: 5
             opacity: model.opacity
+
+            Component.onCompleted: {
+                app.setPathCacheStatus(1); //rendering of the route cache on the map is completed
+            }
 
             MouseArea{
                 anchors.fill: parent
@@ -124,7 +161,7 @@ Rectangle {
             }
                anchorPoint.x: startPathMarker.width / 2
                anchorPoint.y: startPathMarker.height / 2
-               coordinate: routeModel.status === RouteModel.Ready ?
+               coordinate: model.isCachePath ? app.RoutePath[app.RoutePath.length - 1] : routeModel.status === RouteModel.Ready ?
                                routeModel.get(0).path[routeModel.get(0).path.length - 1] : QtPositioning.coordinate()
 
                sourceItem: Rectangle {
@@ -153,7 +190,8 @@ Rectangle {
 
                anchorPoint.x: startPathMarker.width / 2
                anchorPoint.y: startPathMarker.height / 2
-               coordinate: routeModel.status === RouteModel.Ready ? routeModel.get(0).path[0] : QtPositioning.coordinate()
+               coordinate: model.isCachePath ? app.RoutePath[0] :
+                           routeModel.status === RouteModel.Ready ? routeModel.get(0).path[0] : QtPositioning.coordinate()
 
                sourceItem: Rectangle {
                    id: startPathMarker
@@ -185,10 +223,6 @@ Rectangle {
             model:routeListModel
             z:2
             delegate: routeDelegate
-
-            Component.onObjectNameChanged: {
-                console.log("AAAAA");
-            }
         }
 
         MapItemView {
@@ -212,6 +246,7 @@ Rectangle {
 
             onClicked: {
                 routeListModel.get(backSelectRoute).opacity = defOpasity;
+                app.onUnselectRouteOnMap();
             }
         }
     }

@@ -11,12 +11,11 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include <QColorDialog>
 
-#include "RouteAddDialog.h"
+#include "OrderAddWidget.h"
 
-RouteDialog::RouteDialog(QWidget *parent)
-    : QDialog{parent}
+OrderAddWidget::OrderAddWidget(QWidget *parent)
+    : QWidget(parent)
 {
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
@@ -45,8 +44,7 @@ RouteDialog::RouteDialog(QWidget *parent)
     auto stop_lng_label = new QLabel("longitude:", this);
     end_point_lng_ = new QLineEdit("37.2106466", this);
 
-    add_route_button_ = new QPushButton("Add Route", this);
-    close_dialog_button_ = new QPushButton("Close", this);
+    add_route_button_ = new QPushButton("Add order", this);
 
     setLayout(new QVBoxLayout);
 
@@ -76,7 +74,6 @@ RouteDialog::RouteDialog(QWidget *parent)
 
     auto button_lay = new QHBoxLayout();
     button_lay->addWidget(add_route_button_);
-    button_lay->addWidget(close_dialog_button_);
     button_lay->setSpacing(10);
 
     layout()->addWidget(route_name_label);
@@ -94,13 +91,12 @@ RouteDialog::RouteDialog(QWidget *parent)
     QSpacerItem* verticalSpacer = new QSpacerItem(10, 10 , QSizePolicy::Minimum, QSizePolicy::Expanding);
     layout()->addItem(verticalSpacer);
 
-    connect(close_dialog_button_, &QAbstractButton::clicked, this, &RouteDialog::onCloseButtonClicked);
-    connect(add_route_button_, &QAbstractButton::clicked, this, &RouteDialog::onAddButtonClicked);
-    connect(color_change_button_, &QAbstractButton::clicked, this, &RouteDialog::onColorChangeButtonClicked);
-
+    connect(add_route_button_, &QAbstractButton::clicked, this, &OrderAddWidget::onAddButtonClicked);
+    connect(color_change_button_, &QAbstractButton::clicked, this, &OrderAddWidget::onColorChangeButtonClicked);
 }
 
-void RouteDialog::onAddButtonClicked()
+
+void OrderAddWidget::onAddButtonClicked()
 {
     RouteInfo route_info(name_line_edit_->text(),
                         start_point_lat_->text().toDouble(),
@@ -112,15 +108,14 @@ void RouteDialog::onAddButtonClicked()
     emit addRouteToTable(route_info);
 }
 
-void RouteDialog::onColorChangeButtonClicked()
+void OrderAddWidget::onColorChangeButtonClicked()
 {
     color_dialog_->exec();
     auto color = color_dialog_->currentColor().name();
     color_change_button_->setStyleSheet("background-color: " + color + QString(";"));
-    color_changed_ = true;
 }
 
-void RouteDialog::onCloseButtonClicked()
+void OrderAddWidget::onCloseButtonClicked()
 {
     this->close();
 }

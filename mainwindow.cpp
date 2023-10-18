@@ -16,21 +16,25 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    route_table_ = new RouteTable(this);
-    ui->dockWidget->setWidget(route_table_);
+    order_table_ = new OrderTable(this);
+    ui->dockWidget->setWidget(order_table_);
 
-    route_dialog_ = new RouteDialog(this);
+    order_add_ = new OrderAddWidget(this);
+    ui->dockWidget_2->setWidget(order_add_);
+    ui->dockWidget_2->hide();
 
-    connect(route_table_, &RouteTable::openRouteDialog, this, &MainWindow::openRouteDialog);
-    connect(route_dialog_, &RouteDialog::addRouteToTable, route_table_, &RouteTable::onAddRoute);
+    order_dialog_ = new OrderAddDialog(this);
 
-    ui->quickWidget->rootContext()->setContextProperty("app", &route_table_->getRouteModel());
+    connect(ui->dockWidget_2, &QDockWidget::visibilityChanged,order_table_, &OrderTable::orderAddWidgetIsVisible);
+    connect(order_table_, &OrderTable::openOrderDialog, this, &MainWindow::openRouteDialog);
+    connect(order_add_, &OrderAddWidget::addRouteToTable, order_table_, &OrderTable::onAddOrder);
+    connect(order_dialog_, &OrderAddDialog::addRouteToTableFromDialog, order_table_, &OrderTable::onAddOrder);
+
+    ui->quickWidget->rootContext()->setContextProperty("app", &order_table_->getRouteModel());
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/map.qml")));
     ui->quickWidget->show();
 
-    //QFuture<void> future = QtConcurrent::run(restoreRoutOnMap, route_table_);
-
-    QFuture<void> future = QtConcurrent::run(route_table_, &RouteTable::restoreRoutOnMap);
+    QFuture<void> future = QtConcurrent::run(order_table_, &OrderTable::restoreRoutOnMap);
 }
 
 MainWindow::~MainWindow()
@@ -40,7 +44,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::openRouteDialog()
 {
-    route_dialog_->exec();
+    order_dialog_->exec();
 }
 
 void MainWindow::on_menuFileExit_triggered()
@@ -51,9 +55,7 @@ void MainWindow::on_menuFileExit_triggered()
 
 void MainWindow::on_menuHelpAboutProgram_triggered()
 {
-    QMessageBox::information(this,
-                             "About Program",
-                             message_text::about_program);
+    QMessageBox::information(this, "About Program", message_text::about_program);
 }
 
 
@@ -72,12 +74,20 @@ void MainWindow::on_menuVievShowRouteTable_changed()
 
 void MainWindow::on_menuFileCloseDB_triggered()
 {
-    route_table_->closeDbConnection();
+    order_table_->closeDbConnection();
 }
 
 
 void MainWindow::on_menuFileOpenDB_triggered()
 {
-    route_table_->importFromDB();
+    order_table_->importFromDB();
+}
+
+
+void MainWindow::on_menuViewShowRouteAdd_triggered()
+{
+    ui->menuViewShowRouteAdd->isChecked() ? ui->dockWidget_2->show() : ui->dockWidget_2->hide();
+
+    //ui->dockWidget_2->visibilityChanged()
 }
 

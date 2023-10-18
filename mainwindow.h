@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 
-#include "RouteAddDialog.h"
-#include "RouteTableWidget.h"
+#include "OrderAddDialog.h"
+#include "OrderTableWidget.h"
+#include "OrderAddWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -32,10 +33,13 @@ private slots:
 
     void on_menuFileOpenDB_triggered();
 
+    void on_menuViewShowRouteAdd_triggered();
+
 private:
     Ui::MainWindow *ui;
 
-    RouteTable* route_table_;
-    RouteDialog* route_dialog_;
+    OrderTable* order_table_;
+    OrderAddDialog* order_dialog_;
+    OrderAddWidget* order_add_;
 };
 #endif // MAINWINDOW_H

@@ -1,24 +1,26 @@
-QT       += core gui sql concurrent
+QT       += core gui sql concurrent positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quickwidgets
 
 CONFIG += c++17
 
 SOURCES += \
-    RouteAddDialog.cpp \
-    RouteDB.cpp \
+    OrderAddDialog.cpp \
+    OrderAddWidget.cpp \
+    OrderDB.cpp \
+    OrderTableWidget.cpp \
     RouteModel.cpp \
-    RouteTableWidget.cpp \
     TableDelegate.cpp \
     common.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
-    RouteAddDialog.h \
-    RouteDB.h \
+    OrderAddDialog.h \
+    OrderAddWidget.h \
+    OrderDB.h \
+    OrderTableWidget.h \
     RouteModel.h \
-    RouteTableWidget.h \
     TableDelegate.h \
     TextMessage.h \
     common.h \

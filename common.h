@@ -2,11 +2,11 @@
 #define COMMON_H
 
 #include <QString>
-#include <utility>
+#include <QGeoCoordinate>
 
 bool fileExists(QString path);
 
-std::pair<double, double> splitCoordinates(const QString& input);
+QGeoCoordinate splitCoordinates(const QString& input);
 
 void delay();
 
