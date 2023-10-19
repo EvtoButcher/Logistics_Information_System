@@ -163,8 +163,10 @@ void OrderTable::routeOnMapUnselected()
 
 void OrderTable::setPathCacheAndDistance()
 {
-    while(route_model_.checkRouteStatus() != UploadStatus::Colpleted);
-    delay();
+    while(route_model_.checkRouteStatus() != UploadStatus::Colpleted){
+        QThread::sleep(1);
+    }
+
     route_db_->insrtrIntoPathTable(route_model_.getInfo().code_, route_model_.getInfo().path_cache_);
     route_db_->updateDistanceFromOrderTable(route_model_.getInfo().code_, route_model_.getInfo().path_distance_);
 

@@ -107,7 +107,7 @@ void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCo
         path += QString::number(coordinate.latitude(), 'f', 6) + " " + QString::number(coordinate.longitude(), 'f', 6) + " ";
     }
 
-    qDebug() << position_caсhe.count();
+    qDebug() << position_caсhe.count() << "AAAAAAAAAAAAAA";
     query->prepare("INSERT INTO " PATH_TABLE " ("         //
                                            "main_code, "  //TODO: add error handling
                                            "path) "       //
