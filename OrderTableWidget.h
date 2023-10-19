@@ -42,7 +42,7 @@ private slots:
     void routeOnMapUnselected();
 
 private:
-    void setPathCahe();
+    void setPathCacheAndDistance();
 
 private:
     QSqlTableModel*  table_model_;

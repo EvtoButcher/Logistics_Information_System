@@ -63,13 +63,13 @@ RouteModel &OrderTable::getRouteModel()
 
 void OrderTable::restoreRoutOnMap()//TODO: lock thread
 {
-    if(!table_model_->rowCount()){
+    if(!table_model_->rowCount()) {
         return;
     }
 
     for (int row = 0; row < table_model_->rowCount(); ++row) {
 
-        auto code = table_model_->data(table_model_->index(row, 6)).toString();
+        auto code = table_model_->data(table_model_->index(row, 7)).toString();
         RouteInfo info(code,//code
                        splitCoordinates(table_model_->data(table_model_->index(row, 2)).toString()),//start position
                        splitCoordinates(table_model_->data(table_model_->index(row, 3)).toString()),//end position
@@ -95,7 +95,7 @@ void OrderTable::onAddOrder(const RouteInfo& info)
     route_model_.setRoute(info);
     emit route_model_.addRoute();
 
-    QFuture<void> future = QtConcurrent::run(this, &OrderTable::setPathCahe);
+    QFuture<void> future = QtConcurrent::run(this, &OrderTable::setPathCacheAndDistance);
 }
 
 void OrderTable::onTableViewClicked(const QModelIndex &index)
@@ -143,10 +143,10 @@ void OrderTable::rowSelected()
     QItemSelectionModel* selectionModel = table_view_->selectionModel();
     QModelIndexList indexes = selectionModel->selectedRows();
 
-    if(!indexes.empty()){
+    if(!indexes.empty()) {
         emit route_model_.selectRouteOnTable(indexes[0].row());
     }
-    else{
+    else {
         route_model_.unSelectRouteOnTable();
     }
 }
@@ -161,13 +161,14 @@ void OrderTable::routeOnMapUnselected()
     table_view_->clearSelection();
 }
 
-void OrderTable::setPathCahe()
+void OrderTable::setPathCacheAndDistance()
 {
-    while(route_model_.checkRouteStatus() != UploadStatus::Colpleted){
-
-    }
+    while(route_model_.checkRouteStatus() != UploadStatus::Colpleted);
     delay();
     route_db_->insrtrIntoPathTable(route_model_.getInfo().code_, route_model_.getInfo().path_cache_);
+    route_db_->updateDistanceFromOrderTable(route_model_.getInfo().code_, route_model_.getInfo().path_distance_);
+
+    table_model_->select();
 }
 
 void OrderTable::closeDbConnection()

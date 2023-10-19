@@ -18,13 +18,11 @@ OrderDB::OrderDB(QObject *parent)
 {
     query = new QSqlQuery(db);
 
-    if(fileExists(DATABASE_NAME)){
+    if(fileExists(DATABASE_NAME)) {
         openDB(DATABASE_NAME);
-        qDebug() << "open";
     }
-    else{
-        restoreDB();
-        qDebug() << "restore";
+    else {
+        createDB();
     }
 }
 
@@ -33,66 +31,79 @@ const QSqlDatabase &OrderDB::DB() const
     return db;
 }
 
-bool OrderDB::inserIntoOrderTable(const RouteInfo &info)
+void OrderDB::inserIntoOrderTable(const RouteInfo &info)
 {
     query->prepare("INSERT INTO " MAIN_TABLE "("
                                               "color, "
                                               "start_p, "
                                               "end_p, "
                                               "start_time, "
+                                              "distance, "
                                               "end_time, "
                                               "code) "
-                  "VALUES (:RouteColor, :StartPos, :EndPos, :StartDate, :EndDate, :Code)");
+                  "VALUES (:RouteColor, :StartPos, :EndPos, :StartDate, :Distance, :EndDate, :Code)");
 
-    double tmp_s_lat = info.start_route_point_.latitude();
-    double tmp_s_lng = info.start_route_point_.longitude();
-    QString start = QString::number(tmp_s_lat, 'f', 6) + " " + QString::number(tmp_s_lng,'f', 6);
+    const double tmp_s_lat = info.start_route_point_.latitude();
+    const double tmp_s_lng = info.start_route_point_.longitude();
+    const QString start = QString::number(tmp_s_lat, 'f', 6) + " " + QString::number(tmp_s_lng,'f', 6);
 
-    double tmp_e_lat = info.end_route_point_.latitude();
-    double tmp_e_lng = info.end_route_point_.longitude();
-    QString end = QString::number(tmp_e_lat, 'f', 6) + " " + QString::number(tmp_e_lng, 'f', 6);
+    const double tmp_e_lat = info.end_route_point_.latitude();
+    const double tmp_e_lng = info.end_route_point_.longitude();
+    const QString end = QString::number(tmp_e_lat, 'f', 6) + " " + QString::number(tmp_e_lng, 'f', 6);
 
     query->bindValue(":Code",       info.code_);
     query->bindValue(":StartPos",   start);
     query->bindValue(":EndPos",     end);
     query->bindValue(":StartDate",  QDateTime::currentDateTime().toString(Qt::DateFormat::LocalDate));
+    query->bindValue(":Distance",   000);
     query->bindValue(":EndDate",    QDateTime::currentDateTime().toString(Qt::DateFormat::LocalDate));
     query->bindValue(":RouteColor", info.route_color_);
 
-    if(!query->exec()){
+    if(!query->exec()) {
         qDebug() << "error insert into " << MAIN_TABLE;
         qDebug() << query->lastError().text();
-        return false;
      }
-     else{
+     else {
         qDebug() << query->lastQuery();
-        return true;
-     }
-    return false;
+    }
 }
 
-bool OrderDB::deleteFromOrderTable(const int index)
+void OrderDB::updateDistanceFromOrderTable(const QString &code, const int distance)
 {
+    query->prepare("UPDATE " MAIN_TABLE " SET distance = :Distance WHERE code = :Code");
+    query->bindValue(":Distance", distance);
+    query->bindValue(":Code", code);
+
+    if(!query->exec()) {
+        qDebug() << "error updateDistance into " << MAIN_TABLE;
+        qDebug() << query->lastError().text();
+     }
+     else {
+        qDebug() << query->lastQuery();
+    }
+}
+
+void OrderDB::deleteFromOrderTable(const int index)
+{
+    deleteFromPathTable(index);
+
     query->prepare("DELETE FROM " MAIN_TABLE " WHERE id = :Index");
     query->bindValue(":Index", index);
 
-    if(!query->exec()){
+    if(!query->exec()) {
         qDebug() << "error delete " << MAIN_TABLE;
         qDebug() << query->lastError().text();
-        return false;
      }
-     else{
+     else {
         qDebug() << "acept delete";
-        return true;
      }
-    return false;
 }
 
-bool OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_caсhe)
+void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_caсhe)
 {
     QString path;
 
-    for(const auto& coordinate : position_caсhe){
+    for(const auto& coordinate : position_caсhe) {
         path += QString::number(coordinate.latitude(), 'f', 6) + " " + QString::number(coordinate.longitude(), 'f', 6) + " ";
     }
 
@@ -106,19 +117,16 @@ bool OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCo
     query->bindValue(":Path", path);
 
 
-    if(!query->exec()){
+    if(!query->exec()) {
         qDebug() << "error insert into " << PATH_TABLE;
         qDebug() << query->lastError().text();
-        return false;
      }
-     else{
+     else {
         qDebug() << query->lastQuery();
-        return true;
      }
-    return false;
 }
 
-const QString OrderDB::selectPath(QString code)
+const QString OrderDB::selectPath(const QString code)
 {
     query->prepare("SELECT path FROM " PATH_TABLE " WHERE main_code = :Code");
     query->bindValue(":Code", code);
@@ -132,38 +140,33 @@ const QString OrderDB::selectPath(QString code)
     return query->value(0).toString();
 }
 
-//bool OrderDB::deleteFromPathTable(const int index)
-//{
-
-//}
-
-bool OrderDB::createTable()
+std::optional<QSqlError> OrderDB::createTables()
 {
 
-    if(!query->exec("CREATE TABLE " MAIN_TABLE " ("
+    query->prepare("CREATE TABLE " MAIN_TABLE " ("
                                                 "id INTEGER PRIMARY KEY, "
                                                 "color      CHAR, "
                                                 "start_p    CHAR, "
                                                 "end_p      CHAR, "
                                                 "start_time TEXT, "
+                                                "distance   INTEGER, "
                                                 "end_time   TEXT, "
-                                                "code       CHAR)")){
-        qDebug() << "DataBase: error of create " << MAIN_TABLE;
-        qDebug() << query->lastError().text();
-        return false;
+                                                "code       CHAR)");
+    if(!query->exec()){
+        return std::make_optional(query->lastError());
     }
 
-    if(!query->exec("CREATE TABLE " PATH_TABLE " ("
+    query->prepare("CREATE TABLE " PATH_TABLE " ("
                                                 "id         INTEGER PRIMARY KEY, "
                                                 "main_code  CHAR, "
                                                 "path       TEXT, "
-                                                "FOREIGN KEY (main_code) REFERENCES " MAIN_TABLE "(code))")){
-        qDebug() << "DataBase: error of create " << PATH_TABLE;
-        qDebug() << query->lastError().text();
-        return false;
+                                                "FOREIGN KEY (main_code) REFERENCES " MAIN_TABLE "(code))");
+
+    if(query->exec()){
+         return std::make_optional(query->lastError());
     }
 
-    return true;
+    return std::nullopt;
 }
 
 bool OrderDB::openDB(QString db_name)
@@ -188,14 +191,30 @@ bool OrderDB::importDB()
    return openDB(db_file.fileName());
 }
 
-bool OrderDB::restoreDB()
+void OrderDB::createDB()
 {
-    if(openDB(DATABASE_NAME)){
-        return !createTable();
+    db.setDatabaseName(DATABASE_NAME);
+
+    if(db.open()){
+        if(createTables()){
+            //TODO: add create_tables_error handling
+        }
     }
-    else{
-        qDebug() << "Не удалось восстановить базу данных";
-        return false;
+    else {
+      //TODO: add open_db_error handling
     }
-    return false;
+}
+
+void OrderDB::deleteFromPathTable(const int index)
+{
+    query->prepare("DELETE FROM " PATH_TABLE " WHERE id = :Index");
+    query->bindValue(":Index", index);
+
+    if(!query->exec()) {
+        qDebug() << "error delete " << PATH_TABLE;
+        qDebug() << query->lastError().text();
+     }
+     else {
+        qDebug() << "acept delete";
+     }
 }

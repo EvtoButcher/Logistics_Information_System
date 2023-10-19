@@ -26,7 +26,7 @@ void RouteModel::setPathCacheStatus(int current_status)
 
 UploadStatus RouteModel:: checkPathCacheStatus()
 {
-    if(path_cache_status_ == UploadStatus::Colpleted){//TODO add UploadStatus::Error handling
+    if(path_cache_status_ == UploadStatus::Colpleted) {//TODO add UploadStatus::Error handling
            path_cache_status_ = UploadStatus::Null;
            return UploadStatus::Colpleted;
     }
@@ -35,7 +35,7 @@ UploadStatus RouteModel:: checkPathCacheStatus()
 
 UploadStatus RouteModel::checkRouteStatus()
 {
-    if(route_status_ == UploadStatus::Colpleted){//TODO add UploadStatus::Error handling
+    if(route_status_ == UploadStatus::Colpleted) {//TODO add UploadStatus::Error handling
            route_status_ = UploadStatus::Null;
            return UploadStatus::Colpleted;
     }
@@ -87,12 +87,23 @@ void RouteModel::setPathCache(QJSValue path)
 {
     QVariantList coordinate_list = qvariant_cast<QVariantList>(path.toVariant());
 
+    bool isFirstIteration = true;
+    double distance = 0;
     route_.path_cache_.reserve(coordinate_list.size());
-    for(QVariant position : coordinate_list){
+    for(QVariant position : coordinate_list) {
+        if(!isFirstIteration) {
+            distance += route_.path_cache_.back().distanceTo(qvariant_cast<QGeoCoordinate>(position));
+        }
         route_.path_cache_.append(qvariant_cast<QGeoCoordinate>(position));
+        isFirstIteration = false;
     }
 
+    route_.path_distance_ = distance / 1000;
+
     path_cache_status_ = UploadStatus::Colpleted;
+
+    qDebug() << "SET CACHE";
+    qDebug() << route_.path_cache_.count();
 }
 
 RouteInfo::RouteInfo(QString name, double start_lat, double start_lng, double end_lat, double end_lng, QString color)
@@ -112,9 +123,10 @@ RouteInfo::RouteInfo(const QString name, const QGeoCoordinate start, const QGeoC
 
     QStringList parts = path_cache.split(" ");
 
-    for(int i = 0; i < (parts.count() - 1) / 2; i+=2){
+    for(int i = 0; i < (parts.count() - 1); i+=2) {
         path_cache_.push_back(splitCoordinates(parts[i] + " " + parts[i + 1]));
     }
 
-
+    qDebug() << "RESTOR CACHE";
+    qDebug() << path_cache_.count();
 }

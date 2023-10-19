@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QString>
+#include <optional>
 
 #include "RouteModel.h"
 
@@ -23,21 +24,23 @@ public:
 
     const QSqlDatabase& DB() const;
 
-    bool inserIntoOrderTable(const RouteInfo& info);
-    bool deleteFromOrderTable(const int index);
+    void inserIntoOrderTable(const RouteInfo& info);
+    void updateDistanceFromOrderTable(const QString& code, const int distance);
+    void deleteFromOrderTable(const int index);
 
     bool closeDB();
     bool importDB();
 
-    bool insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cahe);
-    //bool deleteFromPathTable(const int index);
+    void insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cahe);
 
-    const QString selectPath(QString code);
+    const QString selectPath(const QString code);
 
 private:
-    bool createTable();
+    std::optional<QSqlError> createTables();
     bool openDB(QString db_name);
-    bool restoreDB();
+    void createDB();
+
+    void deleteFromPathTable(const int index);
 
 private:
     QSqlDatabase db;
