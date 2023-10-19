@@ -4,30 +4,30 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quickwidgets
 
 CONFIG += c++17
 
-SOURCES += \
-    OrderAddDialog.cpp \
-    OrderAddWidget.cpp \
-    OrderDB.cpp \
-    OrderTableWidget.cpp \
-    RouteModel.cpp \
-    TableDelegate.cpp \
-    common.cpp \
-    main.cpp \
-    mainwindow.cpp
-
 HEADERS += \
-    OrderAddDialog.h \
-    OrderAddWidget.h \
-    OrderDB.h \
-    OrderTableWidget.h \
-    RouteModel.h \
-    TableDelegate.h \
-    TextMessage.h \
-    common.h \
-    mainwindow.h
+    Headers/OrderAddDialog.h \
+    Headers/OrderAddWidget.h \
+    Headers/OrderDB.h \
+    Headers/OrderTableWidget.h \
+    Headers/RouteModel.h \
+    Headers/TableDelegate.h \
+    Headers/TextMessage.h \
+    Headers/common.h \
+    Headers/mainwindow.h
+
+SOURCES += \
+    Sources/OrderAddDialog.cpp \
+    Sources/OrderAddWidget.cpp \
+    Sources/OrderDB.cpp \
+    Sources/OrderTableWidget.cpp \
+    Sources/RouteModel.cpp \
+    Sources/TableDelegate.cpp \
+    Sources/common.cpp \
+    Sources/main.cpp \
+    Sources/mainwindow.cpp
 
 FORMS += \
-    mainwindow.ui
+    Forms/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -35,4 +35,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    qml.qrc
+    Resources/Images.qrc \
+    Resources/qml.qrc
+

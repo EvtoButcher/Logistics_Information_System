@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>map.qml</file>
-        <file>minus.png</file>
-        <file>plus.png</file>
         <file>Scaler.qml</file>
     </qresource>
 </RCC>

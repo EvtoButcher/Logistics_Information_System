@@ -1,6 +1,6 @@
 #include <QPainter>
 
-#include "TableDelegate.h"
+#include "Headers/TableDelegate.h"
 
 TableDelegate::TableDelegate(QObject* parent)
     : QStyledItemDelegate(parent)

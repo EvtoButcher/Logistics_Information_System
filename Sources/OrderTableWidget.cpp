@@ -1,5 +1,3 @@
-#include "OrderTableWidget.h"
-
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDebug>
@@ -12,7 +10,8 @@
 #include <QFuture>
 #include <QtConcurrent>
 
-#include "common.h"
+#include "Headers/OrderTableWidget.h"
+#include "Headers/common.h"
 
 OrderTable::OrderTable(QWidget *parent)
     : QWidget{parent}

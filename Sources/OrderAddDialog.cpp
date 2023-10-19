@@ -1,8 +1,8 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
-#include "OrderAddDialog.h"
-#include "OrderAddWidget.h"
+#include "Headers/OrderAddDialog.h"
+#include "Headers/OrderAddWidget.h"
 
 
 OrderAddDialog::OrderAddDialog(QWidget *parent)

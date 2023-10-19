@@ -1,9 +1,9 @@
-#include "common.h"
-
 #include <QFileInfo>
 #include <QTime>
 #include <QCoreApplication>
 #include <QStringList>
+
+#include "Headers/common.h"
 
 bool fileExists(QString path) {
     QFileInfo check_file(path);

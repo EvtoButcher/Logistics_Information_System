@@ -1,7 +1,7 @@
 #include <QtDebug>
 
-#include "RouteModel.h"
-#include "common.h"
+#include "Headers/RouteModel.h"
+#include "Headers/common.h"
 
 RouteModel::RouteModel(QObject *parent)
     : QObject{parent}
@@ -101,9 +101,6 @@ void RouteModel::setPathCache(QJSValue path)
     route_.path_distance_ = distance / 1000;
 
     path_cache_status_ = UploadStatus::Colpleted;
-
-    qDebug() << "SET CACHE";
-    qDebug() << route_.path_cache_.count();
 }
 
 RouteInfo::RouteInfo(QString name, double start_lat, double start_lng, double end_lat, double end_lng, QString color)
@@ -126,7 +123,4 @@ RouteInfo::RouteInfo(const QString name, const QGeoCoordinate start, const QGeoC
     for(int i = 0; i < (parts.count() - 1); i+=2) {
         path_cache_.push_back(splitCoordinates(parts[i] + " " + parts[i + 1]));
     }
-
-    qDebug() << "RESTOR CACHE";
-    qDebug() << path_cache_.count();
 }

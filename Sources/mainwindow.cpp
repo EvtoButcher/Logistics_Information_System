@@ -1,14 +1,13 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-
 #include <QQmlContext>
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QFuture>
 #include <QtConcurrent>
 
-#include "RouteModel.h"
-#include "TextMessage.h"
+#include "Headers/mainwindow.h"
+#include "ui_mainwindow.h"
+#include "Headers/RouteModel.h"
+#include "Headers/TextMessage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

@@ -107,10 +107,6 @@ Rectangle {
 
                 Component.onCompleted:{
                     if(model.isCachePath === false){
-//                        console.log(model.color);
-//                        console.log(model.isCachePath);
-//                        console.log(model.startPosLat);
-//                        console.log(model.startPosLng);
                         routeQuery.addWaypoint(QtPositioning.coordinate(model.startPosLat, model.startPosLng));
                         routeQuery.addWaypoint(QtPositioning.coordinate(model.endPosLat, model.endPosLng));
                         update();
