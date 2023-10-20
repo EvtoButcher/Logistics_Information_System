@@ -257,9 +257,9 @@ Rectangle {
         minimumScale: map.minimumZoomLevel
         maximumScale: map.maximumZoomLevel
         currentScale: 10
-        anchors.left: parent.left
+        anchors.right: parent.right
         anchors.top: parent.top
-        anchors.leftMargin: 15
+        anchors.rightMargin: 14
         anchors.topMargin: (parent.height / 2) - (height / 2)
         z:1
     }
