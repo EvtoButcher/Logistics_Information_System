@@ -4,10 +4,14 @@
 #include <QString>
 #include <QGeoCoordinate>
 
+namespace common {
+
 bool fileExists(QString path);
 
 QGeoCoordinate splitCoordinates(const QString& input);
 
 void delay();
+
+}
 
 #endif // COMMON_H

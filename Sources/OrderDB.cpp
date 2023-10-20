@@ -1,3 +1,5 @@
+#include "Headers/OrderDB.h"
+
 #include <QDebug>
 #include <QFileInfo>
 #include <QLocale>
@@ -8,7 +10,6 @@
 #include <QFileDialog>
 #include <QDateTime>
 
-#include "Headers/OrderDB.h"
 #include "Headers/common.h"
 
 OrderDB::OrderDB(QObject *parent)
@@ -17,7 +18,7 @@ OrderDB::OrderDB(QObject *parent)
 {
     query = new QSqlQuery(db);
 
-    if(fileExists(DATABASE_NAME)) {
+    if(common::fileExists(DATABASE_NAME)) {
         openDB(DATABASE_NAME);
     }
     else {
@@ -95,7 +96,34 @@ void OrderDB::deleteFromOrderTable(const int index)
      }
      else {
         qDebug() << "acept delete";
+    }
+}
+
+void OrderDB::updateColor(const int index, const QString &color)
+{
+    query->prepare("UPDATE " MAIN_TABLE " SET color = :Color WHERE id = :Id");
+    query->bindValue(":Id", index);
+    query->bindValue(":Color", color);
+
+    if(!query->exec()) {
+        qDebug() << "error update Color into " << MAIN_TABLE;
+        qDebug() << query->lastError().text();
      }
+     else {
+        qDebug() << query->lastQuery();
+    }
+}
+
+QColor OrderDB::selectColor(const int index)
+{
+    query->prepare("SELECT color FROM " MAIN_TABLE " WHERE id = :Id");
+    query->bindValue(":Id", index);
+
+    if (query->exec() && query->next()) {
+     /* qDebug() << query->value(0).toString();*///      path = query.value(0).toString();
+    }
+
+    return QColor(query->value(0).toString());
 }
 
 void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_caсhe)
@@ -106,7 +134,6 @@ void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCo
         path += QString::number(coordinate.latitude(), 'f', 6) + " " + QString::number(coordinate.longitude(), 'f', 6) + " ";
     }
 
-    qDebug() << position_caсhe.count() << "AAAAAAAAAAAAAA";
     query->prepare("INSERT INTO " PATH_TABLE " ("         //
                                            "main_code, "  //TODO: add error handling
                                            "path) "       //
@@ -129,8 +156,6 @@ const QString OrderDB::selectPath(const QString code)
 {
     query->prepare("SELECT path FROM " PATH_TABLE " WHERE main_code = :Code");
     query->bindValue(":Code", code);
-
-    query->exec();
 
     if (query->exec() && query->next()) {
      /* qDebug() << query->value(0).toString();*///      path = query.value(0).toString();

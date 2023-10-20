@@ -9,16 +9,15 @@ import QtQuick.Layouts 1.3
 Rectangle {
     id: mapBox
 
-    property double centrMapLat: 55.7514399474066;
-    property double centrMapLng: 37.61889172533533;
-    property double defOpasity: 0.5
-    property int    backSelectRoute;
+    property double   centrMapLat: 55.7514399474066;
+    property double   centrMapLng: 37.61889172533533;
+    property double   defOpasity: 0.5
+    property variant  selectionRoutes: [];
 
     Plugin{
         id: osmPlugin
         name:"osm"
     }
-
 
     ListModel{
         id: routeListModel
@@ -33,16 +32,9 @@ Rectangle {
                newRoute.startPosLng = app.StartLng;
                newRoute.endPosLat = app.EndLat;
                newRoute.endPosLng = app.EndLng;
-
                newRoute.color = app.RouteColor;
                newRoute.opacity = defOpasity;
-
                newRoute.isCachePath = false;
-
-               console.log(newRoute.startPosLat);
-               console.log(newRoute.startPosLng);
-               console.log(newRoute.endPosLat);
-               console.log(newRoute.endPosLng);
 
                routeListModel.append(newRoute);
 
@@ -64,13 +56,14 @@ Rectangle {
 
            function onSelectRouteOnTable(index){
                routeListModel.get(index).opacity = 1;
-               backSelectRoute = index;
+               selectionRoutes.push(index);
                routeListModel.get(index).z = 100;
            }
 
            function onUnSelectRouteOnTable(){
-               routeListModel.get(backSelectRoute).opacity = defOpasity;
-               routeListModel.get(backSelectRoute).z = 0;
+               routeListModel.get(selectionRoutes[selectionRoutes.length - 1]).opacity = defOpasity;
+               routeListModel.get(selectionRoutes[selectionRoutes.length - 1]).z = 0;
+               selectionRoutes.pop();
            }
 
            function onRestorRoute(){
@@ -80,14 +73,16 @@ Rectangle {
                oldRoute.startPosLng = app.StartLng;
                oldRoute.endPosLat = app.EndLat;
                oldRoute.endPosLng = app.EndLng;
-
                oldRoute.path = app.RoutePath;
                oldRoute.color = app.RouteColor;
                oldRoute.opacity = defOpasity;
                oldRoute.isCachePath = true;
 
                routeListModel.append(oldRoute);
+           }
 
+           function onColorChenged(index, new_color){
+               routeListModel.get(index).color = new_color;
            }
        }
 
@@ -136,8 +131,13 @@ Rectangle {
                 acceptedButtons: Qt.LeftButton
 
                 onClicked: {
+                    if(mouse.button == Qt.LeftButton){
+                        app.onUnselectRouteOnMap();
+                    }
+                    else if (mouse.button === Qt.LeftButton && mouse.modifiers & Qt.ShiftModifier) {
+                    }
+
                     opacity = 1;
-                    backSelectRoute = index;
                     app.onSelectRouteOnMap(index);
                 }
             }
@@ -241,8 +241,13 @@ Rectangle {
             acceptedButtons: Qt.LeftButton
 
             onClicked: {
-                routeListModel.get(backSelectRoute).opacity = defOpasity;
-                app.onUnselectRouteOnMap();
+                if(selectionRoutes.length){
+                    for(var routeIndex = 0; routeIndex < selectionRoutes.length; ++routeIndex){
+                        routeListModel.get(routeIndex).opacity = defOpasity;
+                        app.onUnselectRouteOnMap();
+                    }
+                    selectionRoutes.length = 0;
+                }
             }
         }
     }

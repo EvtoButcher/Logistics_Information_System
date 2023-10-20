@@ -27,12 +27,8 @@ private slots:
     void on_menuHelpAboutProgram_triggered();
     void on_menuHelpGoSourse_triggered();
     void on_menuVievShowRouteTable_changed();
-
-
     void on_menuFileCloseDB_triggered();
-
     void on_menuFileOpenDB_triggered();
-
     void on_menuViewShowRouteAdd_triggered();
 
 private:

@@ -105,22 +105,36 @@ void RouteModel::setPathCache(QJSValue path)
 
 RouteInfo::RouteInfo(QString name, double start_lat, double start_lng, double end_lat, double end_lng, QString color)
     : code_(name)
+    , start_route_point_(QGeoCoordinate(start_lat, start_lng))
+    , end_route_point_(QGeoCoordinate(end_lat, end_lng))
     , route_color_(color)
 {
-    start_route_point_ = QGeoCoordinate(start_lat, start_lng);
-    end_route_point_   = QGeoCoordinate(end_lat, end_lng);
+
 }
 
 RouteInfo::RouteInfo(const QString name, const QGeoCoordinate start, const QGeoCoordinate end, const QString &path_cache, const QString color)
    : code_(name)
+   , start_route_point_(start)
+   , end_route_point_(end)
    , route_color_(color)
 {
-    start_route_point_ = start;
-    end_route_point_   = end;
+    //if(path_cache.isEmpty()){
+    //    return;
+    //}
 
-    QStringList parts = path_cache.split(" ");
+    QStringList parts = path_cache.split(" ", Qt::SkipEmptyParts);
 
-    for(int i = 0; i < (parts.count() - 1); i+=2) {
-        path_cache_.push_back(splitCoordinates(parts[i] + " " + parts[i + 1]));
+    const auto first_point = common::splitCoordinates(parts[0] + " " + parts[1]);
+    bool isFirst = true;
+
+    for(int i = 0; i < parts.size(); i += 2) {                                       //
+        const auto& point = common::splitCoordinates(parts[i] + " " + parts[i + 1]); //TODO: FIX THIS SHIT AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        if(!isFirst){                                                                //
+            if(point == first_point){
+                break;
+            }
+        }
+        path_cache_.push_back(point);
+        isFirst = false;
     }
 }

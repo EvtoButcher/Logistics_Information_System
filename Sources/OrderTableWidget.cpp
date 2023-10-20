@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QFuture>
 #include <QtConcurrent>
+#include <QColorDialog>
 
 #include "Headers/OrderTableWidget.h"
 #include "Headers/common.h"
@@ -40,6 +41,7 @@ OrderTable::OrderTable(QWidget *parent)
 
     add_order_button_ = new QPushButton("Create an order", this);
     remove_route_button_ = new QPushButton("delete an order", this);
+    remove_route_button_->setEnabled(false);
 
     button_lay->addWidget(add_order_button_);
     button_lay->addWidget(remove_route_button_);
@@ -70,8 +72,8 @@ void OrderTable::restoreRoutOnMap()//TODO: lock thread
 
         auto code = table_model_->data(table_model_->index(row, 7)).toString();
         RouteInfo info(code,//code
-                       splitCoordinates(table_model_->data(table_model_->index(row, 2)).toString()),//start position
-                       splitCoordinates(table_model_->data(table_model_->index(row, 3)).toString()),//end position
+                       common::splitCoordinates(table_model_->data(table_model_->index(row, 2)).toString()),//start position
+                       common::splitCoordinates(table_model_->data(table_model_->index(row, 3)).toString()),//end position
                        route_db_->selectPath(code), //cache
                        table_model_->data(table_model_->index(row, 1)).toString());//color
 
@@ -80,7 +82,7 @@ void OrderTable::restoreRoutOnMap()//TODO: lock thread
         emit route_model_.restorRoute();
 
         while(route_model_.checkPathCacheStatus() != UploadStatus::Colpleted); //waiting for the route to be loaded on the map
-
+        QThread::msleep(10);
     }
 
 }
@@ -100,7 +102,24 @@ void OrderTable::onAddOrder(const RouteInfo& info)
 void OrderTable::onTableViewClicked(const QModelIndex &index)
 {
     table_view_->selectRow(index.row());
-    qDebug() << "click" << index.row();
+
+    if(index.column() != 1){
+        return;
+    }
+
+    QItemSelectionModel* selectionModel = table_view_->selectionModel();
+    QModelIndexList indexes = selectionModel->selectedRows();
+
+    auto color_dialog = new QColorDialog(route_db_->selectColor(indexes.at(0).data(Qt::DisplayRole).toInt()) ,this);
+    color_dialog->exec();
+
+    auto color = color_dialog->currentColor().name();
+
+    route_db_->updateColor(indexes.at(0).data(Qt::DisplayRole).toInt(), color);
+    table_model_->selectRow(index.row());
+
+    emit route_model_.colorChenged(index.row(), color);
+    table_view_->clearSelection();
 }
 
 void OrderTable::orderAddWidgetIsVisible()
@@ -143,10 +162,16 @@ void OrderTable::rowSelected()
     QModelIndexList indexes = selectionModel->selectedRows();
 
     if(!indexes.empty()) {
-        emit route_model_.selectRouteOnTable(indexes[0].row());
+        remove_route_button_->setEnabled(true);
+        for(int index = 0; index < indexes.size(); ++index){
+            emit route_model_.selectRouteOnTable(indexes[index].row());
+        }
     }
     else {
-        route_model_.unSelectRouteOnTable();
+        remove_route_button_->setEnabled(false);                       //
+        for(int index = 0; index < table_model_->rowCount(); ++index){ // Not the best option
+            emit route_model_.unSelectRouteOnTable();                  //
+        }
     }
 }
 
@@ -162,9 +187,8 @@ void OrderTable::routeOnMapUnselected()
 
 void OrderTable::setPathCacheAndDistance()
 {
-    while(route_model_.checkRouteStatus() != UploadStatus::Colpleted){
-        QThread::sleep(1);
-    }
+    while(route_model_.checkRouteStatus() != UploadStatus::Colpleted);
+    QThread::sleep(1);
 
     route_db_->insrtrIntoPathTable(route_model_.getInfo().code_, route_model_.getInfo().path_cache_);
     route_db_->updateDistanceFromOrderTable(route_model_.getInfo().code_, route_model_.getInfo().path_distance_);
@@ -187,8 +211,11 @@ void OrderTable::importFromDB()
 
     table_view_->setModel(table_model_);
     table_view_->setItemDelegate(&table_delegate);
+    table_view_->resizeColumnsToContents();
+    table_view_->setColumnWidth(1, 1);
     table_view_->setColumnHidden(0,true);//id
-    table_view_->setColumnHidden(4,true);//DATE
+    table_view_->setColumnHidden(2,true);//StartPos
+    table_view_->setColumnHidden(3,true);//EndPos
 
     QFuture<void> future = QtConcurrent::run(this, &OrderTable::restoreRoutOnMap);
 }

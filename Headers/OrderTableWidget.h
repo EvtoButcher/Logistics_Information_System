@@ -55,8 +55,4 @@ private:
     QPushButton*     remove_route_button_;
 };
 
-
-
-//void restoreRoutOnMap(RouteTable* table);
-
 #endif // ROUTETABLE_H

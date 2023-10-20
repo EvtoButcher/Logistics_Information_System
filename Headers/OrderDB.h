@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QString>
+#include <QColor>
 #include <optional>
 
 #include "RouteModel.h"
@@ -28,11 +29,13 @@ public:
     void updateDistanceFromOrderTable(const QString& code, const int distance);
     void deleteFromOrderTable(const int index);
 
+    void updateColor(const int index, const QString& color);
+    QColor selectColor(const int index);
+
     bool closeDB();
     bool importDB();
 
     void insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cahe);
-
     const QString selectPath(const QString code);
 
 private:

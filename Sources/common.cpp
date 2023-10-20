@@ -5,7 +5,7 @@
 
 #include "Headers/common.h"
 
-bool fileExists(QString path) {
+bool common::fileExists(QString path) {
     QFileInfo check_file(path);
     if (check_file.exists() && check_file.isFile()) {
         return true;
@@ -14,12 +14,12 @@ bool fileExists(QString path) {
     }
 }
 
-QGeoCoordinate splitCoordinates(const QString& input) {
+QGeoCoordinate common::splitCoordinates(const QString& input) {
     QStringList parts = input.split(" ");
     return QGeoCoordinate(parts[0].toDouble(), parts[1].toDouble());
 }
 
-void delay()
+void common::delay()
 {
     QTime dieTime= QTime::currentTime().addMSecs(10);
     while (QTime::currentTime() < dieTime){

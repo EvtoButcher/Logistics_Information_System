@@ -9,7 +9,6 @@
 #include <QVector>
 #include <QGeoCoordinate>
 
-//using Position = std::pair<double, double>;
 
 struct RouteInfo{
     RouteInfo() = default;
@@ -75,6 +74,7 @@ signals:
     void unSelectRouteOnTable();
     void selectRouteOnMap(int);
     void unselectRouteOnMap();
+    void colorChenged(int, QString);
 
 private:
     RouteInfo route_;
