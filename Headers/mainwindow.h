@@ -6,6 +6,7 @@
 #include "OrderAddDialog.h"
 #include "OrderTableWidget.h"
 #include "OrderAddWidget.h"
+#include "ApplicationSettings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -33,6 +34,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    ApplicationSettings settings_;
 
     OrderTable* order_table_;
     OrderAddDialog* order_dialog_;

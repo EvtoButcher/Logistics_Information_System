@@ -12,14 +12,14 @@
 
 #include "Headers/common.h"
 
-OrderDB::OrderDB(QObject *parent)
+OrderDB::OrderDB(const ApplicationSettings &setting, QObject *parent)
      : QObject(parent)
      , db(QSqlDatabase::addDatabase("QSQLITE"))
 {
     query = new QSqlQuery(db);
 
-    if(common::fileExists(DATABASE_NAME)) {
-        openDB(DATABASE_NAME);
+    if(common::fileExists(setting.dbName())) {
+        openDB(setting.dbName());
     }
     else {
         createDB();
@@ -196,7 +196,11 @@ std::optional<QSqlError> OrderDB::createTables()
 bool OrderDB::openDB(QString db_name)
 {
     db.setDatabaseName(db_name);
-    return db.open();
+    if(db.open()){
+        emit DbIsOpen();
+        return true;
+    }
+    return false;
 }
 
 bool OrderDB::closeDB()
@@ -205,6 +209,7 @@ bool OrderDB::closeDB()
         return false;
     }
     db.close();
+    emit DbIsClose();
     return true;
 }
 

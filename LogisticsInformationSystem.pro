@@ -5,6 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quickwidgets
 CONFIG += c++17
 
 HEADERS += \
+    Headers/ApplicationSettings.h \
     Headers/OrderAddDialog.h \
     Headers/OrderAddWidget.h \
     Headers/OrderDB.h \
@@ -16,6 +17,7 @@ HEADERS += \
     Headers/mainwindow.h
 
 SOURCES += \
+    Sources/ApplicationSettings.cpp \
     Sources/OrderAddDialog.cpp \
     Sources/OrderAddWidget.cpp \
     Sources/OrderDB.cpp \

@@ -4,18 +4,22 @@
 #include <QFuture>
 #include <QtConcurrent>
 
-#include "Headers/mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Headers/mainwindow.h"
 #include "Headers/RouteModel.h"
 #include "Headers/TextMessage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    ,settings_(parent)
 {
     ui->setupUi(this);
 
-    order_table_ = new OrderTable(this);
+    setWindowTitle(APPLICATION_NAME);
+    //settings_ = ApplicationSettings(this);
+
+    order_table_ = new OrderTable(settings_, this);
     ui->dockWidget->setWidget(order_table_);
 
     order_add_ = new OrderAddWidget(this);

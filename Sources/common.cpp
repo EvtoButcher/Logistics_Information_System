@@ -5,7 +5,7 @@
 
 #include "Headers/common.h"
 
-bool common::fileExists(QString path) {
+bool common::fileExists(const QString& path) {
     QFileInfo check_file(path);
     if (check_file.exists() && check_file.isFile()) {
         return true;

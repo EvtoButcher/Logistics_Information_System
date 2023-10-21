@@ -6,7 +6,7 @@
 
 namespace common {
 
-bool fileExists(QString path);
+bool fileExists(const QString &path);
 
 QGeoCoordinate splitCoordinates(const QString& input);
 

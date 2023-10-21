@@ -14,14 +14,14 @@
 #include "Headers/OrderTableWidget.h"
 #include "Headers/common.h"
 
-OrderTable::OrderTable(QWidget *parent)
+OrderTable::OrderTable(const ApplicationSettings& setting, QWidget *parent)
     : QWidget{parent}
     , table_delegate(parent)
     , route_model_(parent)
 {
     auto table_lay = new QVBoxLayout(this);
 
-    route_db_ = new OrderDB(this);
+    route_db_ = new OrderDB(setting, this);
     table_model_ = new QSqlTableModel(this, route_db_->DB());
     table_model_->setTable(MAIN_TABLE);
     table_model_->setEditStrategy(QSqlTableModel::OnFieldChange);
@@ -40,6 +40,7 @@ OrderTable::OrderTable(QWidget *parent)
     button_lay->setSpacing(5);
 
     add_order_button_ = new QPushButton("Create an order", this);
+    //add_order_button_->setEnabled(false);
     remove_route_button_ = new QPushButton("delete an order", this);
     remove_route_button_->setEnabled(false);
 
@@ -55,6 +56,11 @@ OrderTable::OrderTable(QWidget *parent)
     connect(remove_route_button_, &QAbstractButton::clicked, this, &OrderTable::removeOrderButtonClicked);
     connect(add_order_button_, &QAbstractButton::clicked, this, &OrderTable::addOrderButtonClicked);
     connect(table_view_, &QAbstractItemView::doubleClicked, this, &OrderTable::onTableViewClicked);
+}
+
+void OrderTable::loadSettings(const ApplicationSettings &setting)
+{
+
 }
 
 RouteModel &OrderTable::getRouteModel()
