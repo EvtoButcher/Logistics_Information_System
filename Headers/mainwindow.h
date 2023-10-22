@@ -7,6 +7,7 @@
 #include "OrderTableWidget.h"
 #include "OrderAddWidget.h"
 #include "ApplicationSettings.h"
+#include "CreateCompanyDialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,14 +32,15 @@ private slots:
     void on_menuFileCloseDB_triggered();
     void on_menuFileOpenDB_triggered();
     void on_menuViewShowRouteAdd_triggered();
+    void on_menuCreateCompany_triggered();
 
 private:
     Ui::MainWindow *ui;
 
-    ApplicationSettings settings_;
-
-    OrderTable* order_table_;
-    OrderAddDialog* order_dialog_;
-    OrderAddWidget* order_add_;
+    ApplicationSettings  settings_;
+    CreateCompanyDialog* create_company_dialog_;
+    OrderTable*          order_table_;
+    OrderAddDialog*      order_dialog_;
+    OrderAddWidget*      order_add_;
 };
 #endif // MAINWINDOW_H

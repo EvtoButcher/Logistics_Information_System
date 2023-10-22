@@ -6,8 +6,8 @@ ApplicationSettings::ApplicationSettings(QWidget *parent)
     : settings_(APPLICATION_NAME, QSettings::Format::IniFormat, parent)
 {
 
-    //settings_->setValue("DB/ConnectionStatus", 0);
-    //settings_->setValue("DB/name", "orderDB.db");
+    //settings_.setValue("DB/ConnectionStatus", 0);
+    //settings_.setValue("DB/name", "orderDB.db");
 
     loadSettings();
 }

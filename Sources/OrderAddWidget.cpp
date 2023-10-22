@@ -46,7 +46,7 @@ OrderAddWidget::OrderAddWidget(QWidget *parent)
 
     add_route_button_ = new QPushButton("Add order", this);
 
-    setLayout(new QVBoxLayout);
+    setLayout(new QVBoxLayout(this));
 
     auto start_coord_lay = new QHBoxLayout();
     start_coord_lay->addWidget(start_lat_label);

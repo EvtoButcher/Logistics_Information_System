@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(APPLICATION_NAME);
     //settings_ = ApplicationSettings(this);
 
+    create_company_dialog_ = new CreateCompanyDialog(this);
+
     order_table_ = new OrderTable(settings_, this);
     ui->dockWidget->setWidget(order_table_);
 
@@ -92,5 +94,10 @@ void MainWindow::on_menuViewShowRouteAdd_triggered()
     ui->menuViewShowRouteAdd->isChecked() ? ui->dockWidget_2->show() : ui->dockWidget_2->hide();
 
     //ui->dockWidget_2->visibilityChanged()
+}
+
+void MainWindow::on_menuCreateCompany_triggered()
+{
+    create_company_dialog_->exec();
 }
 

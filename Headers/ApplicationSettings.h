@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QSettings>
 
-#define ORGANIZATION_NAME  "TxWxB"
 #define APPLICATION_NAME   "OctopusLogistics"
 
 class ApplicationSettings

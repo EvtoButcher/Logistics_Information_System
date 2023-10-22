@@ -6,6 +6,8 @@ CONFIG += c++17
 
 HEADERS += \
     Headers/ApplicationSettings.h \
+    Headers/Company.h \
+    Headers/CreateCompanyDialog.h \
     Headers/OrderAddDialog.h \
     Headers/OrderAddWidget.h \
     Headers/OrderDB.h \
@@ -13,17 +15,21 @@ HEADERS += \
     Headers/RouteModel.h \
     Headers/TableDelegate.h \
     Headers/TextMessage.h \
+    Headers/WarehouseControlWidget.h \
     Headers/common.h \
     Headers/mainwindow.h
 
 SOURCES += \
     Sources/ApplicationSettings.cpp \
+    Sources/Company.cpp \
+    Sources/CreateCompanyDialog.cpp \
     Sources/OrderAddDialog.cpp \
     Sources/OrderAddWidget.cpp \
     Sources/OrderDB.cpp \
     Sources/OrderTableWidget.cpp \
     Sources/RouteModel.cpp \
     Sources/TableDelegate.cpp \
+    Sources/WarehouseControlWidget.cpp \
     Sources/common.cpp \
     Sources/main.cpp \
     Sources/mainwindow.cpp
