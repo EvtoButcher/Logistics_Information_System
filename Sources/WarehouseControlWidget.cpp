@@ -7,6 +7,8 @@
 #include <QStringList>
 #include <QPushButton>
 
+#include <QDebug>
+
 #include "Headers/WarehouseControlWidget.h"
 
 WarehouseWidget::WarehouseWidget(QWidget *parent)
@@ -33,7 +35,7 @@ WarehouseWidget::WarehouseWidget(QWidget *parent)
     auto cargo_from_warehouses_table_label = new QLabel("Cargo", this);
     curgo_from_warehouses_table_ = new QTableWidget(0, 3, this);
     QStringList cargo_from_warehouses_table_colum;
-    cargo_from_warehouses_table_colum << "name" << "Weight" << "Volume";
+    cargo_from_warehouses_table_colum << "code" << "Weight" << "Volume";
     curgo_from_warehouses_table_->setHorizontalHeaderLabels(cargo_from_warehouses_table_colum);
     auto cargo_from_warehouses_lay = new QVBoxLayout();
     cargo_from_warehouses_lay->addWidget(cargo_from_warehouses_table_label);
@@ -69,10 +71,10 @@ WarehouseWidget::WarehouseWidget(QWidget *parent)
     layout()->setMargin(0);
     //layout()->setSpacing(0);
 
-    connect(add_warehouse_button_, &QAbstractButton::clicked, this, &WarehouseWidget::add_new_warehouse);
+    connect(add_warehouse_button_, &QAbstractButton::clicked, this, &WarehouseWidget::addNewWarehouse);
 }
 
-void WarehouseWidget::add_new_warehouse()
+void WarehouseWidget::addNewWarehouse()
 {
     create_warehouse_dialog.exec();
 }
@@ -86,7 +88,8 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget *parent)
 
     auto warehouse_code_label = new QLabel("Warehouse code:", this);
     warehouse_code_label->setFont(bold_font);
-    warehouse_code_ = new QLineEdit(this);
+    warehouse_code_ = new QLineEdit("automatic generation", this);
+    warehouse_code_->setEnabled(false);
 
     auto warehouse_position_label = new QLabel("Position:", this);
     warehouse_position_label->setFont(bold_font);
@@ -94,6 +97,14 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget *parent)
     warehouse_lat_ = new QLineEdit(this);
     auto warehouse_lng_label = new QLabel("longitude:", this);
     warehouse_lng_ = new QLineEdit(this);
+
+    messege_label = new QLabel("enter the coordinates of the warehouse for further actions", this);
+    messege_label->setStyleSheet("color: #b7161a;");
+
+    auto separator = new QFrame(this);
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameShadow(QFrame::Sunken);
+    separator->setFixedHeight(2);
 
     auto warehouse_position_lay = new QHBoxLayout();
     warehouse_position_lay->addWidget(warehouse_lat_label);
@@ -108,8 +119,9 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget *parent)
     auto curgo_table_label = new QLabel("Added Cargo", this);
     curgo_table_ = new QTableWidget(0, 3, this);
     QStringList curgo_table_colum;
-    curgo_table_colum << "name" << "Weight" << "Volume";
+    curgo_table_colum << "code" << "Weight" << "Volume";
     curgo_table_->setHorizontalHeaderLabels(curgo_table_colum);
+    curgo_table_->setEnabled(false);
     auto curgo_table_lay = new QVBoxLayout();
     curgo_table_lay->addWidget(curgo_table_label);
     curgo_table_lay->addWidget(curgo_table_);
@@ -119,26 +131,30 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget *parent)
 
     auto curgo_code_lay = new QHBoxLayout();
     auto curgo_code_label = new QLabel("Code:", this);
-    auto curgo_code_line_edit = new QLineEdit(this);
+    curgo_code_line_edit_ = new QLineEdit(this);
+    curgo_code_line_edit_->setEnabled(false);
     curgo_code_lay->addWidget(curgo_code_label);
     curgo_code_lay->setSpacing(5);
-    curgo_code_lay->addWidget(curgo_code_line_edit);
+    curgo_code_lay->addWidget(curgo_code_line_edit_);
 
     auto curgo_weight_lay = new QHBoxLayout();
     auto curgo_weight_label = new QLabel("Weight:", this);
-    auto curgo_weight_line_edit = new QLineEdit(this);
+    curgo_weight_line_edit_ = new QLineEdit(this);
+    curgo_weight_line_edit_->setEnabled(false);
     curgo_weight_lay->addWidget(curgo_weight_label);
     curgo_weight_lay->setSpacing(5);
-    curgo_weight_lay->addWidget(curgo_weight_line_edit);
+    curgo_weight_lay->addWidget(curgo_weight_line_edit_);
 
     auto curgo_volume_lay = new QHBoxLayout();
-    auto curgo_volume_label = new QLabel("Code:", this);
-    auto curgo_volume_line_edit = new QLineEdit(this);
+    auto curgo_volume_label = new QLabel("Volume:", this);
+    curgo_volume_line_edit_ = new QLineEdit(this);
+    curgo_volume_line_edit_->setEnabled(false);
     curgo_volume_lay->addWidget(curgo_volume_label);
     curgo_volume_lay->setSpacing(5);
-    curgo_volume_lay->addWidget(curgo_volume_line_edit);
+    curgo_volume_lay->addWidget(curgo_volume_line_edit_);
 
     add_curgo_to_warehouse_button_ = new QPushButton("add new curgo",this);
+    add_curgo_to_warehouse_button_->setEnabled(false);
 
 
     auto curgo_add_lay = new QVBoxLayout();
@@ -159,6 +175,7 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget *parent)
     curgo_lay->addItem(curgo_table_lay);
 
     create_warehouse_button_ = new QPushButton("Add a new warehouse", this);
+    create_warehouse_button_->setEnabled(false);
 
     setLayout(new QVBoxLayout);
 
@@ -166,10 +183,19 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget *parent)
     layout()->addWidget(warehouse_code_);
     layout()->addWidget(warehouse_position_label);
     layout()->addItem(warehouse_position_lay);
+    layout()->setSpacing(10);
+    layout()->addWidget(messege_label);
+    layout()->addWidget(separator);
+    layout()->setSpacing(10);
     layout()->addItem(curgo_lay);
     layout()->addWidget(create_warehouse_button_);
 
+    connect(add_curgo_to_warehouse_button_, &QAbstractButton::clicked, this, &CreateWarehouseDialog::addCurgo);
     connect(create_warehouse_button_, &QAbstractButton::clicked, this, &CreateWarehouseDialog::createWarehouseButtonClicked);
+    connect(warehouse_lat_, &QLineEdit::textEdited, this, &CreateWarehouseDialog::warehouseLatAdding);
+    connect(warehouse_lng_, &QLineEdit::textEdited, this, &CreateWarehouseDialog::warehouseLngAdding);
+    connect(warehouse_lat_, &QLineEdit::editingFinished, this, &CreateWarehouseDialog::tryCreateWarehouse);
+    connect(warehouse_lng_, &QLineEdit::editingFinished, this, &CreateWarehouseDialog::tryCreateWarehouse);
 
 }
 
@@ -177,3 +203,66 @@ void CreateWarehouseDialog::createWarehouseButtonClicked()
 {
 
 }
+
+void CreateWarehouseDialog::tryCreateWarehouse()
+{
+    if(warehouse_lat_->text().isEmpty() || warehouse_lng_->text().isEmpty()){
+        return;
+    }
+
+    auto warehouse_position = QGeoCoordinate(warehouse_lat_->text().toDouble(), warehouse_lng_->text().toDouble());
+    if(!warehouse_position.isValid()){
+        return;
+    }
+
+    warehouse_ = new Warehouse(warehouse_position);
+    warehouse_code_->setText(QString::number(warehouse_->getCode()));
+
+    warehouse_code_->setStyleSheet("color: #91918b;");
+
+    //TODO: add hendeling correct creating warehouse
+
+    curgo_table_->setEnabled(true);
+    curgo_code_line_edit_->setEnabled(true);
+    curgo_weight_line_edit_->setEnabled(true);
+    curgo_volume_line_edit_->setEnabled(true);
+    add_curgo_to_warehouse_button_->setEnabled(true);
+
+    create_warehouse_button_->setEnabled(true);
+}
+
+void CreateWarehouseDialog::addCurgo()
+{
+
+    warehouse_->addCurgo(new Curgo(curgo_code_line_edit_->text(),
+                               curgo_weight_line_edit_->text().toDouble(),
+                               curgo_volume_line_edit_->text().toInt()));
+
+    //QTableWidgetItem *newItem = new QTableWidgetItem("", 1, 2);
+    //curgo_table_->currentItem() = newItem;
+}
+
+void CreateWarehouseDialog::warehouseLatAdding()
+{
+    bool convert_is_correct;
+    warehouse_lat_->text().toDouble(&convert_is_correct);
+    if(!convert_is_correct) {
+        warehouse_lat_->setStyleSheet("color: #b7161a;");
+    }
+    else {
+         warehouse_lat_->setStyleSheet("color: black;");
+    }
+}
+
+void CreateWarehouseDialog::warehouseLngAdding()
+{
+    bool convert_is_correct;
+    warehouse_lng_->text().toDouble(&convert_is_correct);
+    if(!convert_is_correct) {
+        warehouse_lng_->setStyleSheet("color: #b7161a;");
+    }
+    else {
+         warehouse_lng_->setStyleSheet("color: black;");
+    }
+}
+

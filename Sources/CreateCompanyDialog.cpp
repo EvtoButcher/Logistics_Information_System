@@ -6,6 +6,7 @@
 
 #include "Headers/CreateCompanyDialog.h"
 #include "Headers/WarehouseControlWidget.h"
+#include "Headers/Company.h"
 
 CreateCompanyDialog::CreateCompanyDialog(QWidget *parent)
     : QDialog(parent)
@@ -26,4 +27,9 @@ CreateCompanyDialog::CreateCompanyDialog(QWidget *parent)
     layout()->addWidget(company_name_label);
     layout()->addWidget(company_name_line_edit_);
     layout()->addWidget(warehouse_widget_);
+}
+
+Company *CreateCompanyDialog::getCompany()
+{
+    return company_;
 }

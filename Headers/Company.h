@@ -9,7 +9,7 @@
 
 struct Curgo
 {
-    Curgo(const QString& code, const double weight, const int volume);
+    explicit Curgo(const QString& code, const double weight, const int volume);
 
     QString code_;
     double weight_;
@@ -19,14 +19,17 @@ struct Curgo
 class Warehouse
 {
 public:
-    Warehouse(const QString& code, const QGeoCoordinate& pos);
+    explicit Warehouse(const QGeoCoordinate& pos);
+    ~Warehouse();
 
-    void addCurgo(const Curgo& curgo);
-
+    void addCurgo(Curgo *curgo);
     void loadCurgo();
 
+    uint64_t getCode();
+    bool isValid() const;
+
 private:
-    QString code_;
+    uint64_t code_ = 0;
     QGeoCoordinate position_;
 
     std::unordered_map<QString, Curgo*> map_of_curgo_;
@@ -43,16 +46,18 @@ private:
 class Company
 {
 public:
-    Company(const QString& name);
+    explicit Company() = default;
+    ~Company();
 
-    void addWarehouse(const Warehouse* warehouse);
-    void addDestination(const Destination* destination);
+    void setName(const QString& name);
+    void addWarehouse(Warehouse *warehouse);
+    void addDestination(Destination* destination);
 
 private:
     QString company_name_;
 
     QVector<Warehouse*> warehouses_;
-    QVector<Destination*> destonations_;
+    QVector<Destination*> destinations_;
 };
 
 void loadCompanyFromSetting();

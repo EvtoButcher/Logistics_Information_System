@@ -8,6 +8,7 @@
 #include "OrderAddWidget.h"
 #include "ApplicationSettings.h"
 #include "CreateCompanyDialog.h"
+#include "Company.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,5 +43,6 @@ private:
     OrderTable*          order_table_;
     OrderAddDialog*      order_dialog_;
     OrderAddWidget*      order_add_;
+    Company*            company_;
 };
 #endif // MAINWINDOW_H
