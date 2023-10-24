@@ -50,9 +50,19 @@ void Warehouse::addCurgo(Curgo *curgo)
     map_of_curgo_[curgo->code_] = curgo;
 }
 
-uint64_t Warehouse::getCode()
+uint64_t Warehouse::getCode() const
 {
     return code_;
+}
+
+const QGeoCoordinate &Warehouse::getPosition() const
+{
+    return position_;
+}
+
+const std::unordered_map<uint64_t, Curgo *> Warehouse::getCurgo() const
+{
+    return map_of_curgo_;
 }
 
 bool Warehouse::isValid() const
@@ -66,10 +76,14 @@ Destination::Destination(const QString &name)
 
 }
 
-Curgo::Curgo(const QString &code, const double weight, const int volume)
-    : code_(code)
-    , weight_(weight)
+Curgo::Curgo(const double weight, const int volume)
+    : weight_(weight)
     , volume_(volume)
 {
+    double tmp_weight = weight;
+    double tmp_volume = volume;
+    uint64_t hash_weight = *reinterpret_cast<uint64_t*>(&tmp_weight);
+    uint64_t hash_volume = *reinterpret_cast<uint64_t*>(&tmp_volume);
 
+    code_ = hash_weight ^ hash_volume;
 }

@@ -39,7 +39,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/map.qml")));
     ui->quickWidget->show();
 
-    QFuture<void> future = QtConcurrent::run(order_table_, &OrderTable::restoreRoutOnMap);
+    if(!settings_.companyIsValid()){
+         create_company_dialog_->exec();
+    }
+    else {
+        QFuture<void> future = QtConcurrent::run(order_table_, &OrderTable::restoreRoutOnMap);
+    }
 }
 
 MainWindow::~MainWindow()

@@ -8,6 +8,8 @@
 class QLineEdit;
 class WarehouseWidget;
 class Company;
+class QLabel;
+class QPushButton;
 
 class CreateCompanyDialog : public QDialog
 {
@@ -18,7 +20,14 @@ public:
 
     Company *getCompany();
 
+private slots:
+    void addWarehouse(Warehouse* warehouse);
+    void trySetCompanyName();
+
 private:
+    QPushButton* create_company_button_;
+    QPushButton* close_button_;
+    QLabel* messege_label_;
     QLineEdit* company_name_line_edit_;
     WarehouseWidget* warehouse_widget_;
     Company* company_;

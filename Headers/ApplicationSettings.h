@@ -16,6 +16,9 @@ public:
     void saveSettings();
 
     const QString dbName() const;
+    const QString companyName() const;
+
+    bool companyIsValid() const;
 
 signals:
 
