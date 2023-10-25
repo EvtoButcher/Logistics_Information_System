@@ -8,6 +8,7 @@
 #include <optional>
 
 #include "RouteModel.h"
+#include "ApplicationSettings.h"
 
 class QSqlQuery;
 
@@ -15,12 +16,17 @@ class QSqlQuery;
 #define MAIN_TABLE          "Orders"    //TODO: replace with file.conf
 #define PATH_TABLE          "PathTable" //
 
+enum class ConnectionStatus{
+    Offline,
+    Online
+};
+
 class OrderDB : public QObject
 {
     Q_OBJECT
 
 public:
-    OrderDB(QObject *parent = nullptr);
+    OrderDB(const ApplicationSettings& setting, QObject *parent = nullptr);
     ~OrderDB() = default;
 
     const QSqlDatabase& DB() const;
@@ -37,6 +43,10 @@ public:
 
     void insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cahe);
     const QString selectPath(const QString code);
+
+signals:
+    void DbIsOpen();
+    void DbIsClose();
 
 private:
     std::optional<QSqlError> createTables();

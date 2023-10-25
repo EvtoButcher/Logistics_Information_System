@@ -20,6 +20,12 @@
 
 ![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/b40fac52-0707-4821-ad49-b5b05f45503f)
 
+![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/5a426f5d-7ed3-48ab-b4be-cd0a39bf6ab2)
+
+![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/4a313341-48a3-4a88-b326-704102bce9de)
+
+
+
 
 
 

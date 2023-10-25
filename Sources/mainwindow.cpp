@@ -4,18 +4,29 @@
 #include <QFuture>
 #include <QtConcurrent>
 
-#include "Headers/mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Headers/mainwindow.h"
 #include "Headers/RouteModel.h"
 #include "Headers/TextMessage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , settings_(parent)
+    , company_(new Company)
 {
+    create_company_dialog_ = new CreateCompanyDialog(this);
+    if(!settings_.companyIsValid()){
+         create_company_dialog_->exec();
+         company_ = create_company_dialog_->getCompany();
+         settings_.saveSettings(company_);
+    }
+
     ui->setupUi(this);
 
-    order_table_ = new OrderTable(this);
+    setWindowTitle(APPLICATION_NAME);
+
+    order_table_ = new OrderTable(settings_, this);
     ui->dockWidget->setWidget(order_table_);
 
     order_add_ = new OrderAddWidget(this);
@@ -30,8 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(order_dialog_, &OrderAddDialog::addRouteToTableFromDialog, order_table_, &OrderTable::onAddOrder);
 
     ui->quickWidget->rootContext()->setContextProperty("app", &order_table_->getRouteModel());
-    ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/map.qml")));
-    ui->quickWidget->show();
+    ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/OrderMap.qml")));
+    //ui->quickWidget->show();
 
     QFuture<void> future = QtConcurrent::run(order_table_, &OrderTable::restoreRoutOnMap);
 }
@@ -89,4 +100,10 @@ void MainWindow::on_menuViewShowRouteAdd_triggered()
 
     //ui->dockWidget_2->visibilityChanged()
 }
+
+void MainWindow::on_menuCreateCompany_triggered()
+{
+    create_company_dialog_->exec();
+}
+
 

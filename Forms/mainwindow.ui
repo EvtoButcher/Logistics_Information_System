@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1263</width>
+    <width>1447</width>
     <height>704</height>
    </rect>
   </property>
@@ -60,7 +60,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1263</width>
+     <width>1447</width>
      <height>22</height>
     </rect>
    </property>
@@ -71,6 +71,8 @@
     <property name="title">
      <string>FIle</string>
     </property>
+    <addaction name="menuCreateCompany"/>
+    <addaction name="separator"/>
     <addaction name="menuFileOpenDB"/>
     <addaction name="menuFileCloseDB"/>
     <addaction name="menuFileSaveDB"/>
@@ -134,6 +136,18 @@
   <widget class="QDockWidget" name="dockWidget_2">
    <property name="enabled">
     <bool>true</bool>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>400</width>
+     <height>35</height>
+    </size>
    </property>
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
@@ -216,6 +230,11 @@
    </property>
    <property name="text">
     <string>Go to Source...</string>
+   </property>
+  </action>
+  <action name="menuCreateCompany">
+   <property name="text">
+    <string>Create Company</string>
    </property>
   </action>
  </widget>

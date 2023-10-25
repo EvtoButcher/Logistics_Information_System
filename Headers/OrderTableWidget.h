@@ -12,12 +12,15 @@
 class QSqlTableModel;
 class QTableView;
 class QPushButton;
+class ApplicationSettings;
 
 class OrderTable : public QWidget
 {
     Q_OBJECT
 public:
-    explicit OrderTable(QWidget *parent = nullptr);
+    explicit OrderTable(const ApplicationSettings& setting, QWidget *parent = nullptr);
+
+    void loadSettings(const ApplicationSettings& setting);
 
     RouteModel& getRouteModel();
     void restoreRoutOnMap();

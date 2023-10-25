@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>map.qml</file>
+        <file>OrderMap.qml</file>
         <file>Scaler.qml</file>
+        <file>SettingMap.qml</file>
     </qresource>
 </RCC>
