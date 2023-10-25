@@ -8,6 +8,7 @@ HEADERS += \
     Headers/ApplicationSettings.h \
     Headers/Company.h \
     Headers/CreateCompanyDialog.h \
+    Headers/CreateWarehouseDialog.h \
     Headers/OrderAddDialog.h \
     Headers/OrderAddWidget.h \
     Headers/OrderDB.h \
@@ -16,6 +17,7 @@ HEADERS += \
     Headers/TableDelegate.h \
     Headers/TextMessage.h \
     Headers/WarehouseControlWidget.h \
+    Headers/WarehouseModel.h \
     Headers/common.h \
     Headers/mainwindow.h
 
@@ -23,6 +25,7 @@ SOURCES += \
     Sources/ApplicationSettings.cpp \
     Sources/Company.cpp \
     Sources/CreateCompanyDialog.cpp \
+    Sources/CreateWarehouseDialog.cpp \
     Sources/OrderAddDialog.cpp \
     Sources/OrderAddWidget.cpp \
     Sources/OrderDB.cpp \
@@ -30,6 +33,7 @@ SOURCES += \
     Sources/RouteModel.cpp \
     Sources/TableDelegate.cpp \
     Sources/WarehouseControlWidget.cpp \
+    Sources/WarehouseModel.cpp \
     Sources/common.cpp \
     Sources/main.cpp \
     Sources/mainwindow.cpp

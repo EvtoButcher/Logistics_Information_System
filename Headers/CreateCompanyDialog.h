@@ -14,18 +14,21 @@ class QPushButton;
 class CreateCompanyDialog : public QDialog
 {
     Q_OBJECT
-    friend Company;
 public:
     explicit CreateCompanyDialog(QWidget *parent = nullptr);
 
-    Company *getCompany();
+    Company* getCompany();
 
 private slots:
     void addWarehouse(Warehouse* warehouse);
     void trySetCompanyName();
+    void createComponyButtonClicked();
 
 private:
+    //QPushButton* next_papge_;
+    //QPushButton* back;
     QPushButton* create_company_button_;
+
     QPushButton* close_button_;
     QLabel* messege_label_;
     QLineEdit* company_name_line_edit_;

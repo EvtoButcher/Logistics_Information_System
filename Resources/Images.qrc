@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>Minus.svg</file>
         <file>Plus.svg</file>
+        <file>WarehouseDepart.svg</file>
     </qresource>
 </RCC>

@@ -1,6 +1,7 @@
 #include <QDebug>
 
 #include "Headers/ApplicationSettings.h"
+#include "Headers/Company.h"
 
 ApplicationSettings::ApplicationSettings(QWidget *parent)
     : settings_(APPLICATION_NAME, QSettings::Format::IniFormat, parent)
@@ -8,24 +9,24 @@ ApplicationSettings::ApplicationSettings(QWidget *parent)
 
     //settings_.setValue("Company/name", "");
     //settings_.setValue("DB/ConnectionStatus", 0);
-    //settings_.setValue("DB/name", "orderDB.db");
+    //settings_.setValue("Company/db_name", "orderDB.db");
 
-    loadSettings();
+    //loadSettings();
 }
 
 ApplicationSettings::~ApplicationSettings()
 {
-    saveSettings();
+    //saveSettings();
 }
 
-void ApplicationSettings::loadSettings()
+//void ApplicationSettings::loadSettings()
+//{
+
+//}
+
+void ApplicationSettings::saveSettings(const Company* company)
 {
-
-}
-
-void ApplicationSettings::saveSettings()
-{
-
+    //settings_.setValue("Company/name", company->getName());
 }
 
 const QString ApplicationSettings::dbName() const

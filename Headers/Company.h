@@ -60,6 +60,8 @@ public:
     void addWarehouse(Warehouse *warehouse);
     void addDestination(Destination* destination);
 
+    const QString getName() const;
+
 private:
     QString company_name_;
 

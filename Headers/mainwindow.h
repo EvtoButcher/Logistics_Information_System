@@ -43,6 +43,6 @@ private:
     OrderTable*          order_table_;
     OrderAddDialog*      order_dialog_;
     OrderAddWidget*      order_add_;
-    Company*            company_;
+    Company*             company_;
 };
 #endif // MAINWINDOW_H

@@ -9,9 +9,9 @@ RouteModel::RouteModel(QObject *parent)
 
 }
 
-void RouteModel::setRoute(const RouteInfo &newRoute)
+void RouteModel::setRoute(const RouteInfo &new_route)
 {
-    route_ = newRoute;
+    route_ = new_route;
 }
 
 void RouteModel::setRouteStatus(int current_status)

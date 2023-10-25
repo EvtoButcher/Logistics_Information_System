@@ -55,7 +55,7 @@ public:
     QString routeColor();
     QVariantList routePath();
 
-    void setRoute(const RouteInfo &newRoute);
+    void setRoute(const RouteInfo &new_route);
 
     Q_INVOKABLE void setPathCache(QJSValue path);
     Q_INVOKABLE void setRouteStatus(int current_status /*UploadStatus*/);

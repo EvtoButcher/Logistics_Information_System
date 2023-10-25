@@ -6,14 +6,16 @@
 
 #define APPLICATION_NAME   "OctopusLogistics"
 
+class Company;
+
 class ApplicationSettings
 {
 public:
     explicit ApplicationSettings(QWidget *parent = nullptr);
     ~ApplicationSettings();
 
-    void loadSettings();
-    void saveSettings();
+    //void loadSettings();
+    void saveSettings(const Company* company);
 
     const QString dbName() const;
     const QString companyName() const;

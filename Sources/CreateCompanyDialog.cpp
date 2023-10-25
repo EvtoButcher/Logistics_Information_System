@@ -13,10 +13,10 @@ CreateCompanyDialog::CreateCompanyDialog(QWidget *parent)
     : QDialog(parent)
     , company_(new Company)
 {
-    setWindowTitle("Create Company:");
+    setWindowTitle("Create Company");
     setBaseSize(400, 400);
 
-    setLayout(new QVBoxLayout(this));
+    setLayout(new QHBoxLayout(this));
 
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
@@ -35,7 +35,6 @@ CreateCompanyDialog::CreateCompanyDialog(QWidget *parent)
     warehouse_widget_ = new WarehouseWidget(this);
     warehouse_widget_->setEnabled(false);
 
-
     create_company_button_ = new QPushButton("Create company",this);
     create_company_button_->setEnabled(false);
     //close_button_ = new QPushButton("Close",this);
@@ -44,18 +43,24 @@ CreateCompanyDialog::CreateCompanyDialog(QWidget *parent)
     //button_lay->addSpacing(10);
     //button_lay->addWidget(close_button_);
 
+    auto control_lay = new QVBoxLayout();
 
+    control_lay->setSpacing(10);
+    control_lay->addWidget(company_name_label);
+    control_lay->addWidget(company_name_line_edit_);
+    control_lay->addWidget(messege_label_);
+    control_lay->addWidget(separator);
+    control_lay->addWidget(warehouse_widget_);
+    control_lay->addItem(button_lay);
+
+    layout()->addItem(control_lay);
     layout()->setSpacing(10);
-    layout()->addWidget(company_name_label);
-    layout()->addWidget(company_name_line_edit_);
-    layout()->addWidget(messege_label_);
-    layout()->addWidget(separator);
-    layout()->addWidget(warehouse_widget_);
-    layout()->addItem(button_lay);
+    layout()->addWidget(warehouse_widget_->getSettingsMap());
 
     //connect(close_button_, &QAbstractButton::clicked, this, &CreateCompanyDialog::close);
+    connect(create_company_button_, &QAbstractButton::clicked, this, &CreateCompanyDialog::createComponyButtonClicked);
     connect(company_name_line_edit_, &QLineEdit::textEdited, this, &CreateCompanyDialog::trySetCompanyName);
-    connect(warehouse_widget_, &WarehouseWidget::addWarehouse, this, &CreateCompanyDialog::addWarehouse);
+    connect(warehouse_widget_, &WarehouseWidget::addWarehouseToCompany, this, &CreateCompanyDialog::addWarehouse);
 }
 
 Company* CreateCompanyDialog::getCompany()
@@ -81,4 +86,10 @@ void CreateCompanyDialog::trySetCompanyName()
         create_company_button_->setEnabled(false);
     }
 }
+
+void CreateCompanyDialog::createComponyButtonClicked()
+{
+    this->close();
+}
+
 

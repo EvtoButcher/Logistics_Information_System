@@ -27,6 +27,11 @@ void Company::addDestination(Destination *destination)
     destinations_.push_back(destination);
 }
 
+const QString Company::getName() const
+{
+    return company_name_;
+}
+
 Warehouse::Warehouse(const QGeoCoordinate &pos)
     : position_(pos)
 {
