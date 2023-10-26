@@ -22,7 +22,7 @@ public:
     ~OrderAddWidget() = default;
 
 signals:
-     void addRouteToTable(const RouteInfo&);
+     void addRoute(const RouteInfo&);
 
 private slots:
     void onAddButtonClicked();

@@ -8,6 +8,9 @@
 
 struct WarehouseInfo
 {
+    WarehouseInfo() = default;
+    WarehouseInfo(const uint64_t code, const QGeoCoordinate& pos);
+
     uint64_t code_ = 0;
     QGeoCoordinate position_;
 };
@@ -28,6 +31,7 @@ public:
 
 signals:
     void addWarehouse();
+    void restorWarehouse();
 
 private:
     WarehouseInfo info_;

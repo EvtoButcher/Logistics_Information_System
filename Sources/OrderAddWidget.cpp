@@ -105,7 +105,7 @@ void OrderAddWidget::onAddButtonClicked()
                         end_point_lng_->text().toDouble(),
                         color_dialog_->currentColor().name());
 
-    emit addRouteToTable(route_info);
+    emit addRoute(route_info);
 }
 
 void OrderAddWidget::onColorChangeButtonClicked()

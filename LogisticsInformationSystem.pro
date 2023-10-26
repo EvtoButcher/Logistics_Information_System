@@ -9,6 +9,7 @@ HEADERS += \
     Headers/Company.h \
     Headers/CreateCompanyDialog.h \
     Headers/CreateWarehouseDialog.h \
+    Headers/MapItemEngine.h \
     Headers/OrderAddDialog.h \
     Headers/OrderAddWidget.h \
     Headers/OrderDB.h \
@@ -26,6 +27,7 @@ SOURCES += \
     Sources/Company.cpp \
     Sources/CreateCompanyDialog.cpp \
     Sources/CreateWarehouseDialog.cpp \
+    Sources/MapItemEngine.cpp \
     Sources/OrderAddDialog.cpp \
     Sources/OrderAddWidget.cpp \
     Sources/OrderDB.cpp \

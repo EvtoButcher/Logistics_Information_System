@@ -16,7 +16,7 @@ class WarehouseWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WarehouseWidget(QWidget *parent = nullptr);
+    explicit WarehouseWidget(WarehouseModel& warehouse_model, QWidget *parent = nullptr);
 
     QWidget* getSettingsMap();
 
@@ -41,8 +41,6 @@ private:
     QQuickWidget*           settings_map_;
 
     std::unordered_map<QString, const Warehouse*> warehouses_table_cahe_;
-
-    WarehouseModel warehouse_model_;
 };
 
 #endif // WAREHOUSECONTROLWIDGET_H

@@ -5,11 +5,13 @@
 #include <QFont>
 #include <QPushButton>
 
+#include <QDebug>
+
 #include "Headers/CreateCompanyDialog.h"
 #include "Headers/WarehouseControlWidget.h"
 #include "Headers/Company.h"
 
-CreateCompanyDialog::CreateCompanyDialog(QWidget *parent)
+CreateCompanyDialog::CreateCompanyDialog(WarehouseModel& model, QWidget *parent)
     : QDialog(parent)
     , company_(new Company)
 {
@@ -32,7 +34,7 @@ CreateCompanyDialog::CreateCompanyDialog(QWidget *parent)
     separator->setFrameShadow(QFrame::Sunken);
     separator->setFixedHeight(2);
 
-    warehouse_widget_ = new WarehouseWidget(this);
+    warehouse_widget_ = new WarehouseWidget(model, this);
     warehouse_widget_->setEnabled(false);
 
     create_company_button_ = new QPushButton("Create company",this);
@@ -71,6 +73,8 @@ Company* CreateCompanyDialog::getCompany()
 void CreateCompanyDialog::addWarehouse(Warehouse* warehouse)
 {
     company_->addWarehouse(warehouse);
+    qDebug() << warehouse->getCode() <<  warehouse->getPosition();
+    emit addWarehouseOnMap(warehouse->getCode(), warehouse->getPosition());
 }
 
 void CreateCompanyDialog::trySetCompanyName()

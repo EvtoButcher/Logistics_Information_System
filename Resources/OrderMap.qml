@@ -24,25 +24,25 @@ Rectangle {
     }
 
     Connections {
-           target: app
+           target: route_engine
            function onAddRoute() {
                var newRoute = {};
 
-               newRoute.startPosLat = app.StartLat;
-               newRoute.startPosLng = app.StartLng;
-               newRoute.endPosLat = app.EndLat;
-               newRoute.endPosLng = app.EndLng;
-               newRoute.color = app.RouteColor;
+               newRoute.startPosLat = route_engine.StartLat;
+               newRoute.startPosLng = route_engine.StartLng;
+               newRoute.endPosLat = route_engine.EndLat;
+               newRoute.endPosLng = route_engine.EndLng;
+               newRoute.color = route_engine.RouteColor;
                newRoute.opacity = defOpasity;
                newRoute.isCachePath = false;
 
                routeListModel.append(newRoute);
 
-               if(centrMapLat !== app.StartLat){
-                   centrMapLat = app.StartLat;
+               if(centrMapLat !== route_engine.StartLat){
+                   centrMapLat = route_engine.StartLat;
                }
-               if(centrMapLng !== app.StartLng){
-                   centrMapLng = app.StartLng;
+               if(centrMapLng !== route_engine.StartLng){
+                   centrMapLng = route_engine.StartLng;
                }
            }
 
@@ -69,12 +69,12 @@ Rectangle {
            function onRestorRoute(){
                var oldRoute = {};
 
-               oldRoute.startPosLat = app.StartLat;
-               oldRoute.startPosLng = app.StartLng;
-               oldRoute.endPosLat = app.EndLat;
-               oldRoute.endPosLng = app.EndLng;
-               oldRoute.path = app.RoutePath;
-               oldRoute.color = app.RouteColor;
+               oldRoute.startPosLat = route_engine.StartLat;
+               oldRoute.startPosLng = route_engine.StartLng;
+               oldRoute.endPosLat = route_engine.EndLat;
+               oldRoute.endPosLng = route_engine.EndLng;
+               oldRoute.path = route_engine.RoutePath;
+               oldRoute.color = route_engine.RouteColor;
                oldRoute.opacity = defOpasity;
                oldRoute.isCachePath = true;
 
@@ -108,21 +108,21 @@ Rectangle {
                     }
                 }
                 onStatusChanged:  {
-                    app.setRouteStatus(routeModel.status);
+                    route_engine.setRouteStatus(routeModel.status);
                     if(routeModel.status === RouteModel.Ready){
-                        app.setPathCache(routeModel.get(0).path);
+                        route_engine.setPathCache(routeModel.get(0).path);
                     }
                 }
             }
 
-            path: model.isCachePath ? app.RoutePath : routeModel.status === RouteModel.Ready ? routeModel.get(0).path : null
+            path: model.isCachePath ? route_engine.RoutePath : routeModel.status === RouteModel.Ready ? routeModel.get(0).path : null
             line.color: model.color
             smooth:true
             line.width: 5
             opacity: model.opacity
 
             Component.onCompleted: {
-                app.setPathCacheStatus(1); //rendering of the route cache on the map is completed
+                route_engine.setPathCacheStatus(1); //rendering of the route cache on the map is completed
             }
 
             MouseArea{
@@ -132,16 +132,33 @@ Rectangle {
 
                 onClicked: {
                     if(mouse.button == Qt.LeftButton){
-                        app.onUnselectRouteOnMap();
+                        route_engine.onUnselectRouteOnMap();
                     }
                     else if (mouse.button === Qt.LeftButton && mouse.modifiers & Qt.ShiftModifier) {
                     }
 
                     opacity = 1;
-                    app.onSelectRouteOnMap(index);
+                    route_engine.onSelectRouteOnMap(index);
                 }
             }
         }
+    }
+
+    ListModel{
+        id: warehouseListModel
+    }
+
+    Connections {
+           target: warehouse_engine
+
+           function onAddWarehouse(){
+               var newWarehouse = {};
+
+               newWarehouse.PosLat = warehouse_engine.Lat;
+               newWarehouse.PosLng = warehouse_engine.Lng;
+
+               warehouseListModel.append(newWarehouse);
+           }
     }
 
     Component{
@@ -157,7 +174,7 @@ Rectangle {
             }
                anchorPoint.x: startPathMarker.width / 2
                anchorPoint.y: startPathMarker.height / 2
-               coordinate: model.isCachePath ? app.RoutePath[app.RoutePath.length - 1] : routeModel.status === RouteModel.Ready ?
+               coordinate: model.isCachePath ? route_engine.RoutePath[route_engine.RoutePath.length - 1] : routeModel.status === RouteModel.Ready ?
                                routeModel.get(0).path[routeModel.get(0).path.length - 1] : QtPositioning.coordinate()
 
                sourceItem: Rectangle {
@@ -186,10 +203,15 @@ Rectangle {
 
                anchorPoint.x: startPathMarker.width / 2
                anchorPoint.y: startPathMarker.height / 2
-               coordinate: model.isCachePath ? app.RoutePath[0] :
-                           routeModel.status === RouteModel.Ready ? routeModel.get(0).path[0] : QtPositioning.coordinate()
+               coordinate: QtPositioning.coordinate(model.PosLat, model.PosLng)/*model.isCachePath ? route_engine.RoutePath[0] :
+                           routeModel.status === RouteModel.Ready ? routeModel.get(0).path[0] : QtPositioning.coordinate()*/
 
-               sourceItem: Rectangle {
+               sourceItem: Image {
+                   source: "qrc:/WarehouseDepart.svg"
+                   width: 50;
+                   height: 50;
+               }
+               /*Rectangle {
                    id: startPathMarker
                    width: 1.5 * map.zoomLevel
                    height: 1.5 * map.zoomLevel
@@ -198,7 +220,7 @@ Rectangle {
                    border.color: "red"
                    color: "white"
                    opacity: model.opacity
-               }
+               }*/
          }
     }
 
@@ -222,8 +244,8 @@ Rectangle {
         }
 
         MapItemView {
-            id: startPoint
-            model: routeListModel
+            id: warehousePoint
+            model: warehouseListModel
             delegate: startPointDelegate
             z:3
         }
@@ -244,7 +266,7 @@ Rectangle {
                 if(selectionRoutes.length){
                     for(var routeIndex = 0; routeIndex < selectionRoutes.length; ++routeIndex){
                         routeListModel.get(routeIndex).opacity = defOpasity;
-                        app.onUnselectRouteOnMap();
+                        route_engine.onUnselectRouteOnMap();
                     }
                     selectionRoutes.length = 0;
                 }
