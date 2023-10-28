@@ -33,7 +33,7 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget* parent)
 
     auto warehouse_code_lay = new QHBoxLayout();
     warehouse_code_lay->addWidget(warehouse_code_);
-    auto spacer = new QSpacerItem(320, 0, QSizePolicy::Fixed);
+    auto spacer = new QSpacerItem(250, 0, QSizePolicy::Fixed);
     warehouse_code_lay->addItem(spacer);
 
     auto warehouse_position_label = new QLabel("Position:", this);
@@ -226,8 +226,8 @@ void CreateWarehouseDialog::warehouseLatAdding()
         warehouse_lat_->setStyleSheet("color: #b7161a;");
         enabledAddCurgo(false);
         messege_label_->show();
-        if(warehouse_code_->text() != "add a new warehouse") {
-            warehouse_code_->setText("add a new warehouse");
+        if(warehouse_code_->text() != "automatic generation") {
+            warehouse_code_->setText("automatic generation");
         }
     }
     else {
@@ -244,8 +244,8 @@ void CreateWarehouseDialog::warehouseLngAdding()
         warehouse_lng_->setStyleSheet("color: #b7161a;");
         enabledAddCurgo(false);
         messege_label_->show();
-        if(warehouse_code_->text() != "add a new warehouse"){
-            warehouse_code_->setText("add a new warehouse");
+        if(warehouse_code_->text() != "automatic generation"){
+            warehouse_code_->setText("automatic generation");
         }
     }
     else {

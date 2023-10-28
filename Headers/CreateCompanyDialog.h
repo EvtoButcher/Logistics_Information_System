@@ -7,6 +7,7 @@
 
 class QLineEdit;
 class WarehouseWidget;
+class DestinationWudget;
 class Company;
 class QLabel;
 class QPushButton;
@@ -34,6 +35,7 @@ private:
     QLabel*            messege_label_;
     QLineEdit*         company_name_line_edit_;
     WarehouseWidget*   warehouse_widget_;
+    DestinationWudget* destination_widget_;
     Company*           company_;
 };
 

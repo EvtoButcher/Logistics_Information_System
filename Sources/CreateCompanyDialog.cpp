@@ -9,6 +9,7 @@
 
 #include "Headers/CreateCompanyDialog.h"
 #include "Headers/WarehouseControlWidget.h"
+#include "Headers/DestinationControlWudget.h"
 #include "Headers/Company.h"
 
 CreateCompanyDialog::CreateCompanyDialog(WarehouseModel& model, QWidget *parent)
@@ -37,6 +38,14 @@ CreateCompanyDialog::CreateCompanyDialog(WarehouseModel& model, QWidget *parent)
     warehouse_widget_ = new WarehouseWidget(model, this);
     warehouse_widget_->setEnabled(false);
 
+    auto separator_1 = new QFrame(this);
+    separator_1->setFrameShape(QFrame::HLine);
+    separator_1->setFrameShadow(QFrame::Sunken);
+    separator_1->setFixedHeight(2);
+
+    destination_widget_ = new DestinationWudget(this);
+    destination_widget_->setEnabled(false);
+
     create_company_button_ = new QPushButton("Create company",this);
     create_company_button_->setEnabled(false);
     //close_button_ = new QPushButton("Close",this);
@@ -53,6 +62,8 @@ CreateCompanyDialog::CreateCompanyDialog(WarehouseModel& model, QWidget *parent)
     control_lay->addWidget(messege_label_);
     control_lay->addWidget(separator);
     control_lay->addWidget(warehouse_widget_);
+    control_lay->addWidget(separator_1);
+    control_lay->addWidget(destination_widget_);
     control_lay->addItem(button_lay);
 
     layout()->addItem(control_lay);
@@ -79,15 +90,18 @@ void CreateCompanyDialog::addWarehouse(Warehouse* warehouse)
 
 void CreateCompanyDialog::trySetCompanyName()
 {
-    company_->setName(company_name_line_edit_->text());
-    warehouse_widget_->setEnabled(true);
-    if(!company_name_line_edit_->text().isEmpty()){
+    if(!company_name_line_edit_->text().isEmpty()) {
        messege_label_->hide();
+       company_->setName(company_name_line_edit_->text());
+       warehouse_widget_->setEnabled(true);
+       destination_widget_->setEnabled(true);
        create_company_button_->setEnabled(true);
     }
     else {
         messege_label_->show();
         create_company_button_->setEnabled(false);
+        warehouse_widget_->setEnabled(false);
+        destination_widget_->setEnabled(false);
     }
 }
 

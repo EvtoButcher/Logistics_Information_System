@@ -24,7 +24,21 @@ double WarehouseModel::lng()
     return info_.position_.longitude();
 }
 
-WarehouseInfo::WarehouseInfo(const uint64_t code, const QGeoCoordinate &pos)
+void WarehouseModel::setWarehouseStatus(int current_status)
+{
+     warehouse_status_ = static_cast<UploadWarehouseStatus>(current_status);
+}
+
+UploadWarehouseStatus WarehouseModel::checkWarehouseStatus()
+{
+    if(warehouse_status_ == UploadWarehouseStatus::Colpleted) {//TODO add UploadStatus::Error handling
+           warehouse_status_ = UploadWarehouseStatus::Null;
+           return UploadWarehouseStatus::Colpleted;
+    }
+    return warehouse_status_;
+}
+
+WarehouseInfo::WarehouseInfo(const uint64_t code, const QGeoCoordinate pos)
     : code_(code)
     , position_(pos)
 {

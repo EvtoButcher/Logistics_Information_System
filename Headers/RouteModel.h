@@ -28,7 +28,7 @@ struct RouteInfo{
     QVector<QGeoCoordinate> path_cache_;
 };
 
-enum class UploadStatus{
+enum class UploadRouteStatus{
     Null,
     Colpleted,
     Loading,
@@ -61,8 +61,8 @@ public:
     Q_INVOKABLE void setRouteStatus(int current_status /*UploadStatus*/);
     Q_INVOKABLE void setPathCacheStatus(int current_status /*UploadStatus*/);
 
-    UploadStatus checkPathCacheStatus();
-    UploadStatus checkRouteStatus();
+    UploadRouteStatus checkPathCacheStatus();
+    UploadRouteStatus checkRouteStatus();
     const RouteInfo& getInfo();
 
 signals:
@@ -78,8 +78,8 @@ signals:
 
 private:
     RouteInfo route_;
-    UploadStatus route_status_ = UploadStatus::Null;
-    UploadStatus path_cache_status_ = UploadStatus::Null;
+    UploadRouteStatus route_status_ = UploadRouteStatus::Null;
+    UploadRouteStatus path_cache_status_ = UploadRouteStatus::Null;
 };
 
 #endif // ROUTEMODEL_H

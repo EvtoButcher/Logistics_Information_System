@@ -3,5 +3,6 @@
         <file>Minus.svg</file>
         <file>Plus.svg</file>
         <file>WarehouseDepart.svg</file>
+        <file>Destination.svg</file>
     </qresource>
 </RCC>

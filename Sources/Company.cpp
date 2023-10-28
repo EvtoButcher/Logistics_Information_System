@@ -75,8 +75,22 @@ bool Warehouse::isValid() const
     return code_ && position_.isValid();
 }
 
-Destination::Destination(const QString &name)
-    : name_(name)
+Destination::Destination(const QGeoCoordinate &pos)
+{
+    double tmp_lat = pos.latitude();
+    double tmp_lng = pos.longitude();
+    uint64_t hash_lat = *reinterpret_cast<uint64_t*>(&tmp_lat);
+    uint64_t hash_lng = *reinterpret_cast<uint64_t*>(&tmp_lng);
+
+    code_ = hash_lat ^ hash_lng;
+}
+
+uint64_t Destination::getCode() const
+{
+    return code_;
+}
+
+const QGeoCoordinate &Destination::getPosition() const
 {
 
 }

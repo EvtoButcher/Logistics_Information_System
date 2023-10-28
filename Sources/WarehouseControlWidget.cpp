@@ -64,7 +64,7 @@ WarehouseWidget::WarehouseWidget(WarehouseModel& warehouse_model, QWidget *paren
     layout()->addItem(button_lay);
     layout()->setMargin(0);
 
-    settings_map_->setMinimumSize(QSize(600, 610));
+    settings_map_->setMinimumSize(QSize(700, 700));
     settings_map_->rootContext()->setContextProperty(CONTEXT_WAREHOUSE_NAME, &warehouse_model);
     settings_map_->setSource(QUrl(QStringLiteral("qrc:/SettingMap.qml")));
 

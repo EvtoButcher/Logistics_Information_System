@@ -16,28 +16,28 @@ void RouteModel::setRoute(const RouteInfo &new_route)
 
 void RouteModel::setRouteStatus(int current_status)
 {
-    route_status_ = static_cast<UploadStatus>(current_status);
+    route_status_ = static_cast<UploadRouteStatus>(current_status);
 }
 
 void RouteModel::setPathCacheStatus(int current_status)
 {
-    path_cache_status_ = static_cast<UploadStatus>(current_status);
+    path_cache_status_ = static_cast<UploadRouteStatus>(current_status);
 }
 
-UploadStatus RouteModel:: checkPathCacheStatus()
+UploadRouteStatus RouteModel:: checkPathCacheStatus()
 {
-    if(path_cache_status_ == UploadStatus::Colpleted) {//TODO add UploadStatus::Error handling
-           path_cache_status_ = UploadStatus::Null;
-           return UploadStatus::Colpleted;
+    if(path_cache_status_ == UploadRouteStatus::Colpleted) {//TODO add UploadStatus::Error handling
+           path_cache_status_ = UploadRouteStatus::Null;
+           return UploadRouteStatus::Colpleted;
     }
     return route_status_;
 }
 
-UploadStatus RouteModel::checkRouteStatus()
+UploadRouteStatus RouteModel::checkRouteStatus()
 {
-    if(route_status_ == UploadStatus::Colpleted) {//TODO add UploadStatus::Error handling
-           route_status_ = UploadStatus::Null;
-           return UploadStatus::Colpleted;
+    if(route_status_ == UploadRouteStatus::Colpleted) {//TODO add UploadStatus::Error handling
+           route_status_ = UploadRouteStatus::Null;
+           return UploadRouteStatus::Colpleted;
     }
     return route_status_;
 }
@@ -100,7 +100,7 @@ void RouteModel::setPathCache(QJSValue path)
 
     route_.path_distance_ = distance / 1000;
 
-    path_cache_status_ = UploadStatus::Colpleted;
+    path_cache_status_ = UploadRouteStatus::Colpleted;
 }
 
 RouteInfo::RouteInfo(QString name, double start_lat, double start_lng, double end_lat, double end_lng, QString color)

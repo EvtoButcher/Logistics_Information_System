@@ -6,6 +6,8 @@ import QtQml.Models 2.15
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
+import "commonQML.js" as Common
+
 Rectangle {
     id: mapBox
 
@@ -38,12 +40,7 @@ Rectangle {
 
                routeListModel.append(newRoute);
 
-               if(centrMapLat !== route_engine.StartLat){
-                   centrMapLat = route_engine.StartLat;
-               }
-               if(centrMapLng !== route_engine.StartLng){
-                   centrMapLng = route_engine.StartLng;
-               }
+               Common.setNewCenter(route_engine.StartLat, route_engine.StartLng);
            }
 
            function onRemoveRoute(index){
@@ -151,7 +148,18 @@ Rectangle {
     Connections {
            target: warehouse_engine
 
-           function onAddWarehouse(){
+           function onAddWarehouse() {
+               var newWarehouse = {};
+
+               newWarehouse.PosLat = warehouse_engine.Lat;
+               newWarehouse.PosLng = warehouse_engine.Lng;
+
+               warehouseListModel.append(newWarehouse);
+
+               Common.setNewCenter(warehouse_engine.Lat, warehouse_engine.Lng);
+           }
+
+           function onRestorWarehouse() {
                var newWarehouse = {};
 
                newWarehouse.PosLat = warehouse_engine.Lat;
@@ -159,6 +167,31 @@ Rectangle {
 
                warehouseListModel.append(newWarehouse);
            }
+    }
+
+    Component{
+        id: warehouseDelegate
+
+        MapQuickItem {
+
+            RouteModel{
+               id: routeModel
+               autoUpdate:false
+               plugin: osmPlugin
+            }
+
+            coordinate: QtPositioning.coordinate(model.PosLat, model.PosLng)
+
+            Component.onCompleted: {
+                warehouse_engine.setWarehouseStatus(1);
+            }
+
+            sourceItem: Image {
+               source: "qrc:/WarehouseDepart.svg"
+               width: 50;
+               height: 50;
+           }
+         }
     }
 
     Component{
@@ -172,55 +205,23 @@ Rectangle {
                 plugin: osmPlugin
 
             }
-               anchorPoint.x: startPathMarker.width / 2
-               anchorPoint.y: startPathMarker.height / 2
-               coordinate: model.isCachePath ? route_engine.RoutePath[route_engine.RoutePath.length - 1] : routeModel.status === RouteModel.Ready ?
-                               routeModel.get(0).path[routeModel.get(0).path.length - 1] : QtPositioning.coordinate()
+           anchorPoint.x: startPathMarker.width / 2
+           anchorPoint.y: startPathMarker.height / 2
+           coordinate: model.isCachePath ? route_engine.RoutePath[route_engine.RoutePath.length - 1] :
+                           routeModel.status === RouteModel.Ready ?
+                                routeModel.get(0).path[routeModel.get(0).path.length - 1] :
+                                               QtPositioning.coordinate()
 
-               sourceItem: Rectangle {
-                   id: startPathMarker
-                   width: 1.5 * map.zoomLevel
-                   height: 1.5 * map.zoomLevel
-                   radius: 180
-                   border.width: 5
-                   border.color: "gray"
-                   color: "white"
-                   opacity: model.opacity
-               }
-         }
-    }
-
-    Component{
-        id: startPointDelegate
-
-        MapQuickItem {
-
-            RouteModel{
-               id: routeModel
-               autoUpdate:false
-               plugin: osmPlugin
-            }
-
-               anchorPoint.x: startPathMarker.width / 2
-               anchorPoint.y: startPathMarker.height / 2
-               coordinate: QtPositioning.coordinate(model.PosLat, model.PosLng)/*model.isCachePath ? route_engine.RoutePath[0] :
-                           routeModel.status === RouteModel.Ready ? routeModel.get(0).path[0] : QtPositioning.coordinate()*/
-
-               sourceItem: Image {
-                   source: "qrc:/WarehouseDepart.svg"
-                   width: 50;
-                   height: 50;
-               }
-               /*Rectangle {
-                   id: startPathMarker
-                   width: 1.5 * map.zoomLevel
-                   height: 1.5 * map.zoomLevel
-                   radius: 180
-                   border.width: 5
-                   border.color: "red"
-                   color: "white"
-                   opacity: model.opacity
-               }*/
+           sourceItem: Rectangle {
+               id: startPathMarker
+               width: 1.5 * map.zoomLevel
+               height: 1.5 * map.zoomLevel
+               radius: 180
+               border.width: 5
+               border.color: "gray"
+               color: "white"
+               opacity: model.opacity
+           }
          }
     }
 
@@ -246,7 +247,7 @@ Rectangle {
         MapItemView {
             id: warehousePoint
             model: warehouseListModel
-            delegate: startPointDelegate
+            delegate: warehouseDelegate
             z:3
         }
 

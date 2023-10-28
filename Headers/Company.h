@@ -42,10 +42,14 @@ private:
 
 class Destination
 {
-    Destination(const QString& name);
+public:
+    explicit Destination(const QGeoCoordinate& pos);
+
+    uint64_t getCode() const;
 
 private:
-    QString name_;
+    uint64_t code_ = 0;
+    QGeoCoordinate position_;
 };
 
 

@@ -26,28 +26,27 @@ void MapItemEngine::restoreMap()
     table_model.setTable(MAIN_TABLE);
     table_model.select();
 
-    if(!table_model.rowCount()) {
-        return;
-    }
+    if(table_model.rowCount()) {
+        for (int row = 0; row < table_model.rowCount(); ++row) {
 
-    for (int row = 0; row < table_model.rowCount(); ++row) {
+            auto code = table_model.data(table_model.index(row, 7)).toString();
+            RouteInfo info(code,//code
+                           common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()),//start position
+                           common::splitCoordinates(table_model.data(table_model.index(row, 3)).toString()),//end position
+                           route_db_->selectPath(code), //cache
+                           table_model.data(table_model.index(row, 1)).toString());//color
 
-        auto code = table_model.data(table_model.index(row, 7)).toString();
-        RouteInfo info(code,//code
-                       common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()),//start position
-                       common::splitCoordinates(table_model.data(table_model.index(row, 3)).toString()),//end position
-                       route_db_->selectPath(code), //cache
-                       table_model.data(table_model.index(row, 1)).toString());//color
+            route_model_.setRoute(info);
 
-        route_model_.setRoute(info);
+            emit route_model_.restorRoute();
 
-        emit route_model_.restorRoute();
-
-        while(route_model_.checkPathCacheStatus() != UploadStatus::Colpleted); //waiting for the route to be loaded on the map
-        QThread::msleep(10);
+            while(route_model_.checkPathCacheStatus() != UploadRouteStatus::Colpleted); //waiting for the route to be loaded on the map
+            QThread::msleep(10);
+        }
     }
 
     table_model.setTable(WAREHOUSE_TABLE);
+    table_model.select();
 
     if(!table_model.rowCount()) {
         return;
@@ -56,13 +55,13 @@ void MapItemEngine::restoreMap()
     for (int row = 0; row < table_model.rowCount(); ++row) {
 
         WarehouseInfo info (table_model.data(table_model.index(row, 1)).toInt(),
-                            common::splitCoordinates(table_model.data(table_model.index(row, 1)).toString()));
+                            common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()));
 
         warehouse_model_.setWarehouse(info);
 
         emit warehouse_model_.restorWarehouse();
 
-        //while(route_model_.checkPathCacheStatus() != UploadStatus::Colpleted); //waiting for the route to be loaded on the map
+        while(warehouse_model_.checkWarehouseStatus() != UploadWarehouseStatus::Colpleted);
         QThread::msleep(10);
     }
 }
@@ -106,9 +105,14 @@ void MapItemEngine::addWarehouse(const uint64_t code, const QGeoCoordinate posit
     emit warehouse_model_.addWarehouse();
 }
 
+void MapItemEngine::addDestination(const uint64_t code, const QGeoCoordinate position)
+{
+
+}
+
 void MapItemEngine::setPathCacheAndDistance()
 {
-    while(route_model_.checkRouteStatus() != UploadStatus::Colpleted);
+    while(route_model_.checkRouteStatus() != UploadRouteStatus::Colpleted);
     QThread::sleep(1);
 
     route_db_->insrtrIntoPathTable(route_model_.getInfo().code_, route_model_.getInfo().path_cache_);

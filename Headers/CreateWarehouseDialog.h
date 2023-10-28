@@ -14,7 +14,7 @@ class CreateWarehouseDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit CreateWarehouseDialog(/*QQuickWidget* map,*/QWidget* parent = nullptr);
+    explicit CreateWarehouseDialog(QWidget* parent = nullptr);
 
 signals:
     void createWarehouse(Warehouse*);
