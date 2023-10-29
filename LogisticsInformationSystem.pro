@@ -11,6 +11,7 @@ HEADERS += \
     Headers/CreateDestinationDialog.h \
     Headers/CreateWarehouseDialog.h \
     Headers/DestinationControlWudget.h \
+    Headers/DestinationModel.h \
     Headers/MapItemEngine.h \
     Headers/OrderAddDialog.h \
     Headers/OrderAddWidget.h \
@@ -31,6 +32,7 @@ SOURCES += \
     Sources/CreateDestinationDialog.cpp \
     Sources/CreateWarehouseDialog.cpp \
     Sources/DestinationControlWudget.cpp \
+    Sources/DestinationModel.cpp \
     Sources/MapItemEngine.cpp \
     Sources/OrderAddDialog.cpp \
     Sources/OrderAddWidget.cpp \

@@ -64,11 +64,36 @@ void MapItemEngine::restoreMap()
         while(warehouse_model_.checkWarehouseStatus() != UploadWarehouseStatus::Colpleted);
         QThread::msleep(10);
     }
+
+    table_model.setTable(DESTINATION_TABLE);
+    table_model.select();
+
+    if(!table_model.rowCount()) {
+        return;
+    }
+
+    for (int row = 0; row < table_model.rowCount(); ++row) {
+
+        DestinationInfo info (table_model.data(table_model.index(row, 1)).toInt(),
+                            common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()));
+
+        destination_modal_.setDestination(info);
+
+        emit destination_modal_.addDestination();
+
+        while(destination_modal_.checkDestinationStatus() != UploadDestinationStatus::Colpleted);
+        QThread::msleep(10);
+    }
 }
 
-WarehouseModel &MapItemEngine::getWarehouseModel()
+WarehouseModel& MapItemEngine::getWarehouseModel()
 {
     return warehouse_model_;
+}
+
+DestinationModel& MapItemEngine::getDestinationModel()
+{
+    return destination_modal_;
 }
 
 const OrderDB *MapItemEngine::getDB()
@@ -107,7 +132,9 @@ void MapItemEngine::addWarehouse(const uint64_t code, const QGeoCoordinate posit
 
 void MapItemEngine::addDestination(const uint64_t code, const QGeoCoordinate position)
 {
-
+    route_db_->insertIntoDestinationTable(code, position);
+    destination_modal_.setDestination({code, position});
+    emit destination_modal_.addDestination();
 }
 
 void MapItemEngine::setPathCacheAndDistance()

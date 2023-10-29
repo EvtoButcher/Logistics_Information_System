@@ -16,6 +16,7 @@ class QSqlQuery;
 #define MAIN_TABLE          "Orders"    //TODO: replace with file.conf
 #define PATH_TABLE          "PathTable" //
 #define WAREHOUSE_TABLE     "Warehouse_table"
+#define DESTINATION_TABLE     "Destination_table"
 
 enum class ConnectionStatus{
     Offline,
@@ -46,6 +47,7 @@ public:
     const QString selectPath(const QString code);
 
     void insertIntoWarehouseTable(const uint64_t code, const QGeoCoordinate position);
+    void insertIntoDestinationTable(const uint64_t code, const QGeoCoordinate position);
 
 signals:
     void DbIsOpen();

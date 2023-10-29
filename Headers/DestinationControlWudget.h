@@ -2,17 +2,25 @@
 #define DESTINATIONCONTROLWUDGET_H
 
 #include <QWidget>
+#include "Company.h"
 
 class QPushButton;
 class QTableWidget;
 class QLabel;
 class CreateDestinationDialog;
+//class Destination;
 
 class DestinationWudget : public QWidget
 {
     Q_OBJECT
 public:
     explicit DestinationWudget(QWidget* parent = nullptr);
+
+signals:
+    void addDestinationToCompany(Destination*);
+
+private slots:
+    void addDestination(Destination* destination);
 
 private:
     QLabel*                  destination_label_;

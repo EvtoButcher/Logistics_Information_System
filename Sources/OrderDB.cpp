@@ -183,7 +183,28 @@ void OrderDB::insertIntoWarehouseTable(const uint64_t code, const QGeoCoordinate
      }
      else {
         qDebug() << query->lastQuery();
+    }
+}
+
+void OrderDB::insertIntoDestinationTable(const uint64_t code, const QGeoCoordinate position)
+{
+    query->prepare("INSERT INTO " DESTINATION_TABLE " ("        //
+                                                  "code, "      //TODO: add error handling
+                                                  "position) "  //
+                   "VALUES (:Code,  :Pos)");
+
+    qDebug() << QString::number(code) << QString::number(position.latitude(), 'f', 6) + " " + QString::number(position.longitude(), 'f', 6);
+    query->bindValue(":Code", QString::number(code));
+    query->bindValue(":Pos",  QString::number(position.latitude(), 'f', 6) + " " + QString::number(position.longitude(), 'f', 6));
+
+
+    if(!query->exec()) {
+        qDebug() << "error insert into " << DESTINATION_TABLE;
+        qDebug() << query->lastError().text();
      }
+     else {
+        qDebug() << query->lastQuery();
+    }
 }
 
 std::optional<QSqlError> OrderDB::createTables()
@@ -213,6 +234,15 @@ std::optional<QSqlError> OrderDB::createTables()
     }
 
     query->prepare("CREATE TABLE " WAREHOUSE_TABLE " ("
+                                                   "id         INTEGER PRIMARY KEY, "
+                                                   "code       CHAR, "
+                                                   "position   CHAR )");
+
+    if(!query->exec()){
+         return std::make_optional(query->lastError());
+    }
+
+    query->prepare("CREATE TABLE " DESTINATION_TABLE " ("
                                                    "id         INTEGER PRIMARY KEY, "
                                                    "code       CHAR, "
                                                    "position   CHAR )");

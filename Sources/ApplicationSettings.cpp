@@ -26,7 +26,7 @@ ApplicationSettings::~ApplicationSettings()
 
 void ApplicationSettings::saveSettings(const Company* company)
 {
-    //settings_.setValue("Company/name", company->getName());
+    settings_.setValue("Company/name", company->getName());
 }
 
 const QString ApplicationSettings::dbName() const

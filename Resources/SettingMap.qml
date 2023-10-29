@@ -29,14 +29,14 @@ Rectangle {
            target: warehouseModel
 
            function onAddWarehouse() {
-               var newRoute = {};
+               var newWarehouse = {};
 
-               newRoute.lat = warehouseModel.Lat;
-               newRoute.lng = warehouseModel.Lng;
+               newWarehouse.lat = warehouseModel.Lat;
+               newWarehouse.lng = warehouseModel.Lng;
 
-               warehouseListModel.append(newRoute);
+               warehouseListModel.append(newWarehouse);
 
-               Common.setNewCenter(warehouse_engine.Lat, warehouse_engine.Lng);
+               Common.setNewCenter(warehouseModel.Lat, warehouseModel.Lng);
             }
     }
 
@@ -52,6 +52,42 @@ Rectangle {
                                width: 50;
                                height: 50;
                            }
+         }
+    }
+
+
+    ListModel{
+        id: destinationListModel
+    }
+
+    Connections {
+           target: destinationModel
+
+           function onAddDestination() {
+               var newDestination = {};
+
+               newDestination.lat = destinationModel.Lat;
+               newDestination.lng = destinationModel.Lng;
+
+               destinationListModel.append(newDestination);
+
+               Common.setNewCenter(destinationModel.Lat, destinationModel.Lng);
+            }
+    }
+
+
+    Component{
+        id: destinationDelegate
+        MapQuickItem {
+            //anchorPoint.x: destinationMarker.width / 2
+            anchorPoint.y: destinationMarker.height / 2
+            coordinate: QtPositioning.coordinate(model.lat, model.lng);
+            sourceItem: Image {
+                           id: destinationMarker;
+                           source: "qrc:/Destination.svg"
+                           width: 50;
+                           height: 50;
+                       }
          }
     }
 
@@ -72,6 +108,13 @@ Rectangle {
             id: warehouse
             model: warehouseListModel
             delegate: warehouseDelegate
+            //z:3
+        }
+
+        MapItemView {
+            id: destination
+            model: destinationListModel
+            delegate: destinationDelegate
             //z:3
         }
 

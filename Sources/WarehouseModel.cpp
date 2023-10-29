@@ -1,5 +1,3 @@
-
-
 #include "Headers/WarehouseModel.h"
 
 

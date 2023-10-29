@@ -173,13 +173,6 @@ Rectangle {
         id: warehouseDelegate
 
         MapQuickItem {
-
-            RouteModel{
-               id: routeModel
-               autoUpdate:false
-               plugin: osmPlugin
-            }
-
             coordinate: QtPositioning.coordinate(model.PosLat, model.PosLng)
 
             Component.onCompleted: {
@@ -194,36 +187,78 @@ Rectangle {
          }
     }
 
-    Component{
-        id: endPointDelegate
+    ListModel{
+        id: destinationListModel
+    }
 
-        MapQuickItem {
+    Connections {
+           target: destination_engine
 
-            RouteModel{
-                id: routeModel
-                autoUpdate:false
-                plugin: osmPlugin
+           function onAddDestination() {
+               var newDestination = {};
 
+               newDestination.lat = destination_engine.Lat;
+               newDestination.lng = destination_engine.Lng;
+
+               destinationListModel.append(newDestination);
+
+               //Common.setNewCenter(destination_engine.Lat, destination_engine.Lng);
             }
-           anchorPoint.x: startPathMarker.width / 2
-           anchorPoint.y: startPathMarker.height / 2
-           coordinate: model.isCachePath ? route_engine.RoutePath[route_engine.RoutePath.length - 1] :
-                           routeModel.status === RouteModel.Ready ?
-                                routeModel.get(0).path[routeModel.get(0).path.length - 1] :
-                                               QtPositioning.coordinate()
 
-           sourceItem: Rectangle {
-               id: startPathMarker
-               width: 1.5 * map.zoomLevel
-               height: 1.5 * map.zoomLevel
-               radius: 180
-               border.width: 5
-               border.color: "gray"
-               color: "white"
-               opacity: model.opacity
-           }
+    }
+
+
+    Component{
+        id: destinationDelegate
+        MapQuickItem {
+            anchorPoint.x: destinationMarker.width / 2
+            anchorPoint.y: destinationMarker.height / 2
+
+            coordinate: QtPositioning.coordinate(model.lat, model.lng);
+
+            sourceItem: Image {
+                           id: destinationMarker;
+                           source: "qrc:/Destination.svg"
+                           width: 50;
+                           height: 50;
+                       }
+
+            Component.onCompleted: {
+                destination_engine.setDestinationStatus(1);
+            }
          }
     }
+
+//    Component{
+//        id: endPointDelegate
+
+//        MapQuickItem {
+
+//            RouteModel{
+//                id: routeModel
+//                autoUpdate:false
+//                plugin: osmPlugin
+
+//            }
+//           anchorPoint.x: startPathMarker.width / 2
+//           anchorPoint.y: startPathMarker.height / 2
+//           coordinate: model.isCachePath ? route_engine.RoutePath[route_engine.RoutePath.length - 1] :
+//                           routeModel.status === RouteModel.Ready ?
+//                                routeModel.get(0).path[routeModel.get(0).path.length - 1] :
+//                                               QtPositioning.coordinate()
+
+//           sourceItem: Rectangle {
+//               id: startPathMarker
+//               width: 1.5 * map.zoomLevel
+//               height: 1.5 * map.zoomLevel
+//               radius: 180
+//               border.width: 5
+//               border.color: "gray"
+//               color: "white"
+//               opacity: model.opacity
+//           }
+//         }
+//    }
 
     Map {
         id: map
@@ -252,9 +287,9 @@ Rectangle {
         }
 
         MapItemView {
-            id: endPoint
-            model: routeListModel
-            delegate: endPointDelegate
+            id: destinationPoint
+            model: destinationListModel
+            delegate: destinationDelegate
             z:3
         }
 

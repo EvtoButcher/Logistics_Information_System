@@ -22,6 +22,7 @@ class Warehouse
 {
 public:
     explicit Warehouse(const QGeoCoordinate& pos);
+    explicit Warehouse(const uint64_t code, const QGeoCoordinate& pos);
     ~Warehouse();
 
     void addCurgo(Curgo *curgo);
@@ -44,8 +45,11 @@ class Destination
 {
 public:
     explicit Destination(const QGeoCoordinate& pos);
+    explicit Destination(const uint64_t code, const QGeoCoordinate& pos);
 
     uint64_t getCode() const;
+    const QGeoCoordinate& getPosition() const;
+    bool isValid() const;
 
 private:
     uint64_t code_ = 0;
@@ -53,6 +57,7 @@ private:
 };
 
 
+class ApplicationSettings;
 
 class Company
 {
@@ -65,6 +70,8 @@ public:
     void addDestination(Destination* destination);
 
     const QString getName() const;
+
+    void restorCompany(const ApplicationSettings& setting);
 
 private:
     QString company_name_;

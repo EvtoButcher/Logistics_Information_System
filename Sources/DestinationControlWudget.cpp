@@ -45,4 +45,27 @@ DestinationWudget::DestinationWudget(QWidget *parent)
     layout()->addItem(button_lay);
 
     connect(add_destination_button_, &QAbstractButton::clicked, [=](){create_destination_dialog_->exec();});
+    connect(create_destination_dialog_, &CreateDestinationDialog::createDestination, this, &DestinationWudget::addDestination);
+}
+
+void DestinationWudget::addDestination(Destination *destination)
+{
+    emit addDestinationToCompany(destination);
+
+    int row_count = destination_table_->rowCount();
+    destination_table_->setRowCount(row_count + 1);
+
+    for(int colum_index = 0; colum_index < destination_table_->columnCount(); ++colum_index){
+        auto* newItem = new QTableWidgetItem();
+        switch (colum_index) {
+            case 0:
+                newItem->setText("#" + QString::number(destination->getCode())); /*Code*/
+                break;
+            case 1:
+                newItem->setText(destination->getPosition().toString()); /*Weight*/
+                break;
+        }
+        destination_table_->setItem(row_count, colum_index, newItem);
+        destination_table_->resizeColumnToContents(1);
+    }
 }

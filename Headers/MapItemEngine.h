@@ -6,6 +6,7 @@
 
 #include "RouteModel.h"
 #include "WarehouseModel.h"
+#include "DestinationModel.h"
 
 class OrderDB;
 class ApplicationSettings;
@@ -18,11 +19,11 @@ public:
     MapItemEngine(const ApplicationSettings& setting, QObject *parent = nullptr);
 
     RouteModel &getRouteModel();
-    void restoreMap();
-
     WarehouseModel& getWarehouseModel();
-
+    DestinationModel& getDestinationModel();
     const OrderDB* getDB();
+
+    void restoreMap();
 
 signals:
     void distanceUpdated();
@@ -33,15 +34,16 @@ public slots:
     void routeColorUpdate(const int db_index, const int map_index, const QString& color);
 
     void addWarehouse(const uint64_t code, const QGeoCoordinate position);
+    void addDestination(const uint64_t code, const QGeoCoordinate position);
 
 private:
     void setPathCacheAndDistance();
 
 private:
-    OrderDB*         route_db_;
-
-    RouteModel      route_model_;
-    WarehouseModel  warehouse_model_;
+    OrderDB*          route_db_;
+    RouteModel        route_model_;
+    WarehouseModel    warehouse_model_;
+    DestinationModel  destination_modal_;
 };
 
 

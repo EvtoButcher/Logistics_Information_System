@@ -5,6 +5,8 @@
 #include <QPushButton>
 #include <QGeoCoordinate>
 
+#include <QDebug>
+
 #include "Headers/CreateDestinationDialog.h"
 #include "Headers/Company.h"
 
@@ -53,10 +55,9 @@ CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
     layout()->addWidget(create_destination_button_);
     layout()->setSpacing(10);
 
-
+    connect(create_destination_button_, &QAbstractButton::clicked, this, &CreateDestinationDialog::createDestinationButtonClicked);
     connect(destination_lat_, &QLineEdit::textEdited, this, &CreateDestinationDialog::destinationLatAdding);
     connect(destination_lng_, &QLineEdit::textEdited, this, &CreateDestinationDialog::destinationLngAdding);
-
 }
 
 void CreateDestinationDialog::tryCreateDestination()
@@ -107,4 +108,12 @@ void CreateDestinationDialog::destinationLngAdding()
         destination_lng_->setStyleSheet("color: black;");
         tryCreateDestination();
     }
+}
+
+void CreateDestinationDialog::createDestinationButtonClicked()
+{
+    emit createDestination(destination_);
+    destination_lat_->clear();
+    destination_lng_->clear();
+    this->close();
 }

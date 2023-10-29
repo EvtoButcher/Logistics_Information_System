@@ -22,10 +22,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->quickWidget->rootContext()->setContextProperty("route_engine", &map_engine_->getRouteModel());
     ui->quickWidget->rootContext()->setContextProperty("warehouse_engine", &map_engine_->getWarehouseModel());
+    ui->quickWidget->rootContext()->setContextProperty("destination_engine", &map_engine_->getDestinationModel());
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/OrderMap.qml")));
 
-    create_company_dialog_ = new CreateCompanyDialog(map_engine_->getWarehouseModel(), this);
+    create_company_dialog_ = new CreateCompanyDialog(map_engine_->getDestinationModel(), map_engine_->getWarehouseModel(), this);
     connect(create_company_dialog_, &CreateCompanyDialog::addWarehouseOnMap, map_engine_, &MapItemEngine::addWarehouse);
+    connect(create_company_dialog_, &CreateCompanyDialog::addDestinationOnMap, map_engine_, &MapItemEngine::addDestination);
 
     if(!settings_.companyIsValid()){
          create_company_dialog_->exec();
@@ -33,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
          settings_.saveSettings(company_);
     }
     else {
-
+        company_->restorCompany(settings_);
     }
 
     order_table_ = new OrderTable(map_engine_->getDB(), this);
@@ -86,7 +88,6 @@ void MainWindow::on_menuHelpGoSourse_triggered()
 
 void MainWindow::on_menuVievShowRouteTable_changed()
 {
-    qDebug() << ui->menuVievShowRouteTable->isChecked();
     ui->menuVievShowRouteTable->isChecked() ? ui->dockWidget->show() : ui->dockWidget->hide();
 }
 

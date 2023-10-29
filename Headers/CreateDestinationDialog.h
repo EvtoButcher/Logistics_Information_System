@@ -22,6 +22,7 @@ private slots:
     void tryCreateDestination();
     void destinationLatAdding();
     void destinationLngAdding();
+    void createDestinationButtonClicked();
 
 private:
     void enabledAddDestination(bool status);

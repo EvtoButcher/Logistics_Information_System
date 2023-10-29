@@ -4,17 +4,22 @@
 #include <QLineEdit>
 #include <QFont>
 #include <QPushButton>
+#include <QQuickWidget>
+#include <QQmlContext>
 
 #include <QDebug>
 
 #include "Headers/CreateCompanyDialog.h"
 #include "Headers/WarehouseControlWidget.h"
 #include "Headers/DestinationControlWudget.h"
+#include "Headers/WarehouseModel.h"
+#include "Headers/DestinationModel.h"
 #include "Headers/Company.h"
 
-CreateCompanyDialog::CreateCompanyDialog(WarehouseModel& model, QWidget *parent)
+CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, WarehouseModel& warehouse_model, QWidget *parent)
     : QDialog(parent)
     , company_(new Company)
+    , settings_map_(new QQuickWidget(parent))
 {
     setWindowTitle("Create Company");
     setBaseSize(400, 400);
@@ -35,7 +40,7 @@ CreateCompanyDialog::CreateCompanyDialog(WarehouseModel& model, QWidget *parent)
     separator->setFrameShadow(QFrame::Sunken);
     separator->setFixedHeight(2);
 
-    warehouse_widget_ = new WarehouseWidget(model, this);
+    warehouse_widget_ = new WarehouseWidget(/*model, */this);
     warehouse_widget_->setEnabled(false);
 
     auto separator_1 = new QFrame(this);
@@ -54,6 +59,11 @@ CreateCompanyDialog::CreateCompanyDialog(WarehouseModel& model, QWidget *parent)
     //button_lay->addSpacing(10);
     //button_lay->addWidget(close_button_);
 
+    settings_map_->setMinimumSize(QSize(700, 700));
+    settings_map_->rootContext()->setContextProperty(CONTEXT_WAREHOUSE_NAME, &warehouse_model);
+    settings_map_->rootContext()->setContextProperty(CONTEXT_DESTINATION_NAME, &destination_model);
+    settings_map_->setSource(QUrl(QStringLiteral("qrc:/SettingMap.qml")));
+
     auto control_lay = new QVBoxLayout();
 
     control_lay->setSpacing(10);
@@ -68,12 +78,13 @@ CreateCompanyDialog::CreateCompanyDialog(WarehouseModel& model, QWidget *parent)
 
     layout()->addItem(control_lay);
     layout()->setSpacing(10);
-    layout()->addWidget(warehouse_widget_->getSettingsMap());
+    layout()->addWidget(settings_map_);
 
     //connect(close_button_, &QAbstractButton::clicked, this, &CreateCompanyDialog::close);
     connect(create_company_button_, &QAbstractButton::clicked, this, &CreateCompanyDialog::createComponyButtonClicked);
     connect(company_name_line_edit_, &QLineEdit::textEdited, this, &CreateCompanyDialog::trySetCompanyName);
     connect(warehouse_widget_, &WarehouseWidget::addWarehouseToCompany, this, &CreateCompanyDialog::addWarehouse);
+    connect(destination_widget_, &DestinationWudget::addDestinationToCompany, this, &CreateCompanyDialog::addDestination);
 }
 
 Company* CreateCompanyDialog::getCompany()
@@ -84,8 +95,15 @@ Company* CreateCompanyDialog::getCompany()
 void CreateCompanyDialog::addWarehouse(Warehouse* warehouse)
 {
     company_->addWarehouse(warehouse);
-    qDebug() << warehouse->getCode() <<  warehouse->getPosition();
+    //qDebug() << warehouse->getCode() <<  warehouse->getPosition();
     emit addWarehouseOnMap(warehouse->getCode(), warehouse->getPosition());
+}
+
+void CreateCompanyDialog::addDestination(Destination* destination)
+{
+    //qDebug() << destination->getPosition().latitude() << destination->getPosition().longitude() << "BBBBBBBBBBBB";
+    company_->addDestination(destination);
+    emit addDestinationOnMap(destination->getCode(), destination->getPosition());
 }
 
 void CreateCompanyDialog::trySetCompanyName()
