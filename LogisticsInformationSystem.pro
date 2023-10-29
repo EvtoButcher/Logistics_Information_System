@@ -8,7 +8,11 @@ HEADERS += \
     Headers/ApplicationSettings.h \
     Headers/Company.h \
     Headers/CreateCompanyDialog.h \
+    Headers/CreateDestinationDialog.h \
     Headers/CreateWarehouseDialog.h \
+    Headers/DestinationControlWudget.h \
+    Headers/DestinationModel.h \
+    Headers/MapItemEngine.h \
     Headers/OrderAddDialog.h \
     Headers/OrderAddWidget.h \
     Headers/OrderDB.h \
@@ -25,7 +29,11 @@ SOURCES += \
     Sources/ApplicationSettings.cpp \
     Sources/Company.cpp \
     Sources/CreateCompanyDialog.cpp \
+    Sources/CreateDestinationDialog.cpp \
     Sources/CreateWarehouseDialog.cpp \
+    Sources/DestinationControlWudget.cpp \
+    Sources/DestinationModel.cpp \
+    Sources/MapItemEngine.cpp \
     Sources/OrderAddDialog.cpp \
     Sources/OrderAddWidget.cpp \
     Sources/OrderDB.cpp \

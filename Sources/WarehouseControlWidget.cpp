@@ -13,10 +13,9 @@
 
 #include "Headers/WarehouseControlWidget.h"
 
-WarehouseWidget::WarehouseWidget(QWidget *parent)
+WarehouseWidget::WarehouseWidget(/*WarehouseModel& warehouse_model,*/ QWidget *parent)
     : QWidget{parent}
-    , settings_map_(new QQuickWidget(parent))
-    , warehouse_model_(parent)
+    //, settings_map_(new QQuickWidget(parent))
 {
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
@@ -65,9 +64,9 @@ WarehouseWidget::WarehouseWidget(QWidget *parent)
     layout()->addItem(button_lay);
     layout()->setMargin(0);
 
-    settings_map_->setMinimumSize(QSize(600, 610));
-    settings_map_->rootContext()->setContextProperty(CONTEXT_WAREHOUSE_NAME, &warehouse_model_);
-    settings_map_->setSource(QUrl(QStringLiteral("qrc:/SettingMap.qml")));
+    //settings_map_->setMinimumSize(QSize(700, 700));
+    //settings_map_->rootContext()->setContextProperty(CONTEXT_WAREHOUSE_NAME, &warehouse_model);
+    //settings_map_->setSource(QUrl(QStringLiteral("qrc:/SettingMap.qml")));
 
     create_warehouse_dialog = new CreateWarehouseDialog(/*settings_map_,*/ this);
 
@@ -77,17 +76,17 @@ WarehouseWidget::WarehouseWidget(QWidget *parent)
     connect(warehouses_table_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &WarehouseWidget::warehouseSelectedOnTable);
 }
 
-QWidget* WarehouseWidget::getSettingsMap()
-{
-    return settings_map_;
-}
+//QWidget* WarehouseWidget::getSettingsMap()
+//{
+//    return settings_map_;
+//}
 
 void WarehouseWidget::addWarehouse(Warehouse *warehouse)
 {
     emit addWarehouseToCompany(warehouse);
 
-    warehouse_model_.setWarehouse({warehouse->getCode(), warehouse->getPosition()});
-    emit warehouse_model_.addWarehouse();
+//    warehouse_model_.setWarehouse({warehouse->getCode(), warehouse->getPosition()});
+//    emit warehouse_model_.addWarehouse();
 
     int row_count = warehouses_table_->rowCount();
     warehouses_table_->setRowCount(row_count + 1);

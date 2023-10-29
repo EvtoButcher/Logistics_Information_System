@@ -6,15 +6,15 @@ import QtQml.Models 2.15
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
+import "commonQML.js" as Common
+
 Rectangle {
     id: mapBox
-    width: 600
-    height: 610
+    width: 700
+    height: 700
 
     property double   centrMapLat: 55.7514399474066;
     property double   centrMapLng: 37.61889172533533;
-//    property double   defOpasity: 0.5
-//    property variant  selectionRoutes: [];
 
     Plugin{
         id: osmPlugin
@@ -29,19 +29,14 @@ Rectangle {
            target: warehouseModel
 
            function onAddWarehouse() {
-               var newRoute = {};
+               var newWarehouse = {};
 
-               newRoute.lat = warehouseModel.Lat;
-               newRoute.lng = warehouseModel.Lng;
+               newWarehouse.lat = warehouseModel.Lat;
+               newWarehouse.lng = warehouseModel.Lng;
 
-               warehouseListModel.append(newRoute);
+               warehouseListModel.append(newWarehouse);
 
-               if(centrMapLat !== warehouseModel.Lat){
-                   centrMapLat = warehouseModel.Lat;
-               }
-               if(centrMapLng !== warehouseModel.Lng){
-                   centrMapLng = warehouseModel.Lng;
-               }
+               Common.setNewCenter(warehouseModel.Lat, warehouseModel.Lng);
             }
     }
 
@@ -50,9 +45,6 @@ Rectangle {
         id: warehouseDelegate
 
         MapQuickItem {
-
-               //anchorPoint.x: startPathMarker.width / 2
-               //anchorPoint.y: startPathMarker.height / 2
                coordinate: QtPositioning.coordinate(model.lat, model.lng);
 
                sourceItem: Image {
@@ -60,6 +52,42 @@ Rectangle {
                                width: 50;
                                height: 50;
                            }
+         }
+    }
+
+
+    ListModel{
+        id: destinationListModel
+    }
+
+    Connections {
+           target: destinationModel
+
+           function onAddDestination() {
+               var newDestination = {};
+
+               newDestination.lat = destinationModel.Lat;
+               newDestination.lng = destinationModel.Lng;
+
+               destinationListModel.append(newDestination);
+
+               Common.setNewCenter(destinationModel.Lat, destinationModel.Lng);
+            }
+    }
+
+
+    Component{
+        id: destinationDelegate
+        MapQuickItem {
+            //anchorPoint.x: destinationMarker.width / 2
+            anchorPoint.y: destinationMarker.height / 2
+            coordinate: QtPositioning.coordinate(model.lat, model.lng);
+            sourceItem: Image {
+                           id: destinationMarker;
+                           source: "qrc:/Destination.svg"
+                           width: 50;
+                           height: 50;
+                       }
          }
     }
 
@@ -83,12 +111,12 @@ Rectangle {
             //z:3
         }
 
-//        MapItemView {
-//            id: endPoint
-//            model: routeListModel
-//            delegate: endPointDelegate
-//            z:3
-//        }
+        MapItemView {
+            id: destination
+            model: destinationListModel
+            delegate: destinationDelegate
+            //z:3
+        }
 
         MouseArea{
             anchors.fill: parent

@@ -6,19 +6,18 @@
 
 #include "Headers/Company.h"
 #include "Headers/CreateWarehouseDialog.h"
-#include "Headers/WarehouseModel.h"
 
 class QTableWidget;
 class QPushButton;
-class QQuickWidget;
+//class QQuickWidget;
 
 class WarehouseWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WarehouseWidget(QWidget *parent = nullptr);
+    explicit WarehouseWidget(/*WarehouseModel& warehouse_model,*/ QWidget *parent = nullptr);
 
-    QWidget* getSettingsMap();
+    //QWidget* getSettingsMap();
 
 signals:
     void addWarehouseToCompany(Warehouse*);
@@ -38,11 +37,9 @@ private:
     QPushButton*            add_warehouse_button_;
     QPushButton*            delete_warehouse_button_;
     CreateWarehouseDialog*  create_warehouse_dialog;
-    QQuickWidget*           settings_map_;
+    //QQuickWidget*           settings_map_;
 
     std::unordered_map<QString, const Warehouse*> warehouses_table_cahe_;
-
-    WarehouseModel warehouse_model_;
 };
 
 #endif // WAREHOUSECONTROLWIDGET_H

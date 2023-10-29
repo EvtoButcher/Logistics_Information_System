@@ -6,6 +6,8 @@ import QtQml.Models 2.15
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
+import "commonQML.js" as Common
+
 Rectangle {
     id: mapBox
 
@@ -24,26 +26,21 @@ Rectangle {
     }
 
     Connections {
-           target: app
+           target: route_engine
            function onAddRoute() {
                var newRoute = {};
 
-               newRoute.startPosLat = app.StartLat;
-               newRoute.startPosLng = app.StartLng;
-               newRoute.endPosLat = app.EndLat;
-               newRoute.endPosLng = app.EndLng;
-               newRoute.color = app.RouteColor;
+               newRoute.startPosLat = route_engine.StartLat;
+               newRoute.startPosLng = route_engine.StartLng;
+               newRoute.endPosLat = route_engine.EndLat;
+               newRoute.endPosLng = route_engine.EndLng;
+               newRoute.color = route_engine.RouteColor;
                newRoute.opacity = defOpasity;
                newRoute.isCachePath = false;
 
                routeListModel.append(newRoute);
 
-               if(centrMapLat !== app.StartLat){
-                   centrMapLat = app.StartLat;
-               }
-               if(centrMapLng !== app.StartLng){
-                   centrMapLng = app.StartLng;
-               }
+               Common.setNewCenter(route_engine.StartLat, route_engine.StartLng);
            }
 
            function onRemoveRoute(index){
@@ -69,12 +66,12 @@ Rectangle {
            function onRestorRoute(){
                var oldRoute = {};
 
-               oldRoute.startPosLat = app.StartLat;
-               oldRoute.startPosLng = app.StartLng;
-               oldRoute.endPosLat = app.EndLat;
-               oldRoute.endPosLng = app.EndLng;
-               oldRoute.path = app.RoutePath;
-               oldRoute.color = app.RouteColor;
+               oldRoute.startPosLat = route_engine.StartLat;
+               oldRoute.startPosLng = route_engine.StartLng;
+               oldRoute.endPosLat = route_engine.EndLat;
+               oldRoute.endPosLng = route_engine.EndLng;
+               oldRoute.path = route_engine.RoutePath;
+               oldRoute.color = route_engine.RouteColor;
                oldRoute.opacity = defOpasity;
                oldRoute.isCachePath = true;
 
@@ -108,21 +105,21 @@ Rectangle {
                     }
                 }
                 onStatusChanged:  {
-                    app.setRouteStatus(routeModel.status);
+                    route_engine.setRouteStatus(routeModel.status);
                     if(routeModel.status === RouteModel.Ready){
-                        app.setPathCache(routeModel.get(0).path);
+                        route_engine.setPathCache(routeModel.get(0).path);
                     }
                 }
             }
 
-            path: model.isCachePath ? app.RoutePath : routeModel.status === RouteModel.Ready ? routeModel.get(0).path : null
+            path: model.isCachePath ? route_engine.RoutePath : routeModel.status === RouteModel.Ready ? routeModel.get(0).path : null
             line.color: model.color
             smooth:true
             line.width: 5
             opacity: model.opacity
 
             Component.onCompleted: {
-                app.setPathCacheStatus(1); //rendering of the route cache on the map is completed
+                route_engine.setPathCacheStatus(1); //rendering of the route cache on the map is completed
             }
 
             MouseArea{
@@ -132,75 +129,136 @@ Rectangle {
 
                 onClicked: {
                     if(mouse.button == Qt.LeftButton){
-                        app.onUnselectRouteOnMap();
+                        route_engine.onUnselectRouteOnMap();
                     }
                     else if (mouse.button === Qt.LeftButton && mouse.modifiers & Qt.ShiftModifier) {
                     }
 
                     opacity = 1;
-                    app.onSelectRouteOnMap(index);
+                    route_engine.onSelectRouteOnMap(index);
                 }
             }
         }
     }
 
-    Component{
-        id: endPointDelegate
+    ListModel{
+        id: warehouseListModel
+    }
 
-        MapQuickItem {
+    Connections {
+           target: warehouse_engine
 
-            RouteModel{
-                id: routeModel
-                autoUpdate:false
-                plugin: osmPlugin
+           function onAddWarehouse() {
+               var newWarehouse = {};
 
-            }
-               anchorPoint.x: startPathMarker.width / 2
-               anchorPoint.y: startPathMarker.height / 2
-               coordinate: model.isCachePath ? app.RoutePath[app.RoutePath.length - 1] : routeModel.status === RouteModel.Ready ?
-                               routeModel.get(0).path[routeModel.get(0).path.length - 1] : QtPositioning.coordinate()
+               newWarehouse.PosLat = warehouse_engine.Lat;
+               newWarehouse.PosLng = warehouse_engine.Lng;
 
-               sourceItem: Rectangle {
-                   id: startPathMarker
-                   width: 1.5 * map.zoomLevel
-                   height: 1.5 * map.zoomLevel
-                   radius: 180
-                   border.width: 5
-                   border.color: "gray"
-                   color: "white"
-                   opacity: model.opacity
-               }
-         }
+               warehouseListModel.append(newWarehouse);
+
+               Common.setNewCenter(warehouse_engine.Lat, warehouse_engine.Lng);
+           }
+
+           function onRestorWarehouse() {
+               var newWarehouse = {};
+
+               newWarehouse.PosLat = warehouse_engine.Lat;
+               newWarehouse.PosLng = warehouse_engine.Lng;
+
+               warehouseListModel.append(newWarehouse);
+           }
     }
 
     Component{
-        id: startPointDelegate
+        id: warehouseDelegate
 
         MapQuickItem {
+            coordinate: QtPositioning.coordinate(model.PosLat, model.PosLng)
 
-            RouteModel{
-               id: routeModel
-               autoUpdate:false
-               plugin: osmPlugin
+            Component.onCompleted: {
+                warehouse_engine.setWarehouseStatus(1);
             }
 
-               anchorPoint.x: startPathMarker.width / 2
-               anchorPoint.y: startPathMarker.height / 2
-               coordinate: model.isCachePath ? app.RoutePath[0] :
-                           routeModel.status === RouteModel.Ready ? routeModel.get(0).path[0] : QtPositioning.coordinate()
-
-               sourceItem: Rectangle {
-                   id: startPathMarker
-                   width: 1.5 * map.zoomLevel
-                   height: 1.5 * map.zoomLevel
-                   radius: 180
-                   border.width: 5
-                   border.color: "red"
-                   color: "white"
-                   opacity: model.opacity
-               }
+            sourceItem: Image {
+               source: "qrc:/WarehouseDepart.svg"
+               width: 50;
+               height: 50;
+           }
          }
     }
+
+    ListModel{
+        id: destinationListModel
+    }
+
+    Connections {
+           target: destination_engine
+
+           function onAddDestination() {
+               var newDestination = {};
+
+               newDestination.lat = destination_engine.Lat;
+               newDestination.lng = destination_engine.Lng;
+
+               destinationListModel.append(newDestination);
+
+               //Common.setNewCenter(destination_engine.Lat, destination_engine.Lng);
+            }
+
+    }
+
+
+    Component{
+        id: destinationDelegate
+        MapQuickItem {
+            anchorPoint.x: destinationMarker.width / 2
+            anchorPoint.y: destinationMarker.height / 2
+
+            coordinate: QtPositioning.coordinate(model.lat, model.lng);
+
+            sourceItem: Image {
+                           id: destinationMarker;
+                           source: "qrc:/Destination.svg"
+                           width: 50;
+                           height: 50;
+                       }
+
+            Component.onCompleted: {
+                destination_engine.setDestinationStatus(1);
+            }
+         }
+    }
+
+//    Component{
+//        id: endPointDelegate
+
+//        MapQuickItem {
+
+//            RouteModel{
+//                id: routeModel
+//                autoUpdate:false
+//                plugin: osmPlugin
+
+//            }
+//           anchorPoint.x: startPathMarker.width / 2
+//           anchorPoint.y: startPathMarker.height / 2
+//           coordinate: model.isCachePath ? route_engine.RoutePath[route_engine.RoutePath.length - 1] :
+//                           routeModel.status === RouteModel.Ready ?
+//                                routeModel.get(0).path[routeModel.get(0).path.length - 1] :
+//                                               QtPositioning.coordinate()
+
+//           sourceItem: Rectangle {
+//               id: startPathMarker
+//               width: 1.5 * map.zoomLevel
+//               height: 1.5 * map.zoomLevel
+//               radius: 180
+//               border.width: 5
+//               border.color: "gray"
+//               color: "white"
+//               opacity: model.opacity
+//           }
+//         }
+//    }
 
     Map {
         id: map
@@ -222,16 +280,16 @@ Rectangle {
         }
 
         MapItemView {
-            id: startPoint
-            model: routeListModel
-            delegate: startPointDelegate
+            id: warehousePoint
+            model: warehouseListModel
+            delegate: warehouseDelegate
             z:3
         }
 
         MapItemView {
-            id: endPoint
-            model: routeListModel
-            delegate: endPointDelegate
+            id: destinationPoint
+            model: destinationListModel
+            delegate: destinationDelegate
             z:3
         }
 
@@ -244,7 +302,7 @@ Rectangle {
                 if(selectionRoutes.length){
                     for(var routeIndex = 0; routeIndex < selectionRoutes.length; ++routeIndex){
                         routeListModel.get(routeIndex).opacity = defOpasity;
-                        app.onUnselectRouteOnMap();
+                        route_engine.onUnselectRouteOnMap();
                     }
                     selectionRoutes.length = 0;
                 }

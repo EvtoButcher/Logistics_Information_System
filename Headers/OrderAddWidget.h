@@ -12,6 +12,7 @@ class QVBoxLayout;
 class QLabel;
 class QPushButton;
 class QColorDialog;
+class QRadioButton;
 
 class OrderAddWidget: public QWidget
 {
@@ -22,17 +23,32 @@ public:
     ~OrderAddWidget() = default;
 
 signals:
-     void addRouteToTable(const RouteInfo&);
+     void addRoute(const RouteInfo&);
 
 private slots:
     void onAddButtonClicked();
     void onColorChangeButtonClicked();
     void onCloseButtonClicked();
 
+    void onWarehouseEditType();
+    void onStartPointType();
+    void onDestinationEditType();
+    void onEndPointType();
+
 private:
     QLineEdit*      name_line_edit_;
+    QRadioButton*   choose_warehouse_type_;
+    QRadioButton*   arbitrary_start_point_type_;
+    QLabel*         start_name_label_;
+    QLabel*         start_lat_label_;
+    QLabel*         start_lng_label_;
     QLineEdit*      start_point_lat_;
     QLineEdit*      start_point_lng_;
+    QRadioButton*   choose_destination_type_;
+    QRadioButton*   arbitrary_end_point_type_;
+    QLabel*         stop_name_label_;
+    QLabel*         stop_lat_label_;
+    QLabel*         stop_lng_label_;
     QLineEdit*      end_point_lat_;
     QLineEdit*      end_point_lng_;
     QPushButton*    add_route_button_;

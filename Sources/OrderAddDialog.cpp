@@ -18,7 +18,7 @@ OrderAddDialog::OrderAddDialog(QWidget *parent)
     layout()->addWidget(close_dialog_button_);
 
     connect(close_dialog_button_, &QAbstractButton::clicked, this, &OrderAddDialog::onCloseButtonClicked);
-    connect(add_widget_, &OrderAddWidget::addRouteToTable, this, &OrderAddDialog::onAddWidgetButtonClicked);
+    connect(add_widget_, &OrderAddWidget::addRoute, this, &OrderAddDialog::onAddWidgetButtonClicked);
 }
 
 void OrderAddDialog::onAddWidgetButtonClicked(const RouteInfo& info)

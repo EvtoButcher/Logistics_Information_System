@@ -3,5 +3,6 @@
         <file>OrderMap.qml</file>
         <file>Scaler.qml</file>
         <file>SettingMap.qml</file>
+        <file>commonQML.js</file>
     </qresource>
 </RCC>

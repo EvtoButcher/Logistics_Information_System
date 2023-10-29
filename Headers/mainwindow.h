@@ -9,6 +9,7 @@
 #include "ApplicationSettings.h"
 #include "CreateCompanyDialog.h"
 #include "Company.h"
+#include "MapItemEngine.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,8 +25,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void openRouteDialog();
-
     void on_menuFileExit_triggered();
     void on_menuHelpAboutProgram_triggered();
     void on_menuHelpGoSourse_triggered();
@@ -44,5 +43,6 @@ private:
     OrderAddDialog*      order_dialog_;
     OrderAddWidget*      order_add_;
     Company*             company_;
+    MapItemEngine*       map_engine_;
 };
 #endif // MAINWINDOW_H

@@ -5,44 +5,37 @@
 #include <QTableView>
 #include <QVariant>
 
-#include "RouteModel.h"
 #include "OrderDB.h"
 #include "TableDelegate.h"
 
 class QSqlTableModel;
 class QTableView;
 class QPushButton;
-class ApplicationSettings;
 
 class OrderTable : public QWidget
 {
     Q_OBJECT
 public:
-    explicit OrderTable(const ApplicationSettings& setting, QWidget *parent = nullptr);
-
-    void loadSettings(const ApplicationSettings& setting);
-
-    RouteModel& getRouteModel();
-    void restoreRoutOnMap();
-
-    void closeDbConnection();
-    void importFromDB();
+    explicit OrderTable(const OrderDB *db, QWidget *parent = nullptr);
 
 public slots:
-    void onAddOrder(const RouteInfo& info);
+    void updateTable();
     void orderAddWidgetIsVisible();
+    void routeOnMapSelected(int index);
+    void routeOnMapUnselected();
 
 signals:
     void openOrderDialog();
+    void removeRoute(const int, const int);
+    void onSelectRouteOnTable(const int);
+    void onUnselectRouteOnTable();
+    void updateColor(const int, const int, const QString&);
 
 private slots:
     void addOrderButtonClicked();
     void removeOrderButtonClicked();
-    void onTableViewClicked(const QModelIndex& index);
-
+    void onTableViewColorClicked(const QModelIndex& index);
     void rowSelected();
-    void routeOnMapSelected(int index);
-    void routeOnMapUnselected();
 
 private:
     void setPathCacheAndDistance();
@@ -51,8 +44,6 @@ private:
     QSqlTableModel*  table_model_;
     QTableView*      table_view_;
     TableDelegate    table_delegate;
-    OrderDB*         route_db_;
-    RouteModel       route_model_;
 
     QPushButton*     add_order_button_;
     QPushButton*     remove_route_button_;
