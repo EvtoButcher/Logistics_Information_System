@@ -9,16 +9,16 @@
 
 #include <QDebug>
 
-#include "Headers/CreateCompanyDialog.h"
-#include "Headers/WarehouseControlWidget.h"
-#include "Headers/DestinationControlWudget.h"
-#include "Headers/WarehouseModel.h"
-#include "Headers/DestinationModel.h"
-#include "Headers/Company.h"
+#include "CreateCompanyDialog.h"
+#include "WarehouseControlWidget.h"
+#include "DestinationControlWudget.h"
+#include "WarehouseModel.h"
+#include "DestinationModel.h"
+#include "Company.h"
 
 CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, WarehouseModel& warehouse_model, QWidget *parent)
     : QDialog(parent)
-    , company_(new Company)
+    , company_(new Company(parent))
     , settings_map_(new QQuickWidget(parent))
 {
     setWindowTitle("Create Company");

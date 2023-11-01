@@ -1,4 +1,4 @@
-#include "Headers/WarehouseModel.h"
+#include "WarehouseModel.h"
 
 
 WarehouseModel::WarehouseModel(QObject *parent)

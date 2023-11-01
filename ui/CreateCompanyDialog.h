@@ -16,7 +16,7 @@ class QQuickWidget;
 class DestinationModel;
 
 class CreateCompanyDialog : public QDialog
-{
+{   
     Q_OBJECT
 public:
     explicit CreateCompanyDialog(DestinationModel& destination_model, WarehouseModel& warehouse_model, QWidget *parent = nullptr);

@@ -4,8 +4,8 @@
 #include <QWidget>
 #include <QDialog>
 
-#include "Headers/Company.h"
-#include "Headers/CreateWarehouseDialog.h"
+#include "Company.h"
+#include "CreateWarehouseDialog.h"
 
 class QTableWidget;
 class QPushButton;

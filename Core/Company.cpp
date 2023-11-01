@@ -1,8 +1,16 @@
 #include <QSqlTableModel>
 
-#include "Headers/Company.h"
-#include "Headers/OrderDB.h"
-#include "Headers/common.h"
+#include <QDebug>
+
+#include "Company.h"
+#include "OrderDB.h"
+#include "common.h"
+
+Company::Company(QObject *parent)
+   : QObject(parent)
+{
+
+}
 
 Company::~Company()
 {
@@ -14,6 +22,8 @@ Company::~Company()
     for(auto destination : destinations_){
         delete destination;
     }
+
+    this->QObject::~QObject();
 }
 
 void Company::setName(const QString &name)
@@ -36,11 +46,11 @@ const QString Company::getName() const
     return company_name_;
 }
 
-void Company::restorCompany(const ApplicationSettings &setting)
+void Company::restorCompany(const OrderDB* route_db)
 {
-     auto route_db_ = OrderDB(setting, nullptr);
+     //auto route_db_ = OrderDB(setting, nullptr);
 
-     QSqlTableModel table_model(nullptr, route_db_.DB());
+     QSqlTableModel table_model(nullptr, route_db->DB());
 
      table_model.setTable(WAREHOUSE_TABLE);
      table_model.select();
@@ -49,8 +59,10 @@ void Company::restorCompany(const ApplicationSettings &setting)
          warehouses_.reserve(table_model.rowCount());
          for (int row = 0; row < table_model.rowCount(); ++row) {
 
-             warehouses_.push_back(new Warehouse(table_model.data(table_model.index(row, 1)).toInt(),
+             addWarehouse(new Warehouse(table_model.data(table_model.index(row, 1)).toInt(),
                                     common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())));
+
+             emit addedNewWarehouse(warehouses_.back());
          }
      }
 
@@ -61,8 +73,10 @@ void Company::restorCompany(const ApplicationSettings &setting)
          destinations_.reserve(table_model.rowCount());
          for (int row = 0; row < table_model.rowCount(); ++row) {
 
-             destinations_.push_back(new Destination(table_model.data(table_model.index(row, 1)).toInt(),
+             addDestination(new Destination(table_model.data(table_model.index(row, 1)).toInt(),
                                     common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())));
+
+             emit addedNewDestination(destinations_.back());
          }
      }
 }

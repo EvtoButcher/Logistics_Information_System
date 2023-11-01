@@ -2,10 +2,10 @@
 #include <QFuture>
 #include <QtConcurrent>
 
-#include "Headers/common.h"
-#include "Headers/MapItemEngine.h"
-#include "Headers/OrderDB.h"
-#include "Headers/ApplicationSettings.h"
+#include "common.h"
+#include "MapItemEngine.h"
+#include "OrderDB.h"
+#include "ApplicationSettings.h"
 
 MapItemEngine::MapItemEngine(const ApplicationSettings& setting, QObject *parent)
     : QObject{parent}
@@ -48,21 +48,20 @@ void MapItemEngine::restoreMap()
     table_model.setTable(WAREHOUSE_TABLE);
     table_model.select();
 
-    if(!table_model.rowCount()) {
-        return;
-    }
+    if(table_model.rowCount()) {
 
-    for (int row = 0; row < table_model.rowCount(); ++row) {
+        for (int row = 0; row < table_model.rowCount(); ++row) {
 
-        WarehouseInfo info (table_model.data(table_model.index(row, 1)).toInt(),
-                            common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()));
+            WarehouseInfo info (table_model.data(table_model.index(row, 1)).toInt(),
+                                common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()));
 
-        warehouse_model_.setWarehouse(info);
+            warehouse_model_.setWarehouse(info);
 
-        emit warehouse_model_.restorWarehouse();
+            emit warehouse_model_.restorWarehouse();
 
-        while(warehouse_model_.checkWarehouseStatus() != UploadWarehouseStatus::Colpleted);
-        QThread::msleep(10);
+            while(warehouse_model_.checkWarehouseStatus() != UploadWarehouseStatus::Colpleted);
+            QThread::msleep(10);
+        }
     }
 
     table_model.setTable(DESTINATION_TABLE);

@@ -5,9 +5,9 @@
 #include <QtConcurrent>
 
 #include "ui_mainwindow.h"
-#include "Headers/mainwindow.h"
-#include "Headers/RouteModel.h"
-#include "Headers/TextMessage.h"
+#include "mainwindow.h"
+#include "RouteModel.h"
+#include "TextMessage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     , map_engine_(new MapItemEngine(settings_, parent))
     , order_add_(new OrderAddWidget(parent))
     , order_dialog_(new OrderAddDialog(parent))
+    , company_(new Company(this))
 {
     ui->setupUi(this);
     setWindowTitle(APPLICATION_NAME);
@@ -28,14 +29,18 @@ MainWindow::MainWindow(QWidget *parent)
     create_company_dialog_ = new CreateCompanyDialog(map_engine_->getDestinationModel(), map_engine_->getWarehouseModel(), this);
     connect(create_company_dialog_, &CreateCompanyDialog::addWarehouseOnMap, map_engine_, &MapItemEngine::addWarehouse);
     connect(create_company_dialog_, &CreateCompanyDialog::addDestinationOnMap, map_engine_, &MapItemEngine::addDestination);
+    connect(company_, &Company::addedNewWarehouse, order_add_, &OrderAddWidget::addNewWarehouseVariant);
+    connect(company_, &Company::addedNewDestination, order_add_, &OrderAddWidget::addNewDestinationVariant);
+    connect(company_, &Company::addedNewWarehouse, order_dialog_->getOrderAddWidget(), &OrderAddWidget::addNewWarehouseVariant);
+    connect(company_, &Company::addedNewDestination, order_dialog_->getOrderAddWidget(), &OrderAddWidget::addNewDestinationVariant);
 
     if(!settings_.companyIsValid()){
          create_company_dialog_->exec();
-         company_ = new Company(*create_company_dialog_->getCompany());
+         company_ = create_company_dialog_->getCompany();
          settings_.saveSettings(company_);
     }
     else {
-        company_->restorCompany(settings_);
+        company_->restorCompany(map_engine_->getDB());
     }
 
     order_table_ = new OrderTable(map_engine_->getDB(), this);

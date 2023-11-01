@@ -7,8 +7,8 @@
 
 #include <QDebug>
 
-#include "Headers/CreateDestinationDialog.h"
-#include "Headers/Company.h"
+#include "CreateDestinationDialog.h"
+#include "Company.h"
 
 CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
     : QDialog(parent)

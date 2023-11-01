@@ -3,7 +3,7 @@
 #include <QCoreApplication>
 #include <QStringList>
 
-#include "Headers/common.h"
+#include "common.h"
 
 bool common::fileExists(const QString& path) {
     QFileInfo check_file(path);

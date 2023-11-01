@@ -16,6 +16,8 @@ public:
     explicit OrderAddDialog(QWidget *parent = nullptr);
     ~OrderAddDialog() = default;
 
+    const OrderAddWidget* getOrderAddWidget();
+
 signals:
      void addRouteToTableFromDialog(const RouteInfo&);
 
