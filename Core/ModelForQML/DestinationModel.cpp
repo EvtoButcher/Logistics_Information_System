@@ -1,4 +1,4 @@
-#include "Headers/DestinationModel.h"
+#include "DestinationModel.h"
 
 DestinationModel::DestinationModel(QObject *parent)
     : QObject(parent)

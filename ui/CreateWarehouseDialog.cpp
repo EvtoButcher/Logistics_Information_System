@@ -8,9 +8,9 @@
 #include <QQuickWidget>
 #include <QQmlContext>
 
-#include "Headers/CreateWarehouseDialog.h"
-#include "Headers/Company.h"
-#include "Headers/WarehouseModel.h"
+#include "CreateWarehouseDialog.h"
+#include "Company.h"
+#include "WarehouseModel.h"
 
 CreateWarehouseDialog::CreateWarehouseDialog(QWidget* parent)
     : QDialog(parent)

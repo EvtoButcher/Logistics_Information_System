@@ -2,6 +2,7 @@
 #define ORDERADDWIDGET_H
 
 #include <QWidget>
+#include <QAbstractListModel>
 
 #include "RouteModel.h"
 
@@ -13,6 +14,10 @@ class QLabel;
 class QPushButton;
 class QColorDialog;
 class QRadioButton;
+class QComboBox;
+class Warehouse;
+class Destination;
+
 
 class OrderAddWidget: public QWidget
 {
@@ -24,6 +29,10 @@ public:
 
 signals:
      void addRoute(const RouteInfo&);
+
+public slots:
+     void addNewWarehouseVariant(Warehouse* warehouse);
+     void addNewDestinationVariant(Destination* destination);
 
 private slots:
     void onAddButtonClicked();
@@ -54,6 +63,10 @@ private:
     QPushButton*    add_route_button_;
     QPushButton*    color_change_button_;
     QColorDialog*   color_dialog_;
+    QLabel*         warehouse_combo_label_;
+    QComboBox*      warehouse_combo_;
+    QLabel*         destination_combo_label_;
+    QComboBox*      destination_combo_;
 };
 
 #endif // ORDERADDWIDGET_H

@@ -1,5 +1,3 @@
-#include "Headers/OrderDB.h"
-
 #include <QDebug>
 #include <QFileInfo>
 #include <QLocale>
@@ -10,7 +8,8 @@
 #include <QFileDialog>
 #include <QDateTime>
 
-#include "Headers/common.h"
+#include "OrderDB.h"
+#include "common.h"
 
 OrderDB::OrderDB(const ApplicationSettings &setting, QObject *parent)
      : QObject(parent)

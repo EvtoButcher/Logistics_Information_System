@@ -11,7 +11,7 @@
 
 #include <QDebug>
 
-#include "Headers/WarehouseControlWidget.h"
+#include "WarehouseControlWidget.h"
 
 WarehouseWidget::WarehouseWidget(/*WarehouseModel& warehouse_model,*/ QWidget *parent)
     : QWidget{parent}

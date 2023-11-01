@@ -1,7 +1,7 @@
 #include <QtDebug>
 
-#include "Headers/RouteModel.h"
-#include "Headers/common.h"
+#include "RouteModel.h"
+#include "common.h"
 
 RouteModel::RouteModel(QObject *parent)
     : QObject{parent}

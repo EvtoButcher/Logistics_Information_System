@@ -4,47 +4,56 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quickwidgets
 
 CONFIG += c++17
 
+INCLUDEPATH += \
+    ui \
+    Core \
+    Core/ModelForQML \
+    Core/Qml \
+    Common \
+    Resources \
+
+
 HEADERS += \
-    Headers/ApplicationSettings.h \
-    Headers/Company.h \
-    Headers/CreateCompanyDialog.h \
-    Headers/CreateDestinationDialog.h \
-    Headers/CreateWarehouseDialog.h \
-    Headers/DestinationControlWudget.h \
-    Headers/DestinationModel.h \
-    Headers/MapItemEngine.h \
-    Headers/OrderAddDialog.h \
-    Headers/OrderAddWidget.h \
-    Headers/OrderDB.h \
-    Headers/OrderTableWidget.h \
-    Headers/RouteModel.h \
-    Headers/TableDelegate.h \
-    Headers/TextMessage.h \
-    Headers/WarehouseControlWidget.h \
-    Headers/WarehouseModel.h \
-    Headers/common.h \
-    Headers/mainwindow.h
+    Core/ApplicationSettings.h \
+    Core/Company.h \
+    ui/CreateCompanyDialog.h \
+    ui/CreateDestinationDialog.h \
+    ui/CreateWarehouseDialog.h \
+    ui/DestinationControlWudget.h \
+    Core/ModelForQML/DestinationModel.h \
+    Core/MapItemEngine.h \
+    ui/OrderAddDialog.h \
+    ui/OrderAddWidget.h \
+    Core/OrderDB.h \
+    ui/OrderTableWidget.h \
+    Core/ModelForQML/RouteModel.h \
+    ui/TableDelegate.h \
+    Common/TextMessage.h \
+    ui/WarehouseControlWidget.h \
+    Core/ModelForQML/WarehouseModel.h \
+    Common/common.h \
+    ui/mainwindow.h
 
 SOURCES += \
-    Sources/ApplicationSettings.cpp \
-    Sources/Company.cpp \
-    Sources/CreateCompanyDialog.cpp \
-    Sources/CreateDestinationDialog.cpp \
-    Sources/CreateWarehouseDialog.cpp \
-    Sources/DestinationControlWudget.cpp \
-    Sources/DestinationModel.cpp \
-    Sources/MapItemEngine.cpp \
-    Sources/OrderAddDialog.cpp \
-    Sources/OrderAddWidget.cpp \
-    Sources/OrderDB.cpp \
-    Sources/OrderTableWidget.cpp \
-    Sources/RouteModel.cpp \
-    Sources/TableDelegate.cpp \
-    Sources/WarehouseControlWidget.cpp \
-    Sources/WarehouseModel.cpp \
-    Sources/common.cpp \
-    Sources/main.cpp \
-    Sources/mainwindow.cpp
+    Core/ApplicationSettings.cpp \
+    Core/Company.cpp \
+    ui/CreateCompanyDialog.cpp \
+    ui/CreateDestinationDialog.cpp \
+    ui/CreateWarehouseDialog.cpp \
+    ui/DestinationControlWudget.cpp \
+    Core/ModelForQML/DestinationModel.cpp \
+    Core/MapItemEngine.cpp \
+    ui/OrderAddDialog.cpp \
+    ui/OrderAddWidget.cpp \
+    Core/OrderDB.cpp \
+    ui/OrderTableWidget.cpp \
+    Core/ModelForQML/RouteModel.cpp \
+    ui/TableDelegate.cpp \
+    ui/WarehouseControlWidget.cpp \
+    Core/ModelForQML/WarehouseModel.cpp \
+    Common/common.cpp \
+    main.cpp \
+    ui/mainwindow.cpp
 
 FORMS += \
     Forms/mainwindow.ui
@@ -56,5 +65,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     Resources/Images.qrc \
-    Resources/qml.qrc
+    Core/Qml/qml.qrc
 

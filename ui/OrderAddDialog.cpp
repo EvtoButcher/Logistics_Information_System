@@ -1,8 +1,8 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
-#include "Headers/OrderAddDialog.h"
-#include "Headers/OrderAddWidget.h"
+#include "OrderAddDialog.h"
+#include "OrderAddWidget.h"
 
 
 OrderAddDialog::OrderAddDialog(QWidget *parent)
@@ -19,6 +19,11 @@ OrderAddDialog::OrderAddDialog(QWidget *parent)
 
     connect(close_dialog_button_, &QAbstractButton::clicked, this, &OrderAddDialog::onCloseButtonClicked);
     connect(add_widget_, &OrderAddWidget::addRoute, this, &OrderAddDialog::onAddWidgetButtonClicked);
+}
+
+const OrderAddWidget* OrderAddDialog::getOrderAddWidget()
+{
+    return add_widget_;
 }
 
 void OrderAddDialog::onAddWidgetButtonClicked(const RouteInfo& info)

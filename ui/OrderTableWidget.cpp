@@ -11,8 +11,8 @@
 #include <QtConcurrent>
 #include <QColorDialog>
 
-#include "Headers/OrderTableWidget.h"
-#include "Headers/common.h"
+#include "OrderTableWidget.h"
+#include "common.h"
 
 OrderTable::OrderTable(const OrderDB* db, QWidget *parent)
     : QWidget{parent}

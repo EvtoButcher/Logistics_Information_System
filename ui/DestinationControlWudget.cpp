@@ -6,8 +6,8 @@
 #include <QLabel>
 #include <QStringList>
 
-#include "Headers/DestinationControlWudget.h"
-#include "Headers/CreateDestinationDialog.h"
+#include "DestinationControlWudget.h"
+#include "CreateDestinationDialog.h"
 
 DestinationWudget::DestinationWudget(QWidget *parent)
     : QWidget(parent)

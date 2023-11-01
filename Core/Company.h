@@ -1,11 +1,13 @@
 #ifndef COMPANY_H
 #define COMPANY_H
 
+#include <QObject>
 #include <QString>
 #include <QGeoCoordinate>
 #include <QVector>
 #include <deque>
 #include <unordered_map>
+#include <vector>
 
 struct Curgo
 {
@@ -57,13 +59,14 @@ private:
 };
 
 
-class ApplicationSettings;
+class OrderDB;
 
-class Company
+class Company : public QObject
 {
+    Q_OBJECT
 public:
-    explicit Company() = default;
-    ~Company();
+    explicit Company(QObject* parent = nullptr);
+    ~Company() override;
 
     void setName(const QString& name);
     void addWarehouse(Warehouse *warehouse);
@@ -71,12 +74,17 @@ public:
 
     const QString getName() const;
 
-    void restorCompany(const ApplicationSettings& setting);
+    void restorCompany(const OrderDB *route_db);
+
+signals:
+    void addedNewWarehouse(Warehouse*);
+    void addedNewDestination(Destination*);
 
 private:
     QString company_name_;
 
     QVector<Warehouse*> warehouses_;
+    //std::vector<Warehouse*> warehouses_;
     QVector<Destination*> destinations_;
 };
 

@@ -1,7 +1,7 @@
 #include <QDebug>
 
-#include "Headers/ApplicationSettings.h"
-#include "Headers/Company.h"
+#include "ApplicationSettings.h"
+#include "Company.h"
 
 ApplicationSettings::ApplicationSettings(QWidget *parent)
     : settings_(APPLICATION_NAME, QSettings::Format::IniFormat, parent)
