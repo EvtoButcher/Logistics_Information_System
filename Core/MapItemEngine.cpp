@@ -7,12 +7,11 @@
 #include "OrderDB.h"
 #include "ApplicationSettings.h"
 
-MapItemEngine::MapItemEngine(const ApplicationSettings& setting, QObject *parent)
+MapItemEngine::MapItemEngine(QObject *parent)
     : QObject{parent}
     , route_model_(parent)
     , warehouse_model_(parent)
 {
-    route_db_ = new OrderDB(setting, this);
 }
 
 RouteModel& MapItemEngine::getRouteModel()
@@ -98,6 +97,11 @@ DestinationModel& MapItemEngine::getDestinationModel()
 const OrderDB *MapItemEngine::getDB()
 {
     return route_db_;
+}
+
+void MapItemEngine::OpenDb(const QString& name)
+{
+    route_db_ = new OrderDB(name, this);
 }
 
 void MapItemEngine::addRoute(const RouteInfo &info)

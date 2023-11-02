@@ -1,42 +1,35 @@
 #include <QDebug>
+#include <QSettings>
 
 #include "ApplicationSettings.h"
 #include "Company.h"
 
-ApplicationSettings::ApplicationSettings(QWidget *parent)
-    : settings_(APPLICATION_NAME, QSettings::Format::IniFormat, parent)
+void ApplicationSettings::setCompanyName(QString name)
 {
-
-    //settings_.setValue("Company/name", "");
-    //settings_.setValue("DB/ConnectionStatus", 0);
-    //settings_.setValue("Company/db_name", "orderDB.db");
-
-    //loadSettings();
+    QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).setValue(makeIniPath(sectionCompany_, keyCompanyName_), name);
 }
 
-ApplicationSettings::~ApplicationSettings()
+void ApplicationSettings::setDbName(QString name)
 {
-    //saveSettings();
+    QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).setValue(makeIniPath(sectionDb_, keyDbName_), name);
 }
 
-//void ApplicationSettings::loadSettings()
-//{
-
-//}
-
-void ApplicationSettings::saveSettings(const Company* company)
+QString ApplicationSettings::dbName()
 {
-    settings_.setValue("Company/name", company->getName());
+    return QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).value(makeIniPath(sectionDb_, keyDbName_)).toString();
 }
 
-const QString ApplicationSettings::dbName() const
+QString ApplicationSettings::companyName()
 {
-    //qDebug() << settings_.value("DB/name").toString();
-    return settings_.value("DB/name").toString();
+    return QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).value(makeIniPath(sectionCompany_, keyCompanyName_)).toString();
 }
 
-bool ApplicationSettings::companyIsValid() const
+bool ApplicationSettings::companyIsValid()
 {
-    qDebug() << settings_.value("Company/name").toString();
-    return !(settings_.value("Company/name").toString() == "");
+    return companyName() != "";
+}
+
+QString ApplicationSettings::makeIniPath(const char* section, const char* key)
+{
+    return QString(section) + "/" + QString(key);
 }

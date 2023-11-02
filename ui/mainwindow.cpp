@@ -12,8 +12,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , settings_(parent)
-    , map_engine_(new MapItemEngine(settings_, parent))
+    , map_engine_(new MapItemEngine(parent))
     , order_add_(new OrderAddWidget(parent))
     , order_dialog_(new OrderAddDialog(parent))
     , company_(new Company(this))
@@ -34,12 +33,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(company_, &Company::addedNewWarehouse, order_dialog_->getOrderAddWidget(), &OrderAddWidget::addNewWarehouseVariant);
     connect(company_, &Company::addedNewDestination, order_dialog_->getOrderAddWidget(), &OrderAddWidget::addNewDestinationVariant);
 
-    if(!settings_.companyIsValid()){
+    map_engine_->OpenDb(ApplicationSettings::dbName());
+
+    if(!ApplicationSettings::companyIsValid()){
          create_company_dialog_->exec();
          company_ = create_company_dialog_->getCompany();
-         settings_.saveSettings(company_);
+         ApplicationSettings::setCompanyName(company_->getName());
+         //ApplicationSettings::setDbName(...);     //TODO: add ability to write db name in ui
     }
     else {
+        //map_engine_->OpenDb(ApplicationSettings::dbName());
         company_->restorCompany(map_engine_->getDB());
     }
 

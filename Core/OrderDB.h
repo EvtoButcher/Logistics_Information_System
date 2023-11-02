@@ -8,7 +8,6 @@
 #include <optional>
 
 #include "RouteModel.h"
-#include "ApplicationSettings.h"
 
 class QSqlQuery;
 
@@ -16,7 +15,7 @@ class QSqlQuery;
 #define MAIN_TABLE          "Orders"    //TODO: replace with file.conf
 #define PATH_TABLE          "PathTable" //
 #define WAREHOUSE_TABLE     "Warehouse_table"
-#define DESTINATION_TABLE     "Destination_table"
+#define DESTINATION_TABLE    "Destination_table"
 
 enum class ConnectionStatus{
     Offline,
@@ -28,7 +27,7 @@ class OrderDB : public QObject
     Q_OBJECT
 
 public:
-    OrderDB(const ApplicationSettings& setting, QObject *parent = nullptr);
+    explicit OrderDB(const QString& name, QObject *parent = nullptr);
     ~OrderDB() = default;
 
     const QSqlDatabase& DB() const;
@@ -55,8 +54,8 @@ signals:
 
 private:
     std::optional<QSqlError> createTables();
-    bool openDB(QString db_name);
-    void createDB();
+    bool openDB(const QString& db_name);
+    void createDB(const QString& db_name);
 
     void deleteFromPathTable(const int index);
 
