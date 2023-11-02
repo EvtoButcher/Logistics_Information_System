@@ -4,12 +4,23 @@
 #include "ApplicationSettings.h"
 #include "Company.h"
 
-void ApplicationSettings::setCompanyName(QString name)
+void ApplicationSettings::setLocale(Locale locale)
+{
+    QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).setValue(makeIniPath(sectionUi_, keyUiLocale_),
+                                                                       locale == Locale::RU ? "ru" : "eng");
+}
+
+QString ApplicationSettings::getLocale()
+{
+    return QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).value(makeIniPath(sectionUi_, keyUiLocale_)).toString();
+}
+
+void ApplicationSettings::setCompanyName(const QString& name)
 {
     QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).setValue(makeIniPath(sectionCompany_, keyCompanyName_), name);
 }
 
-void ApplicationSettings::setDbName(QString name)
+void ApplicationSettings::setDbName(const QString& name)
 {
     QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).setValue(makeIniPath(sectionDb_, keyDbName_), name);
 }

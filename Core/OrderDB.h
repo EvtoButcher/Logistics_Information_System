@@ -36,7 +36,7 @@ public:
     void updateDistanceFromOrderTable(const QString& code, const int distance);
     void deleteFromOrderTable(const int index);
 
-    void updateColor(const int index, const QString& color);
+    void   updateColor(const int index, const QString& color);
     QColor selectColor(const int index);
 
     bool closeDB();

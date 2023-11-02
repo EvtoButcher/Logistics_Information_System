@@ -21,18 +21,18 @@ CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, Wa
     , company_(new Company(parent))
     , settings_map_(new QQuickWidget(parent))
 {
-    setWindowTitle("Create Company");
+    setWindowTitle(tr("Create Company"));
     setBaseSize(400, 400);
 
     setLayout(new QHBoxLayout(this));
 
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
-    auto company_name_label = new QLabel("Company name", this);
+    auto company_name_label = new QLabel(tr("Company name"), this);
     company_name_label->setFont(bold_font);
     company_name_line_edit_ = new QLineEdit(this);
 
-    messege_label_ = new QLabel("enter the company name for further actions", this);
+    messege_label_ = new QLabel(tr("enter the company name for further actions"), this);
     messege_label_->setStyleSheet("color: #b7161a;");
 
     auto separator = new QFrame(this);
@@ -51,7 +51,7 @@ CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, Wa
     destination_widget_ = new DestinationWudget(this);
     destination_widget_->setEnabled(false);
 
-    create_company_button_ = new QPushButton("Create company",this);
+    create_company_button_ = new QPushButton(tr("Create company"),this);
     create_company_button_->setEnabled(false);
     //close_button_ = new QPushButton("Close",this);
     auto button_lay = new QHBoxLayout();

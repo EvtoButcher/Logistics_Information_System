@@ -37,8 +37,8 @@ OrderTable::OrderTable(const OrderDB* db, QWidget *parent)
     auto button_lay = new QHBoxLayout(this);
     button_lay->setSpacing(5);
 
-    add_order_button_ = new QPushButton("Create an order", this);
-    remove_route_button_ = new QPushButton("delete an order", this);
+    add_order_button_ = new QPushButton(tr("Create an order"), this);
+    remove_route_button_ = new QPushButton(tr("delete an order"), this);
     remove_route_button_->setEnabled(false);
 
     button_lay->addWidget(add_order_button_);

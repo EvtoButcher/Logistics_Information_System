@@ -11,11 +11,13 @@ INCLUDEPATH += \
     Core/Qml \
     Common \
     Resources \
+    locale \
 
 
 HEADERS += \
     Core/ApplicationSettings.h \
     Core/Company.h \
+    Core/ModelForQML/TrafficModel.h \
     ui/CreateCompanyDialog.h \
     ui/CreateDestinationDialog.h \
     ui/CreateWarehouseDialog.h \
@@ -58,6 +60,10 @@ SOURCES += \
 FORMS += \
     Forms/mainwindow.ui
 
+TRANSLATIONS += \
+    locale/OctopusLogistics_ru.ts
+    #locale/locale.qrc
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
@@ -65,5 +71,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     Resources/Images.qrc \
-    Core/Qml/qml.qrc
+    Core/Qml/qml.qrc \
+    locale/translate.qrc
+
 

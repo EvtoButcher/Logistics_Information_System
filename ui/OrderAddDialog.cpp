@@ -8,9 +8,9 @@
 OrderAddDialog::OrderAddDialog(QWidget *parent)
     : QDialog{parent}
 {
-    setWindowTitle("Create new Order");
+    setWindowTitle(tr("Create new Order"));
     add_widget_ = new OrderAddWidget(parent);
-    close_dialog_button_ = new QPushButton("Close", this);
+    close_dialog_button_ = new QPushButton(tr("Close"), this);
 
     setLayout(new QVBoxLayout);
 
