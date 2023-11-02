@@ -16,13 +16,14 @@ class MapItemEngine : public QObject
 {
     Q_OBJECT
 public:
-    MapItemEngine(const ApplicationSettings& setting, QObject *parent = nullptr);
+    MapItemEngine(QObject *parent = nullptr);
 
-    RouteModel &getRouteModel();
-    WarehouseModel& getWarehouseModel();
-    DestinationModel& getDestinationModel();
-    const OrderDB* getDB();
+    RouteModel&         getRouteModel();
+    WarehouseModel&     getWarehouseModel();
+    DestinationModel&   getDestinationModel();
+    const OrderDB*      getDB();
 
+    void OpenDb(const QString& name);
     void restoreMap();
 
 signals:

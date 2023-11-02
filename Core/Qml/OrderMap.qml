@@ -179,7 +179,11 @@ Rectangle {
                 warehouse_engine.setWarehouseStatus(1);
             }
 
+            anchorPoint.x: warehouseMarker.width / 2
+            anchorPoint.y: warehouseMarker.height / 2
+
             sourceItem: Image {
+               id: warehouseMarker
                source: "qrc:/WarehouseDepart.svg"
                width: 50;
                height: 50;
@@ -211,8 +215,8 @@ Rectangle {
     Component{
         id: destinationDelegate
         MapQuickItem {
-            anchorPoint.x: destinationMarker.width / 2
-            anchorPoint.y: destinationMarker.height / 2
+            anchorPoint.x: destinationMarker.width / 4
+            anchorPoint.y: destinationMarker.height
 
             coordinate: QtPositioning.coordinate(model.lat, model.lng);
 

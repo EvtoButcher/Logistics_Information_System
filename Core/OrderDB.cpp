@@ -10,18 +10,19 @@
 
 #include "OrderDB.h"
 #include "common.h"
+#include "ApplicationSettings.h"
 
-OrderDB::OrderDB(const ApplicationSettings &setting, QObject *parent)
+OrderDB::OrderDB(const QString& name, QObject *parent)
      : QObject(parent)
      , db(QSqlDatabase::addDatabase("QSQLITE"))
 {
     query = new QSqlQuery(db);
 
-    if(common::fileExists(setting.dbName())) {
-        openDB(setting.dbName());
+    if(common::fileExists(name)) {
+        openDB(name);
     }
     else {
-        createDB();
+        createDB(name + ".db");
     }
 }
 
@@ -253,7 +254,7 @@ std::optional<QSqlError> OrderDB::createTables()
     return std::nullopt;
 }
 
-bool OrderDB::openDB(QString db_name)
+bool OrderDB::openDB(const QString& db_name)
 {
     db.setDatabaseName(db_name);
     if(db.open()){
@@ -280,9 +281,9 @@ bool OrderDB::importDB()
    return openDB(db_file.fileName());
 }
 
-void OrderDB::createDB()
+void OrderDB::createDB(const QString& db_name)
 {
-    db.setDatabaseName(DATABASE_NAME);
+    db.setDatabaseName(db_name);
 
     if(db.open()){
         if(createTables()){

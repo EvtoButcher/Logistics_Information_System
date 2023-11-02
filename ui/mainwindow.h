@@ -37,7 +37,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    ApplicationSettings  settings_;
     CreateCompanyDialog* create_company_dialog_;
     OrderTable*          order_table_;
     OrderAddDialog*      order_dialog_;
