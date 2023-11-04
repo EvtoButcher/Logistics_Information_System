@@ -11,7 +11,7 @@ struct DestinationInfo
     DestinationInfo() = default;
     DestinationInfo(const uint64_t code, const QGeoCoordinate pos);
 
-    uint64_t code_ = 0;
+    uint64_t       code_ = 0;
     QGeoCoordinate position_;
 };
 

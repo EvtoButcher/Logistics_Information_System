@@ -19,10 +19,10 @@ struct RouteInfo{
     RouteInfo(const QString name, const QGeoCoordinate start, const QGeoCoordinate end,
               const QString& path_cache, QString color = "#008000" /*green*/);
 
-    QString code_;
+    QString        code_;
     QGeoCoordinate start_route_point_;
     QGeoCoordinate end_route_point_;
-    QString route_color_;
+    QString        route_color_;
 
     int path_distance_;
     QVector<QGeoCoordinate> path_cache_;
@@ -48,11 +48,11 @@ class RouteModel : public QObject
 public:
     explicit RouteModel(QObject *parent = nullptr);
 
-    double startLat();
-    double startLng();
-    double endLat();
-    double endLng();
-    QString routeColor();
+    double       startLat();
+    double       startLng();
+    double       endLat();
+    double       endLng();
+    QString      routeColor();
     QVariantList routePath();
 
     void setRoute(const RouteInfo &new_route);
@@ -63,7 +63,7 @@ public:
 
     UploadRouteStatus checkPathCacheStatus();
     UploadRouteStatus checkRouteStatus();
-    const RouteInfo& getInfo();
+    const RouteInfo&  getInfo();
 
 signals:
     void restorRoute();
@@ -77,7 +77,7 @@ signals:
     void colorChenged(int, QString);
 
 private:
-    RouteInfo route_;
+    RouteInfo         route_;
     UploadRouteStatus route_status_ = UploadRouteStatus::Null;
     UploadRouteStatus path_cache_status_ = UploadRouteStatus::Null;
 };

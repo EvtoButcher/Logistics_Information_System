@@ -11,7 +11,7 @@ struct WarehouseInfo
     WarehouseInfo() = default;
     WarehouseInfo(const uint64_t code, const QGeoCoordinate pos);
 
-    uint64_t code_ = 0;
+    uint64_t       code_ = 0;
     QGeoCoordinate position_;
 };
 
@@ -43,7 +43,7 @@ signals:
     void restorWarehouse();
 
 private:
-    WarehouseInfo info_;
+    WarehouseInfo         info_;
     UploadWarehouseStatus warehouse_status_ = UploadWarehouseStatus::Null;
 };
 

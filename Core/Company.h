@@ -14,8 +14,8 @@ struct Curgo
     explicit Curgo(const double weight, const int volume);
 
     uint64_t code_;
-    double weight_;
-    int    volume_;
+    double   weight_;
+    int      volume_;
 };
 
 
@@ -37,7 +37,7 @@ public:
     bool isValid() const;
 
 private:
-    uint64_t code_ = 0;
+    uint64_t       code_ = 0;
     QGeoCoordinate position_;
 
     std::unordered_map<uint64_t, Curgo*> map_of_curgo_;
@@ -54,7 +54,7 @@ public:
     bool isValid() const;
 
 private:
-    uint64_t code_ = 0;
+    uint64_t       code_ = 0;
     QGeoCoordinate position_;
 };
 
@@ -81,13 +81,9 @@ signals:
     void addedNewDestination(Destination*);
 
 private:
-    QString company_name_;
-
-    QVector<Warehouse*> warehouses_;
-    //std::vector<Warehouse*> warehouses_;
+    QString               company_name_;
+    QVector<Warehouse*>   warehouses_;
     QVector<Destination*> destinations_;
 };
-
-void loadCompanyFromSetting();
 
 #endif // COMPANY_H

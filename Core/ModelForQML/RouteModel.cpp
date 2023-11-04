@@ -122,6 +122,7 @@ RouteInfo::RouteInfo(const QString name, const QGeoCoordinate start, const QGeoC
     //    return;
     //}
 
+    //path_cache_ = common::pathFromString(path_cache);
     QStringList parts = path_cache.split(" ", Qt::SkipEmptyParts);
 
     const auto first_point = common::splitCoordinates(parts[0] + " " + parts[1]);

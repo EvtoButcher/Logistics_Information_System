@@ -16,6 +16,8 @@ Rectangle {
     property double   defOpasity: 0.5
     property variant  selectionRoutes: [];
 
+    property int  tmp: 0;
+
     Plugin{
         id: osmPlugin
         name:"osm"
@@ -185,8 +187,8 @@ Rectangle {
             sourceItem: Image {
                id: warehouseMarker
                source: "qrc:/WarehouseDepart.svg"
-               width: 50;
-               height: 50;
+               width: 6 * map.zoomLevel
+               height: 6 * map.zoomLevel
            }
          }
     }
@@ -223,13 +225,82 @@ Rectangle {
             sourceItem: Image {
                            id: destinationMarker;
                            source: "qrc:/Destination.svg"
-                           width: 50;
-                           height: 50;
+                           width: 7 * map.zoomLevel;
+                           height: 7 * map.zoomLevel;
                        }
 
             Component.onCompleted: {
                 destination_engine.setDestinationStatus(1);
             }
+         }
+    }
+
+
+    ListModel{
+        id: trafficListModel
+
+//        onDataChanged: {
+//            console.log("AAAAAAAAAAAAAAAAAAAAA");
+//            traffic_engine.setUploadStatus(1);
+//        }
+    }
+
+    Connections {
+           target: traffic_engine
+
+           function onAddCar() {
+               var newTraffic = {};
+
+               newTraffic.Lat = traffic_engine.PosLat;
+               newTraffic.Lng = traffic_engine.PosLng;
+               newTraffic.carColor = traffic_engine.CarColor;
+
+               //console.log(traffic_engine.PosLat, traffic_engine.PosLng);
+               //console.log(traffic_engine.CarColor);
+
+               trafficListModel.append(newTraffic);
+           }
+
+           function onNextPoint(index) {   // QML MOMENT
+               var newTraffic = {};
+
+               newTraffic.Lat = traffic_engine.PosLat;
+               newTraffic.Lng = traffic_engine.PosLng;
+               newTraffic.carColor = trafficListModel.get(index).carColor;
+
+               trafficListModel.remove(index);
+               trafficListModel.insert(index, newTraffic);
+
+               console.log(traffic_engine.PosLat, traffic_engine.PosLng);
+               console.log("NEW POINT", tmp, trafficListModel.get(index).carColor);
+               tmp += 1;
+               //traffic.update();
+           }
+    }
+
+    Component{
+        id: trafficDelegate
+
+        MapQuickItem {
+            coordinate: QtPositioning.coordinate(model.Lat, model.Lng)
+
+            Component.onCompleted:  {
+                console.log("AAAAAAAAAAAAAAAAAAAAA");
+                traffic_engine.setUploadStatus(1);
+            }
+
+            anchorPoint.x: carMarker.width / 2
+            anchorPoint.y: carMarker.height / 2
+
+            sourceItem: Rectangle {
+                               id: carMarker
+                               width: 1.5 * map.zoomLevel
+                               height: 1.5 * map.zoomLevel
+                               radius: 180
+                               border.width: 1
+                               border.color: "black"
+                               color: model.carColor
+                           }
          }
     }
 
@@ -295,6 +366,13 @@ Rectangle {
             model: destinationListModel
             delegate: destinationDelegate
             z:3
+        }
+
+        MapItemView {
+            id: traffic
+            model: trafficListModel
+            delegate: trafficDelegate
+            z:5
         }
 
         MouseArea{

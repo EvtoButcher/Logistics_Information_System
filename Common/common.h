@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #include <QString>
+#include <QVector>
 #include <QGeoCoordinate>
 
 namespace common {

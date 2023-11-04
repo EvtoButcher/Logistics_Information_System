@@ -17,7 +17,8 @@ INCLUDEPATH += \
 HEADERS += \
     Core/ApplicationSettings.h \
     Core/Company.h \
-    Core/ModelForQML/TrafficModel.h \
+    Core/ModelForQML/AbstractTrafficModel.h \
+    Core/ModelForQML/CarSimulatorModel.h \
     ui/CreateCompanyDialog.h \
     ui/CreateDestinationDialog.h \
     ui/CreateWarehouseDialog.h \
@@ -39,6 +40,8 @@ HEADERS += \
 SOURCES += \
     Core/ApplicationSettings.cpp \
     Core/Company.cpp \
+    Core/ModelForQML/AbstractTrafficModel.cpp \
+    Core/ModelForQML/CarSimulatorModel.cpp \
     ui/CreateCompanyDialog.cpp \
     ui/CreateDestinationDialog.cpp \
     ui/CreateWarehouseDialog.cpp \

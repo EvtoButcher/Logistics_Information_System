@@ -7,6 +7,7 @@
 #include "RouteModel.h"
 #include "WarehouseModel.h"
 #include "DestinationModel.h"
+#include "AbstractTrafficModel.h"
 
 class OrderDB;
 class ApplicationSettings;
@@ -18,13 +19,17 @@ class MapItemEngine : public QObject
 public:
     MapItemEngine(QObject *parent = nullptr);
 
-    RouteModel&         getRouteModel();
-    WarehouseModel&     getWarehouseModel();
-    DestinationModel&   getDestinationModel();
-    const OrderDB*      getDB();
+    RouteModel&             getRouteModel();
+    WarehouseModel&         getWarehouseModel();
+    DestinationModel&       getDestinationModel();
+    AbstractTrifficModel*   getTrafficModel();
+    const OrderDB*          getDB();
 
     void OpenDb(const QString& name);
     void restoreMap();
+
+public:
+    AbstractTrifficModel* traffic_;
 
 signals:
     void distanceUpdated();
@@ -36,15 +41,17 @@ public slots:
 
     void addWarehouse(const uint64_t code, const QGeoCoordinate position);
     void addDestination(const uint64_t code, const QGeoCoordinate position);
+    void addTraffic(const uint64_t code, const QGeoCoordinate position);
+    void advanceNextTrafficPoint(const QGeoCoordinate position);
 
 private:
     void setPathCacheAndDistance();
 
 private:
-    OrderDB*          route_db_;
-    RouteModel        route_model_;
-    WarehouseModel    warehouse_model_;
-    DestinationModel  destination_modal_;
+    OrderDB*              route_db_;
+    RouteModel            route_model_;
+    WarehouseModel        warehouse_model_;
+    DestinationModel      destination_modal_;
 };
 
 
