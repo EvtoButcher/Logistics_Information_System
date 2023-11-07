@@ -15,7 +15,7 @@ class QSqlQuery;
 #define MAIN_TABLE          "Orders"    //TODO: replace with file.conf
 #define PATH_TABLE          "PathTable" //
 #define WAREHOUSE_TABLE     "Warehouse_table"
-#define DESTINATION_TABLE    "Destination_table"
+#define DESTINATION_TABLE   "Destination_table"
 
 enum class ConnectionStatus{
     Offline,
@@ -36,7 +36,7 @@ public:
     void updateDistanceFromOrderTable(const QString& code, const int distance);
     void deleteFromOrderTable(const int index);
 
-    void updateColor(const int index, const QString& color);
+    void   updateColor(const int index, const QString& color);
     QColor selectColor(const int index);
 
     bool closeDB();

@@ -24,11 +24,11 @@ OrderAddWidget::OrderAddWidget(QWidget *parent)
 {
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
-    auto route_name_label = new QLabel("Route name:", this);
+    auto route_name_label = new QLabel(tr("Route name:"), this);
     route_name_label->setFont(bold_font);
-    name_line_edit_ = new QLineEdit("enter the name of the route", this);
+    name_line_edit_ = new QLineEdit(tr("enter the name of the route"), this);
 
-    auto color_label = new QLabel("Color", this);
+    auto color_label = new QLabel(tr("Color"), this);
     color_label->setFont(bold_font);
     color_change_button_ = new QPushButton(this);
     color_change_button_->setStyleSheet("background-color: green;");
@@ -36,8 +36,8 @@ OrderAddWidget::OrderAddWidget(QWidget *parent)
     color_dialog_ = new QColorDialog(QColor("green"), this);
 
     auto start_position_editing_lay = new QHBoxLayout();
-    choose_warehouse_type_ = new QRadioButton("choose a warehouse", this);
-    arbitrary_start_point_type_ = new QRadioButton("arbitrary point", this);
+    choose_warehouse_type_ = new QRadioButton(tr("choose a warehouse"), this);
+    arbitrary_start_point_type_ = new QRadioButton(tr("arbitrary point"), this);
     arbitrary_start_point_type_->setChecked(true);
     auto start_button_group = new QButtonGroup(this);
     start_button_group->addButton(choose_warehouse_type_);
@@ -45,30 +45,30 @@ OrderAddWidget::OrderAddWidget(QWidget *parent)
     start_position_editing_lay->addWidget(choose_warehouse_type_);
     start_position_editing_lay->addWidget(arbitrary_start_point_type_);
 
-    warehouse_combo_label_ = new QLabel("Start Warehouse", this);
+    warehouse_combo_label_ = new QLabel(tr("Start Warehouse"), this);
     warehouse_combo_label_->setFont(bold_font);
     warehouse_combo_label_->hide();
     warehouse_combo_ = new QComboBox(this);
     warehouse_combo_->setInsertPolicy(QComboBox::InsertPolicy::InsertAtTop);
     warehouse_combo_->hide();
 
-    destination_combo_label_ = new QLabel("End Destination", this);
+    destination_combo_label_ = new QLabel(tr("End Destination"), this);
     destination_combo_label_->setFont(bold_font);
     destination_combo_label_->hide();
     destination_combo_ = new QComboBox(this);
     destination_combo_->setInsertPolicy(QComboBox::InsertPolicy::InsertAtTop);
     destination_combo_->hide();
 
-    start_name_label_ = new QLabel("Start point", this);
+    start_name_label_ = new QLabel(tr("Start point"), this);
     start_name_label_->setFont(bold_font);
-    start_lat_label_ = new QLabel("latitude:", this);
+    start_lat_label_ = new QLabel(tr("latitude:"), this);
     start_point_lat_ = new QLineEdit("55.908961", this);
-    start_lng_label_ = new QLabel("longitude:", this);
+    start_lng_label_ = new QLabel(tr("longitude:"), this);
     start_point_lng_ = new QLineEdit("37.391218", this);
 
     auto end_position_editing_lay = new QHBoxLayout();
-    choose_destination_type_ = new QRadioButton("choose a warehouse", this);
-    arbitrary_end_point_type_ = new QRadioButton("arbitrary point", this);
+    choose_destination_type_ = new QRadioButton(tr("choose a warehouse"), this);
+    arbitrary_end_point_type_ = new QRadioButton(tr("arbitrary point"), this);
     arbitrary_end_point_type_->setChecked(true);
     auto end_button_group = new QButtonGroup(this);
     end_button_group->addButton(choose_destination_type_);
@@ -76,11 +76,11 @@ OrderAddWidget::OrderAddWidget(QWidget *parent)
     end_position_editing_lay->addWidget(choose_destination_type_);
     end_position_editing_lay->addWidget(arbitrary_end_point_type_);
 
-    stop_name_label_ = new QLabel("Stop point", this);
+    stop_name_label_ = new QLabel(tr("Stop point"), this);
     stop_name_label_->setFont(bold_font);
-    stop_lat_label_ = new QLabel("latitude:", this);
+    stop_lat_label_ = new QLabel(tr("latitude:"), this);
     end_point_lat_ = new QLineEdit("55.9833043", this);
-    stop_lng_label_ = new QLabel("longitude:", this);
+    stop_lng_label_ = new QLabel(tr("longitude:"), this);
     end_point_lng_ = new QLineEdit("37.2106466", this);
 
     auto separator_1 = new QFrame(this);
@@ -93,7 +93,7 @@ OrderAddWidget::OrderAddWidget(QWidget *parent)
     separator_2->setFrameShadow(QFrame::Sunken);
     separator_2->setFixedHeight(2);
 
-    add_route_button_ = new QPushButton("Add order", this);
+    add_route_button_ = new QPushButton(tr("Add order"), this);
 
     setLayout(new QVBoxLayout(this));
 

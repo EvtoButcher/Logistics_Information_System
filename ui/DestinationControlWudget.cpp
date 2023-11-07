@@ -14,19 +14,19 @@ DestinationWudget::DestinationWudget(QWidget *parent)
 {
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
-    destination_label_ = new QLabel("Create Destination", this);
+    destination_label_ = new QLabel(tr("Create Destination"), this);
     destination_label_->setFont(bold_font);
-    destination_table_label_ = new QLabel("Destinations", this);
+    destination_table_label_ = new QLabel(tr("Destinations"), this);
 
     destination_table_ = new QTableWidget(0, 2, this);
     QStringList destination_table_colum;
-    destination_table_colum << "code" << "position";
+    destination_table_colum << tr("code") << tr("position");
     destination_table_->setHorizontalHeaderLabels(destination_table_colum);
 
     auto button_lay = new QHBoxLayout();
 
-    add_destination_button_ = new QPushButton("add a new destination", this);
-    delete_destination_button_ = new QPushButton("delete a warehouse", this);
+    add_destination_button_ = new QPushButton(tr("add a new destination"), this);
+    delete_destination_button_ = new QPushButton(tr("delete a warehouse"), this);
     delete_destination_button_->setStyleSheet("QPushButton {color: rgba(183, 22, 26, 80);}");
     delete_destination_button_->setEnabled(false);
 

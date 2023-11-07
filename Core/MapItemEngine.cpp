@@ -41,6 +41,8 @@ void MapItemEngine::restoreMap()
 
             while(route_model_.checkPathCacheStatus() != UploadRouteStatus::Colpleted); //waiting for the route to be loaded on the map
             QThread::msleep(10);
+
+            traffic_->getTraffic().push_back(TrafficInfo{info.path_cache_, info.route_color_});
         }
     }
 
@@ -82,6 +84,8 @@ void MapItemEngine::restoreMap()
         while(destination_modal_.checkDestinationStatus() != UploadDestinationStatus::Colpleted);
         QThread::msleep(10);
     }
+
+    traffic_->start();
 }
 
 WarehouseModel& MapItemEngine::getWarehouseModel()
@@ -92,6 +96,11 @@ WarehouseModel& MapItemEngine::getWarehouseModel()
 DestinationModel& MapItemEngine::getDestinationModel()
 {
     return destination_modal_;
+}
+
+AbstractTrifficModel* MapItemEngine::getTrafficModel()
+{
+    return traffic_;
 }
 
 const OrderDB *MapItemEngine::getDB()
@@ -138,6 +147,18 @@ void MapItemEngine::addDestination(const uint64_t code, const QGeoCoordinate pos
     route_db_->insertIntoDestinationTable(code, position);
     destination_modal_.setDestination({code, position});
     emit destination_modal_.addDestination();
+}
+
+void MapItemEngine::addTraffic(const uint64_t code, const QGeoCoordinate position)
+{
+    //route_db_->insertIntoTrafficTable(code, position);
+    //destination_modal_.setDestination({code, position});
+    //emit destination_modal_.addDestination();
+}
+
+void MapItemEngine::advanceNextTrafficPoint(const QGeoCoordinate position)
+{
+
 }
 
 void MapItemEngine::setPathCacheAndDistance()

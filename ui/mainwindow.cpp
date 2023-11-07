@@ -8,6 +8,7 @@
 #include "mainwindow.h"
 #include "RouteModel.h"
 #include "TextMessage.h"
+#include "CarSimulatorModel.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -20,9 +21,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle(APPLICATION_NAME);
 
+    map_engine_->traffic_ = new CarSimulatorModel(this);
+
     ui->quickWidget->rootContext()->setContextProperty("route_engine", &map_engine_->getRouteModel());
     ui->quickWidget->rootContext()->setContextProperty("warehouse_engine", &map_engine_->getWarehouseModel());
     ui->quickWidget->rootContext()->setContextProperty("destination_engine", &map_engine_->getDestinationModel());
+    ui->quickWidget->rootContext()->setContextProperty("traffic_engine", map_engine_->getTrafficModel());
     ui->quickWidget->setSource(QUrl(QStringLiteral("qrc:/OrderMap.qml")));
 
     create_company_dialog_ = new CreateCompanyDialog(map_engine_->getDestinationModel(), map_engine_->getWarehouseModel(), this);
@@ -84,7 +88,7 @@ void MainWindow::on_menuFileExit_triggered()
 
 void MainWindow::on_menuHelpAboutProgram_triggered()
 {
-    QMessageBox::information(this, "About Program", message_text::about_program);
+    QMessageBox::information(this, tr("About Program"), message_text::about_program);
 }
 
 

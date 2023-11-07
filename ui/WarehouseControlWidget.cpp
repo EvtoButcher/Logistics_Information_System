@@ -19,23 +19,23 @@ WarehouseWidget::WarehouseWidget(/*WarehouseModel& warehouse_model,*/ QWidget *p
 {
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
 
-    auto create_warehouses_label = new QLabel("Create warehouses", this);
+    auto create_warehouses_label = new QLabel(tr("Create warehouses"), this);
     create_warehouses_label->setFont(bold_font);
 
-    auto warehous_table_label = new QLabel("Warehouses", this);
+    auto warehous_table_label = new QLabel(tr("Warehouses"), this);
     warehouses_table_ = new QTableWidget(0, 2, this);
     QStringList warehous_table_colum;
-    warehous_table_colum << "code" << "position";
+    warehous_table_colum << tr("code") << tr("position");
     warehouses_table_->setHorizontalHeaderLabels(warehous_table_colum);
     auto warehouses_table_lay = new QVBoxLayout();
     warehouses_table_lay->addWidget(warehous_table_label);
     warehouses_table_lay->setSpacing(5);
     warehouses_table_lay->addWidget(warehouses_table_);
 
-    auto cargo_from_warehouses_table_label = new QLabel("Cargo", this);
+    auto cargo_from_warehouses_table_label = new QLabel(tr("Cargo"), this);
     curgo_from_warehouses_table_ = new QTableWidget(0, 3, this);
     QStringList cargo_from_warehouses_table_colum;
-    cargo_from_warehouses_table_colum << "code" << "Weight" << "Volume";
+    cargo_from_warehouses_table_colum << tr("code") << tr("Weight") << tr("Volume");
     curgo_from_warehouses_table_->setHorizontalHeaderLabels(cargo_from_warehouses_table_colum);
     auto cargo_from_warehouses_lay = new QVBoxLayout();
     cargo_from_warehouses_lay->addWidget(cargo_from_warehouses_table_label);
@@ -48,8 +48,8 @@ WarehouseWidget::WarehouseWidget(/*WarehouseModel& warehouse_model,*/ QWidget *p
     table_lay->addItem(cargo_from_warehouses_lay);
 
     auto button_lay = new QHBoxLayout();
-    add_warehouse_button_ = new QPushButton("add a new warehouse", this);
-    delete_warehouse_button_ = new QPushButton("delete a warehouse", this);
+    add_warehouse_button_ = new QPushButton(tr("add a new warehouse"), this);
+    delete_warehouse_button_ = new QPushButton(tr("delete a warehouse"), this);
     delete_warehouse_button_->setStyleSheet("QPushButton {color: rgba(183, 22, 26, 80);}");
     delete_warehouse_button_->setEnabled(false);
     button_lay->addWidget(add_warehouse_button_);
@@ -119,10 +119,10 @@ void WarehouseWidget::addWarehouse(Warehouse *warehouse)
                     newItem->setText("#" + QString::number(curgo->code_)); /*Code*/
                     break;
                 case 1:
-                    newItem->setText(QString::number(curgo->weight_) + " kg"); /*Weight*/
+                    newItem->setText(QString::number(curgo->weight_) + tr(" kg")); /*Weight*/
                     break;
                 case 2:
-                    newItem->setText(QString::number(curgo->volume_) + " сm³"); /*Volume*/
+                    newItem->setText(QString::number(curgo->volume_) + tr(" сm³")); /*Volume*/
                     break;
             }
             curgo_from_warehouses_table_->setItem(row_count, colum_index, newItem);
@@ -169,10 +169,10 @@ void WarehouseWidget::warehouseSelectedOnTable()
                     newItem->setText("#" + QString::number(code)); /*Code*/
                     break;
                 case 1:
-                    newItem->setText(QString::number(curgo->weight_) + " kg"); /*Weight*/
+                    newItem->setText(QString::number(curgo->weight_) + tr(" kg")); /*Weight*/
                     break;
                 case 2:
-                    newItem->setText(QString::number(curgo->volume_) + " сm³"); /*Volume*/
+                    newItem->setText(QString::number(curgo->volume_) + tr(" сm³")); /*Volume*/
                     break;
             }
             curgo_from_warehouses_table_->setItem(row_count, colum_index, newItem);

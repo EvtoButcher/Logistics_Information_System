@@ -12,11 +12,16 @@ class ApplicationSettings
 public:
     ApplicationSettings() = delete;
 
-    static void     setCompanyName(QString name);
+    enum class Locale{    RU,    ENG    };
+
+    static void     setLocale(Locale locale);
+    static QString  getLocale();
+
+    static void     setCompanyName(const QString& name);
     static QString  companyName();
     static bool     companyIsValid();
 
-    static void     setDbName(QString name);
+    static void     setDbName(const QString& name);
     static QString  dbName();
 
 private:
@@ -24,10 +29,12 @@ private:
 
 private:
     //Sections
+    static constexpr const char* sectionUi_       = "Ui";
     static constexpr const char* sectionCompany_ = "Company";
     static constexpr const char* sectionDb_      = "DB";
 
     //keys
+    static constexpr const char* keyUiLocale_     = "Locale";
     static constexpr const char* keyCompanyName_ = "company_name";
     static constexpr const char* keyDbName_      = "db_name";
 };

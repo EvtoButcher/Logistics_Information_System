@@ -14,13 +14,13 @@ CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
     : QDialog(parent)
 {
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    setWindowTitle("Create Warehouse");
+    setWindowTitle(tr("Create Warehouse"));
 
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
-    auto destination_code_label = new QLabel("Destination Code", this);
+    auto destination_code_label = new QLabel(tr("Destination Code"), this);
     destination_code_label->setFont(bold_font);
 
-    destination_code_ = new QLineEdit("automatic generation", this);
+    destination_code_ = new QLineEdit(tr("automatic generation"), this);
     destination_code_->setEnabled(false);
 
     auto destination_code_lay = new QHBoxLayout();
@@ -28,11 +28,11 @@ CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
     auto spacer = new QSpacerItem(250, 0, QSizePolicy::Fixed);
     destination_code_lay->addItem(spacer);
 
-    auto destination_position_label = new QLabel("Position:", this);
+    auto destination_position_label = new QLabel(tr("Position:"), this);
     destination_position_label->setFont(bold_font);
-    auto destination_lat_label = new QLabel("latitude:", this);
+    auto destination_lat_label = new QLabel(tr("latitude:"), this);
     destination_lat_ = new QLineEdit(this);
-    auto destination_lng_label = new QLabel("longitude:", this);
+    auto destination_lng_label = new QLabel(tr("longitude:"), this);
     destination_lng_ = new QLineEdit(this);
 
     auto destination_position_lay = new QHBoxLayout();
@@ -44,7 +44,7 @@ CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
     destination_position_lay->addSpacing(10);
     destination_position_lay->addWidget(destination_lng_);
 
-    create_destination_button_ = new QPushButton("Add a new destination", this);
+    create_destination_button_ = new QPushButton(tr("Add a new destination"), this);
 
     setLayout(new QVBoxLayout(this));
 
@@ -84,8 +84,8 @@ void CreateDestinationDialog::destinationLatAdding()
     destination_lat_->text().toDouble(&convert_is_correct);
     if(!convert_is_correct) {
         destination_lat_->setStyleSheet("color: #b7161a;");
-        if(destination_code_->text() != "automatic generation") {
-            destination_code_->setText("automatic generation");
+        if(destination_code_->text() != tr("automatic generation")) {
+            destination_code_->setText(tr("automatic generation"));
         }
     }
     else {
@@ -100,8 +100,8 @@ void CreateDestinationDialog::destinationLngAdding()
     destination_lng_->text().toDouble(&convert_is_correct);
     if(!convert_is_correct) {
         destination_lng_->setStyleSheet("color: #b7161a;");
-        if(destination_code_->text() != "automatic generation") {
-            destination_code_->setText("automatic generation");
+        if(destination_code_->text() != tr("automatic generation")) {
+            destination_code_->setText(tr("automatic generation"));
         }
     }
     else {

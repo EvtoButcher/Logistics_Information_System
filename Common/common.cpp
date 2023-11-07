@@ -26,3 +26,4 @@ void common::delay()
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
 }
+
