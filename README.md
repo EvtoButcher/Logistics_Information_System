@@ -18,10 +18,14 @@
 - Система предоставляет информацию о текущем местоположении всех логистических грузовиков.
 Она также рассчитывает ожидаемое время доставки для каждого грузовика, позволяя отслеживать статус выполнения заказов.
 
+### общий интерфейс программы
 ![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/609c4bc0-f91c-4bed-b171-cd2651b4108b)
 
+### интерфейс создания компании
 ![image](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/b923e4db-5437-4608-9246-42d6c5012c07)
 
+### семуляция движения грузовиков
+![simulation_test](https://github.com/EvtoButcher/Logistics_Information_System/assets/52111046/7dd0a65e-1b7a-4533-adbe-39b7c713ccce)
 
 
 
