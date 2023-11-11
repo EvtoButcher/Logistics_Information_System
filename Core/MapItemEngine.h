@@ -12,12 +12,11 @@
 class OrderDB;
 class ApplicationSettings;
 
-
 class MapItemEngine : public QObject
 {
     Q_OBJECT
 public:
-    MapItemEngine(QObject *parent = nullptr);
+    explicit MapItemEngine(QObject* parent = nullptr);
 
     RouteModel&             getRouteModel();
     WarehouseModel&         getWarehouseModel();

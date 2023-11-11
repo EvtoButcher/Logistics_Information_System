@@ -1,24 +1,23 @@
 #include "DestinationModel.h"
 
-DestinationModel::DestinationModel(QObject *parent)
+DestinationModel::DestinationModel(QObject* parent)
     : QObject(parent)
 {
-
 }
 
-void DestinationModel::setDestination(const DestinationInfo &new_destination)
+void DestinationModel::setDestination(const map_Item_Info::DestinationInfo& new_destination)
 {
     info_ = new_destination;
 }
 
-double DestinationModel::lat()
+double DestinationModel::lat() const
 {
-    return info_.position_.latitude();
+    return info_.getLatitude();
 }
 
-double DestinationModel::lng()
+double DestinationModel::lng() const
 {
-    return info_.position_.longitude();
+    return info_.getLongitude();
 }
 
 void DestinationModel::setDestinationStatus(int current_status)
@@ -28,14 +27,10 @@ void DestinationModel::setDestinationStatus(int current_status)
 
 UploadDestinationStatus DestinationModel::checkDestinationStatus()
 {
-    if(destination_status_ == UploadDestinationStatus::Colpleted) {//TODO add UploadStatus::Error handling
+    if(destination_status_ == UploadDestinationStatus::Colpleted) { // TODO add UploadStatus::Error handling
            destination_status_ = UploadDestinationStatus::Null;
            return UploadDestinationStatus::Colpleted;
     }
+
     return destination_status_;
 }
-
-DestinationInfo::DestinationInfo(const uint64_t code, const QGeoCoordinate pos)
-    : code_(code)
-    , position_(pos)
-{}

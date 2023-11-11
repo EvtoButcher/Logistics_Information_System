@@ -99,7 +99,7 @@ void CreateCompanyDialog::addWarehouse(Warehouse* warehouse)
     emit addWarehouseOnMap(warehouse->getCode(), warehouse->getPosition());
 }
 
-void CreateCompanyDialog::addDestination(Destination* destination)
+void CreateCompanyDialog::addDestination(company_item::Destination* destination)
 {
     //qDebug() << destination->getPosition().latitude() << destination->getPosition().longitude() << "BBBBBBBBBBBB";
     company_->addDestination(destination);

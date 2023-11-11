@@ -48,7 +48,7 @@ DestinationWudget::DestinationWudget(QWidget *parent)
     connect(create_destination_dialog_, &CreateDestinationDialog::createDestination, this, &DestinationWudget::addDestination);
 }
 
-void DestinationWudget::addDestination(Destination *destination)
+void DestinationWudget::addDestination(company_item::Destination* destination)
 {
     emit addDestinationToCompany(destination);
 

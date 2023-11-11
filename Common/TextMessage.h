@@ -5,8 +5,6 @@
 
 namespace message_text {
 
-//TODO: change on conf
-
 QString about_program = "<p>"
                         "<b>OctopusLogistics 1.0.3</b>"
                         "</p>  "

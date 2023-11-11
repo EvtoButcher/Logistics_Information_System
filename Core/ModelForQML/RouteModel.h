@@ -9,15 +9,16 @@
 #include <QVector>
 #include <QGeoCoordinate>
 
+#include "AbstractMapItemModel.h"
 
-struct RouteInfo{
+struct RouteInfo {
     RouteInfo() = default;
-    RouteInfo(QString name, double start_lat, double satrt_lng,
-              double end_lat, double end_lng,
-              QString color = "#008000" /*green*/);
 
-    RouteInfo(const QString name, const QGeoCoordinate start, const QGeoCoordinate end,
-              const QString& path_cache, QString color = "#008000" /*green*/);
+    explicit RouteInfo(const QString& name, double start_lat, double satrt_lng,
+                       double end_lat, double end_lng, const QString& color = "#008000" /*green*/);
+
+    explicit RouteInfo(const QString& name, const QGeoCoordinate start, const QGeoCoordinate end,
+                       const QString& path_cache, const QString& color = "#008000" /*green*/);
 
     QString        code_;
     QGeoCoordinate start_route_point_;
@@ -28,7 +29,7 @@ struct RouteInfo{
     QVector<QGeoCoordinate> path_cache_;
 };
 
-enum class UploadRouteStatus{
+enum UploadRouteStatus {
     Null,
     Colpleted,
     Loading,
@@ -38,42 +39,42 @@ enum class UploadRouteStatus{
 class RouteModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(double  StartLat   READ startLat)
-    Q_PROPERTY(double  StartLng   READ startLng)
-    Q_PROPERTY(double  EndLat     READ endLat)
-    Q_PROPERTY(double  EndLng     READ endLng)
-    Q_PROPERTY(QString RouteColor READ routeColor)
-    Q_PROPERTY(QVariantList RoutePath READ routePath CONSTANT)
+    Q_PROPERTY(double       StartLat   READ  startLat)
+    Q_PROPERTY(double       StartLng   READ  startLng)
+    Q_PROPERTY(double       EndLat     READ  endLat)
+    Q_PROPERTY(double       EndLng     READ  endLng)
+    Q_PROPERTY(QString      RouteColor READ  routeColor)
+    Q_PROPERTY(QVariantList RoutePath  READ  routePath CONSTANT)
 
 public:
-    explicit RouteModel(QObject *parent = nullptr);
+    explicit RouteModel(QObject* parent = nullptr);
 
-    double       startLat();
-    double       startLng();
-    double       endLat();
-    double       endLng();
-    QString      routeColor();
-    QVariantList routePath();
+    double       startLat()     const;
+    double       startLng()     const;
+    double       endLat()       const;
+    double       endLng()       const;
+    QString      routeColor()   const;
+    QVariantList routePath()    const;
 
-    void setRoute(const RouteInfo &new_route);
+    void setRoute(const RouteInfo& new_route);
 
-    Q_INVOKABLE void setPathCache(QJSValue path);
+    Q_INVOKABLE void setPathCache(const QJSValue& path);
     Q_INVOKABLE void setRouteStatus(int current_status /*UploadStatus*/);
     Q_INVOKABLE void setPathCacheStatus(int current_status /*UploadStatus*/);
 
-    UploadRouteStatus checkPathCacheStatus();
+    const RouteInfo&  getInfo() const;
     UploadRouteStatus checkRouteStatus();
-    const RouteInfo&  getInfo();
+    UploadRouteStatus checkPathCacheStatus();
 
 signals:
-    void restorRoute();
     void addRoute();
+    void restorRoute();
     void removeRoute(int);
     void removeAllRoutes();
-    void selectRouteOnTable(int);
-    void unSelectRouteOnTable();
-    void selectRouteOnMap(int);
     void unselectRouteOnMap();
+    void selectRouteOnMap(int);
+    void unSelectRouteOnTable();
+    void selectRouteOnTable(int);
     void colorChenged(int, QString);
 
 private:

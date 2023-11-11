@@ -2,13 +2,13 @@
 #define DESTINATIONCONTROLWUDGET_H
 
 #include <QWidget>
-#include "Company.h"
+
+#include "AbstractCompanyItemModel.h"
 
 class QPushButton;
 class QTableWidget;
 class QLabel;
 class CreateDestinationDialog;
-//class Destination;
 
 class DestinationWudget : public QWidget
 {
@@ -17,10 +17,10 @@ public:
     explicit DestinationWudget(QWidget* parent = nullptr);
 
 signals:
-    void addDestinationToCompany(Destination*);
+    void addDestinationToCompany(company_item::Destination*);
 
 private slots:
-    void addDestination(Destination* destination);
+    void addDestination(company_item::Destination* destination);
 
 private:
     QLabel*                  destination_label_;

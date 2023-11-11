@@ -190,8 +190,8 @@ void CreateWarehouseDialog::tryCreateWarehouse()
 
 void CreateWarehouseDialog::addCurgo()
 {
-    auto current_curgo = new Curgo(curgo_weight_line_edit_->text().toDouble(), curgo_volume_line_edit_->text().toInt());
-    warehouse_->addCurgo(current_curgo);
+    auto current_curgo = new Cargo(curgo_weight_line_edit_->text().toDouble(), curgo_volume_line_edit_->text().toInt());
+    warehouse_->addCargo(current_curgo);
 
     int row_count = curgo_table_->rowCount();
     curgo_table_->setRowCount(row_count + 1);

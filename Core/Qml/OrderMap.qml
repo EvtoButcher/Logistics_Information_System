@@ -34,10 +34,10 @@ Rectangle {
 
                newRoute.startPosLat = route_engine.StartLat;
                newRoute.startPosLng = route_engine.StartLng;
-               newRoute.endPosLat = route_engine.EndLat;
-               newRoute.endPosLng = route_engine.EndLng;
-               newRoute.color = route_engine.RouteColor;
-               newRoute.opacity = defOpasity;
+               newRoute.endPosLat   = route_engine.EndLat;
+               newRoute.endPosLng   = route_engine.EndLng;
+               newRoute.color       = route_engine.RouteColor;
+               newRoute.opacity     = defOpasity;
                newRoute.isCachePath = false;
 
                routeListModel.append(newRoute);
@@ -70,11 +70,11 @@ Rectangle {
 
                oldRoute.startPosLat = route_engine.StartLat;
                oldRoute.startPosLng = route_engine.StartLng;
-               oldRoute.endPosLat = route_engine.EndLat;
-               oldRoute.endPosLng = route_engine.EndLng;
-               oldRoute.path = route_engine.RoutePath;
-               oldRoute.color = route_engine.RouteColor;
-               oldRoute.opacity = defOpasity;
+               oldRoute.endPosLat   = route_engine.EndLat;
+               oldRoute.endPosLng   = route_engine.EndLng;
+               oldRoute.path        = route_engine.RoutePath;
+               oldRoute.color       = route_engine.RouteColor;
+               oldRoute.opacity     = defOpasity;
                oldRoute.isCachePath = true;
 
                routeListModel.append(oldRoute);
@@ -177,19 +177,18 @@ Rectangle {
         MapQuickItem {
             coordinate: QtPositioning.coordinate(model.PosLat, model.PosLng)
 
-            Component.onCompleted: {
-                warehouse_engine.setWarehouseStatus(1);
-            }
-
             anchorPoint.x: warehouseMarker.width / 2
             anchorPoint.y: warehouseMarker.height / 2
 
             sourceItem: Image {
                id: warehouseMarker
                source: "qrc:/WarehouseDepart.svg"
-               width: 6 * map.zoomLevel
+               width:  6 * map.zoomLevel
                height: 6 * map.zoomLevel
            }
+            Component.onCompleted: {
+                warehouse_engine.setWarehouseStatus(1);
+            }
          }
     }
 
@@ -207,8 +206,6 @@ Rectangle {
                newDestination.lng = destination_engine.Lng;
 
                destinationListModel.append(newDestination);
-
-               //Common.setNewCenter(destination_engine.Lat, destination_engine.Lng);
             }
 
     }
@@ -238,11 +235,6 @@ Rectangle {
 
     ListModel{
         id: trafficListModel
-
-//        onDataChanged: {
-//            console.log("AAAAAAAAAAAAAAAAAAAAA");
-//            traffic_engine.setUploadStatus(1);
-//        }
     }
 
     Connections {
@@ -251,12 +243,9 @@ Rectangle {
            function onAddCar() {
                var newTraffic = {};
 
-               newTraffic.Lat = traffic_engine.PosLat;
-               newTraffic.Lng = traffic_engine.PosLng;
+               newTraffic.Lat      = traffic_engine.PosLat;
+               newTraffic.Lng      = traffic_engine.PosLng;
                newTraffic.carColor = traffic_engine.CarColor;
-
-               //console.log(traffic_engine.PosLat, traffic_engine.PosLng);
-               //console.log(traffic_engine.CarColor);
 
                trafficListModel.append(newTraffic);
            }
@@ -264,17 +253,12 @@ Rectangle {
            function onNextPoint(index) {   // QML MOMENT
                var newTraffic = {};
 
-               newTraffic.Lat = traffic_engine.PosLat;
-               newTraffic.Lng = traffic_engine.PosLng;
+               newTraffic.Lat      = traffic_engine.PosLat;
+               newTraffic.Lng      = traffic_engine.PosLng;
                newTraffic.carColor = trafficListModel.get(index).carColor;
 
                trafficListModel.remove(index);
                trafficListModel.insert(index, newTraffic);
-
-               console.log(traffic_engine.PosLat, traffic_engine.PosLng);
-               console.log("NEW POINT", tmp, trafficListModel.get(index).carColor);
-               tmp += 1;
-               //traffic.update();
            }
     }
 
@@ -283,11 +267,6 @@ Rectangle {
 
         MapQuickItem {
             coordinate: QtPositioning.coordinate(model.Lat, model.Lng)
-
-            Component.onCompleted:  {
-                console.log("AAAAAAAAAAAAAAAAAAAAA");
-                traffic_engine.setUploadStatus(1);
-            }
 
             anchorPoint.x: carMarker.width / 2
             anchorPoint.y: carMarker.height / 2
@@ -301,39 +280,12 @@ Rectangle {
                                border.color: "black"
                                color: model.carColor
                            }
+            Component.onCompleted:  {
+                traffic_engine.setUploadStatus(1);
+            }
          }
     }
 
-//    Component{
-//        id: endPointDelegate
-
-//        MapQuickItem {
-
-//            RouteModel{
-//                id: routeModel
-//                autoUpdate:false
-//                plugin: osmPlugin
-
-//            }
-//           anchorPoint.x: startPathMarker.width / 2
-//           anchorPoint.y: startPathMarker.height / 2
-//           coordinate: model.isCachePath ? route_engine.RoutePath[route_engine.RoutePath.length - 1] :
-//                           routeModel.status === RouteModel.Ready ?
-//                                routeModel.get(0).path[routeModel.get(0).path.length - 1] :
-//                                               QtPositioning.coordinate()
-
-//           sourceItem: Rectangle {
-//               id: startPathMarker
-//               width: 1.5 * map.zoomLevel
-//               height: 1.5 * map.zoomLevel
-//               radius: 180
-//               border.width: 5
-//               border.color: "gray"
-//               color: "white"
-//               opacity: model.opacity
-//           }
-//         }
-//    }
 
     Map {
         id: map

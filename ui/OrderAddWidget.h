@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 
 #include "RouteModel.h"
+#include "AbstractCompanyItemModel.h"
 
 class QLineEdit;
 class QDockWidget;
@@ -16,8 +17,6 @@ class QColorDialog;
 class QRadioButton;
 class QComboBox;
 class Warehouse;
-class Destination;
-
 
 class OrderAddWidget: public QWidget
 {
@@ -32,7 +31,7 @@ signals:
 
 public slots:
      void addNewWarehouseVariant(Warehouse* warehouse);
-     void addNewDestinationVariant(Destination* destination);
+     void addNewDestinationVariant(company_item::Destination* destination);
 
 private slots:
     void onAddButtonClicked();

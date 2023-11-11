@@ -54,9 +54,13 @@ void OrderDB::inserIntoOrderTable(const RouteInfo &info)
     query->bindValue(":Code",       info.code_);
     query->bindValue(":StartPos",   start);
     query->bindValue(":EndPos",     end);
-    query->bindValue(":StartDate",  QDateTime::currentDateTime().toString(Qt::DateFormat::LocalDate));
     query->bindValue(":Distance",   000);
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    query->bindValue(":StartDate",  QDateTime::currentDateTime().toString(Qt::DateFormat::LocalDate));
     query->bindValue(":EndDate",    QDateTime::currentDateTime().toString(Qt::DateFormat::LocalDate));
+    #pragma GCC diagnostic pop
+
     query->bindValue(":RouteColor", info.route_color_);
 
     if(!query->exec()) {

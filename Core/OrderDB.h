@@ -27,7 +27,7 @@ class OrderDB : public QObject
     Q_OBJECT
 
 public:
-    explicit OrderDB(const QString& name, QObject *parent = nullptr);
+    explicit OrderDB(const QString& name, QObject* parent = nullptr);
     ~OrderDB() = default;
 
     const QSqlDatabase& DB() const;

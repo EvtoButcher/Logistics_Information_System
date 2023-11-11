@@ -9,55 +9,33 @@
 #include <unordered_map>
 #include <vector>
 
-struct Curgo
+#include "AbstractCompanyItemModel.h"
+
+struct Cargo
 {
-    explicit Curgo(const double weight, const int volume);
+    explicit Cargo(const double weight, const int volume);
 
     uint64_t code_;
     double   weight_;
     int      volume_;
 };
 
-
-
-class Warehouse
+class Warehouse : public AbstractCompanyItem
 {
 public:
     explicit Warehouse(const QGeoCoordinate& pos);
-    explicit Warehouse(const uint64_t code, const QGeoCoordinate& pos);
+    explicit Warehouse(const uint64_t code, const QGeoCoordinate pos);
     ~Warehouse();
 
-    void addCurgo(Curgo *curgo);
+    void addCargo(Cargo* curgo);
     void loadCurgo();
 
-    uint64_t getCode() const;
-    const QGeoCoordinate& getPosition() const;
-    const std::unordered_map<uint64_t, Curgo*> getCurgo() const;
-    const Curgo* curgoAt(const uint64_t code);
-    bool isValid() const;
+    const std::unordered_map<uint64_t, Cargo*> getCargo() const;
+    const Cargo* cargoAt(const uint64_t code)  const;
 
 private:
-    uint64_t       code_ = 0;
-    QGeoCoordinate position_;
-
-    std::unordered_map<uint64_t, Curgo*> map_of_curgo_;
+    std::unordered_map<uint64_t, Cargo*> map_of_curgo_;
 };
-
-class Destination
-{
-public:
-    explicit Destination(const QGeoCoordinate& pos);
-    explicit Destination(const uint64_t code, const QGeoCoordinate& pos);
-
-    uint64_t getCode() const;
-    const QGeoCoordinate& getPosition() const;
-    bool isValid() const;
-
-private:
-    uint64_t       code_ = 0;
-    QGeoCoordinate position_;
-};
-
 
 class OrderDB;
 
@@ -69,8 +47,8 @@ public:
     ~Company() override;
 
     void setName(const QString& name);
-    void addWarehouse(Warehouse *warehouse);
-    void addDestination(Destination* destination);
+    void addWarehouse(Warehouse* warehouse);
+    void addDestination(company_item::Destination* destination);
 
     const QString getName() const;
 
@@ -78,12 +56,12 @@ public:
 
 signals:
     void addedNewWarehouse(Warehouse*);
-    void addedNewDestination(Destination*);
+    void addedNewDestination(company_item::Destination*);
 
 private:
     QString               company_name_;
     QVector<Warehouse*>   warehouses_;
-    QVector<Destination*> destinations_;
+    QVector<company_item::Destination*> destinations_;
 };
 
 #endif // COMPANY_H

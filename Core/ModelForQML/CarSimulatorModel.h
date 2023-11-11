@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QVariantList>
+#include <QSet>
 
 #include "AbstractTrafficModel.h"
 
@@ -31,10 +32,15 @@ protected slots:
     void onArrived()      override;
     void onFinished()     override;
 
+private slots:
+    void addIgnore(int index);
+
 private:
     void startSimulation(int simulation_speed);
 
+private:
     TrafficInfo traffic_model_;
+    QSet<int> ignore_traffic_;
 };
 
 #endif // CARSIMULATORMODEL_H

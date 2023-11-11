@@ -27,16 +27,16 @@ struct TrafficInfo
     QString                 color_;
     QVector<QGeoCoordinate> path_;
 
-    UploadTrifficStatus upload_status_ = UploadTrifficStatus::Null;
-    TravelStatus        travel_Status_ = TravelStatus::Null;
+    UploadTrifficStatus     upload_status_ = UploadTrifficStatus::Null;
+    TravelStatus            travel_Status_ = TravelStatus::Null;
 };
 
 class AbstractTrifficModel : public QStateMachine
 {
     Q_OBJECT
-    Q_PROPERTY(double          PosLat   READ  posLat)
-    Q_PROPERTY(double          PosLng   READ  posLng)
-    Q_PROPERTY(QString         CarColor      READ  trafficColor)
+    Q_PROPERTY(double    PosLat    READ  posLat)
+    Q_PROPERTY(double    PosLng    READ  posLng)
+    Q_PROPERTY(QString   CarColor  READ  trafficColor)
 
 public:
     explicit AbstractTrifficModel(QObject* parent = nullptr);
@@ -44,8 +44,8 @@ public:
 
     bool                         arrivedAtDestination(int index);
     void                         setTraffic(const QVector<TrafficInfo>& tr);
+    bool                         trafficIsEmpty();
     QVector<TrafficInfo>&        getTraffic();
-
 
     virtual void                 addTraffic(const TrafficInfo& info);
     virtual QString              trafficColor()      = 0;

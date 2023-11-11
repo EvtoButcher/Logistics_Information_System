@@ -19,7 +19,7 @@ class CreateCompanyDialog : public QDialog
 {   
     Q_OBJECT
 public:
-    explicit CreateCompanyDialog(DestinationModel& destination_model, WarehouseModel& warehouse_model, QWidget *parent = nullptr);
+    explicit CreateCompanyDialog(DestinationModel& destination_model, WarehouseModel& warehouse_model, QWidget* parent = nullptr);
 
     Company* getCompany();
 
@@ -29,7 +29,7 @@ signals:
 
 private slots:
     void addWarehouse(Warehouse* warehouse);
-    void addDestination(Destination* destination);
+    void addDestination(company_item::Destination* destination);
     void trySetCompanyName();
     void createComponyButtonClicked();
 

@@ -23,7 +23,7 @@ void common::delay()
 {
     QTime dieTime= QTime::currentTime().addMSecs(10);
     while (QTime::currentTime() < dieTime){
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 1);
     }
 }
 

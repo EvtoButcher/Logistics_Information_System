@@ -8,7 +8,6 @@
 #include <QDebug>
 
 #include "CreateDestinationDialog.h"
-#include "Company.h"
 
 CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
     : QDialog(parent)
@@ -71,7 +70,7 @@ void CreateDestinationDialog::tryCreateDestination()
         return;
     }
 
-    destination_ = new Destination(destination_position);
+    destination_ = new company_item::Destination(destination_position);
     destination_code_->setText(QString::number(destination_->getCode()));
     destination_code_->setStyleSheet("color: #91918b;");
 

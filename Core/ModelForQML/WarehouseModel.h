@@ -4,16 +4,9 @@
 #include <QObject>
 #include <QGeoCoordinate>
 
+#include "AbstractMapItemModel.h"
+
 #define CONTEXT_WAREHOUSE_NAME "warehouseModel"
-
-struct WarehouseInfo
-{
-    WarehouseInfo() = default;
-    WarehouseInfo(const uint64_t code, const QGeoCoordinate pos);
-
-    uint64_t       code_ = 0;
-    QGeoCoordinate position_;
-};
 
 enum class UploadWarehouseStatus{
     Null,
@@ -24,18 +17,19 @@ enum class UploadWarehouseStatus{
 class WarehouseModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(double  Lat   READ lat)
-    Q_PROPERTY(double  Lng   READ lng)
+    Q_PROPERTY(double  Lat  READ lat)
+    Q_PROPERTY(double  Lng  READ lng)
 
 public:
-    explicit WarehouseModel(QObject *parent = nullptr);
+    explicit WarehouseModel(QObject* parent = nullptr);
 
-    void setWarehouse(const WarehouseInfo& new_warehouse);
+    void setWarehouse(const map_Item_Info::WarehouseInfo& new_warehouse);
 
-    double lat();
-    double lng();
+    double lat() const;
+    double lng() const;
 
     Q_INVOKABLE void setWarehouseStatus(int current_status /*UploadWarehouseStatus*/);
+
     UploadWarehouseStatus checkWarehouseStatus();
 
 signals:
@@ -43,7 +37,7 @@ signals:
     void restorWarehouse();
 
 private:
-    WarehouseInfo         info_;
+    map_Item_Info::WarehouseInfo info_;
     UploadWarehouseStatus warehouse_status_ = UploadWarehouseStatus::Null;
 };
 

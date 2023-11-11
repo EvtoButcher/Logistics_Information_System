@@ -21,18 +21,17 @@ AbstractTrifficModel::AbstractTrifficModel(QObject* parent)
     finished_       ->addTransition(this, &AbstractTrifficModel::next_state,      arrived_);
 
     //Connect slots
-    connect(initializing_, &QState::entered, this, &AbstractTrifficModel::onInitializing);
-    connect(waiting_     , &QState::entered, this, &AbstractTrifficModel::onWaiting);
-    connect(on_way_      , &QState::entered, this, &AbstractTrifficModel::onOnWay);
-    connect(arrived_     , &QState::entered, this, &AbstractTrifficModel::onArrived);
-    connect(finished_    , &QState::entered, this, &AbstractTrifficModel::onFinished);
+    connect(initializing_ , &QState::entered, this, &AbstractTrifficModel::onInitializing);
+    connect(waiting_      , &QState::entered, this, &AbstractTrifficModel::onWaiting);
+    connect(on_way_       , &QState::entered, this, &AbstractTrifficModel::onOnWay);
+    connect(arrived_      , &QState::entered, this, &AbstractTrifficModel::onArrived);
+    connect(finished_     , &QState::entered, this, &AbstractTrifficModel::onFinished);
 }
 
 AbstractTrifficModel::~AbstractTrifficModel()
 {
     stop();
 }
-
 
 void AbstractTrifficModel::addTraffic(const TrafficInfo& info)
 {
@@ -49,9 +48,13 @@ bool AbstractTrifficModel::arrivedAtDestination(int index)
     return traffic_[index].travel_Status_ == TravelStatus::Arrived;
 }
 
+bool AbstractTrifficModel::trafficIsEmpty()
+{
+    return traffic_.isEmpty();
+}
+
 TrafficInfo::TrafficInfo(const QVector<QGeoCoordinate>& path, const QString& color)
     : color_(color)
     , path_(path)
 {
-
 }

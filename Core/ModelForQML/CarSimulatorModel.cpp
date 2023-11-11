@@ -7,7 +7,7 @@
 CarSimulatorModel::CarSimulatorModel(QObject* parent)
     : AbstractTrifficModel(parent)
 {
-
+    connect(this, &AbstractTrifficModel::finished_state, this, &CarSimulatorModel::addIgnore);
 }
 
 QString CarSimulatorModel::trafficColor()
@@ -32,7 +32,8 @@ UploadTrifficStatus CarSimulatorModel::checkUploadStatus()
                traffic_model_.upload_status_ = UploadTrifficStatus::Null;
                return UploadTrifficStatus::Colpleted;
         }
-        return traffic_model_.upload_status_;
+
+    return traffic_model_.upload_status_;
 }
 
 TravelStatus CarSimulatorModel::checkTravelStatus()
@@ -85,12 +86,25 @@ void CarSimulatorModel::onOnWay()
     qDebug() << "OnWay";
     auto& traffic = getTraffic();
     for(int i = 0; i < traffic.size(); ++i){
+
+        if(ignore_traffic_.find(i) != ignore_traffic_.end()) {
+            continue;
+        }
+
         traffic[i].path_.pop_front();//LOL
         traffic_model_ = traffic[i];
+
+        if(!traffic_model_.path_.size()) {
+             emit finished_state(i);
+             continue;
+        }
+
         emit nextPoint(i);
+
         while(checkUploadStatus() != UploadTrifficStatus::Colpleted);
         common::delay();
     }
+
     emit next_state();
 }
 
@@ -102,5 +116,12 @@ void CarSimulatorModel::onArrived()
 
 void CarSimulatorModel::onFinished()
 {
-    stop();
+    qDebug() <<"Finished";
+    emit next_state();
+}
+
+void CarSimulatorModel::addIgnore(int index)
+{
+    ignore_traffic_.insert(index);
+    qDebug() << QString("car %1 Arrived").arg(index);
 }
