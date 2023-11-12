@@ -11,8 +11,9 @@
 #include "OrderDB.h"
 #include "common.h"
 #include "ApplicationSettings.h"
+#include "RouteModel.h"
 
-OrderDB::OrderDB(const QString& name, QObject *parent)
+OrderDB::OrderDB(const QString& name, QObject* parent)
      : QObject(parent)
      , db(QSqlDatabase::addDatabase("QSQLITE"))
 {
@@ -31,7 +32,7 @@ const QSqlDatabase &OrderDB::DB() const
     return db;
 }
 
-void OrderDB::inserIntoOrderTable(const RouteInfo &info)
+void OrderDB::inserIntoOrderTable(const RouteInfo& info)
 {
     query->prepare("INSERT INTO " MAIN_TABLE "("
                                               "color, "
@@ -72,7 +73,7 @@ void OrderDB::inserIntoOrderTable(const RouteInfo &info)
     }
 }
 
-void OrderDB::updateDistanceFromOrderTable(const QString &code, const int distance)
+void OrderDB::updateDistanceFromOrderTable(const QString& code, const int distance)
 {
     query->prepare("UPDATE " MAIN_TABLE " SET distance = :Distance WHERE code = :Code");
     query->bindValue(":Distance", distance);
@@ -103,7 +104,7 @@ void OrderDB::deleteFromOrderTable(const int index)
     }
 }
 
-void OrderDB::updateColor(const int index, const QString &color)
+void OrderDB::updateColor(const int index, const QString& color)
 {
     query->prepare("UPDATE " MAIN_TABLE " SET color = :Color WHERE id = :Id");
     query->bindValue(":Id", index);
@@ -118,7 +119,7 @@ void OrderDB::updateColor(const int index, const QString &color)
     }
 }
 
-QColor OrderDB::selectColor(const int index)
+QColor OrderDB::selectColor(const int index) const
 {
     query->prepare("SELECT color FROM " MAIN_TABLE " WHERE id = :Id");
     query->bindValue(":Id", index);
@@ -128,6 +129,18 @@ QColor OrderDB::selectColor(const int index)
     }
 
     return QColor(query->value(0).toString());
+}
+
+QString OrderDB::selectPath(const QString& code) const
+{
+    query->prepare("SELECT path FROM " PATH_TABLE " WHERE main_code = :Code");
+    query->bindValue(":Code", code);
+
+    if (query->exec() && query->next()) {
+     /* qDebug() << query->value(0).toString();*///      path = query.value(0).toString();
+    }
+
+    return query->value(0).toString();
 }
 
 void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_caсhe)
@@ -156,17 +169,7 @@ void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCo
      }
 }
 
-const QString OrderDB::selectPath(const QString code)
-{
-    query->prepare("SELECT path FROM " PATH_TABLE " WHERE main_code = :Code");
-    query->bindValue(":Code", code);
 
-    if (query->exec() && query->next()) {
-     /* qDebug() << query->value(0).toString();*///      path = query.value(0).toString();
-    }
-
-    return query->value(0).toString();
-}
 
 void OrderDB::insertIntoWarehouseTable(const uint64_t code, const QGeoCoordinate position)
 {

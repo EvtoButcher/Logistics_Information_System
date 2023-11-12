@@ -13,9 +13,9 @@ class TableDelegate : public QStyledItemDelegate
     Q_OBJECT
 
 public:
-    TableDelegate(QObject *parent = nullptr);
+    TableDelegate(QObject* parent = nullptr);
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 private:
     QItemDelegate def_delegate;

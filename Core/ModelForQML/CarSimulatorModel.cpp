@@ -10,18 +10,18 @@ CarSimulatorModel::CarSimulatorModel(QObject* parent)
     connect(this, &AbstractTrifficModel::finished_state, this, &CarSimulatorModel::addIgnore);
 }
 
-QString CarSimulatorModel::trafficColor()
+QString CarSimulatorModel::trafficColor() const
 {
     return traffic_model_.color_;
 }
 
 
-double CarSimulatorModel::posLat()
+double CarSimulatorModel::posLat() const
 {
     return traffic_model_.path_.front().latitude();
 }
 
-double CarSimulatorModel::posLng()
+double CarSimulatorModel::posLng() const
 {
     return traffic_model_.path_.front().longitude();
 }

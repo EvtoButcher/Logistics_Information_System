@@ -1,13 +1,13 @@
 #include "WarehouseModel.h"
 
 
-WarehouseModel::WarehouseModel(QObject *parent)
+WarehouseModel::WarehouseModel(QObject* parent)
     : QObject(parent)
 {
 
 }
 
-void WarehouseModel::setWarehouse(const map_Item_Info::WarehouseInfo &new_warehouse)
+void WarehouseModel::setWarehouse(const map_Item_Info::WarehouseInfo& new_warehouse)
 {
     info_ = new_warehouse;
 }

@@ -51,7 +51,7 @@ void Company::restorCompany(const OrderDB* route_db)
      table_model.setTable(WAREHOUSE_TABLE);
      table_model.select();
 
-     if(table_model.rowCount()){
+     if(table_model.rowCount()) {
          warehouses_.reserve(table_model.rowCount());
          for (int row = 0; row < table_model.rowCount(); ++row) {
 
@@ -65,7 +65,7 @@ void Company::restorCompany(const OrderDB* route_db)
      table_model.setTable(DESTINATION_TABLE);
      table_model.select();
 
-     if(table_model.rowCount()){
+     if(table_model.rowCount()) {
          destinations_.reserve(table_model.rowCount());
          for (int row = 0; row < table_model.rowCount(); ++row) {
 
@@ -77,7 +77,7 @@ void Company::restorCompany(const OrderDB* route_db)
      }
 }
 
-Warehouse::Warehouse(const QGeoCoordinate& pos)
+Warehouse::Warehouse(const QGeoCoordinate pos)
     : AbstractCompanyItem(pos)
 {
 }

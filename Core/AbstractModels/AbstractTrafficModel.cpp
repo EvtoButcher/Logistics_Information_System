@@ -28,11 +28,6 @@ AbstractTrifficModel::AbstractTrifficModel(QObject* parent)
     connect(finished_     , &QState::entered, this, &AbstractTrifficModel::onFinished);
 }
 
-AbstractTrifficModel::~AbstractTrifficModel()
-{
-    stop();
-}
-
 void AbstractTrifficModel::addTraffic(const TrafficInfo& info)
 {
     traffic_.push_back(info);

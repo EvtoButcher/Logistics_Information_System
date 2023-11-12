@@ -3,7 +3,8 @@
 
 #include <QGeoCoordinate>
 
-class AbstractMapPoint {
+class AbstractMapPoint
+{
 public:
     AbstractMapPoint() = default;
     AbstractMapPoint(const uint64_t code, const QGeoCoordinate position);

@@ -23,7 +23,7 @@ struct Cargo
 class Warehouse : public AbstractCompanyItem
 {
 public:
-    explicit Warehouse(const QGeoCoordinate& pos);
+    explicit Warehouse(const QGeoCoordinate pos);
     explicit Warehouse(const uint64_t code, const QGeoCoordinate pos);
     ~Warehouse();
 
@@ -42,6 +42,7 @@ class OrderDB;
 class Company : public QObject
 {
     Q_OBJECT
+
 public:
     explicit Company(QObject* parent = nullptr);
     ~Company() override;

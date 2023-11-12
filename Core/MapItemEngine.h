@@ -15,6 +15,7 @@ class ApplicationSettings;
 class MapItemEngine : public QObject
 {
     Q_OBJECT
+
 public:
     explicit MapItemEngine(QObject* parent = nullptr);
 
@@ -38,10 +39,10 @@ public slots:
     void removeRoute(const int db_index, const int map_index);
     void routeColorUpdate(const int db_index, const int map_index, const QString& color);
 
+    void advanceNextTrafficPoint(const QGeoCoordinate position);
     void addWarehouse(const uint64_t code, const QGeoCoordinate position);
     void addDestination(const uint64_t code, const QGeoCoordinate position);
     void addTraffic(const uint64_t code, const QGeoCoordinate position);
-    void advanceNextTrafficPoint(const QGeoCoordinate position);
 
 private:
     void setPathCacheAndDistance();

@@ -3,13 +3,13 @@
 #include "RouteModel.h"
 #include "common.h"
 
-RouteModel::RouteModel(QObject *parent)
+RouteModel::RouteModel(QObject* parent)
     : QObject{parent}
 {
 
 }
 
-void RouteModel::setRoute(const RouteInfo &new_route)
+void RouteModel::setRoute(const RouteInfo& new_route)
 {
     route_ = new_route;
 }
@@ -122,7 +122,6 @@ RouteInfo::RouteInfo(const QString& name, const QGeoCoordinate start, const QGeo
         return;
     }
 
-    //path_cache_ = common::pathFromString(path_cache);
     QStringList parts = path_cache.split(" ", Qt::SkipEmptyParts);
 
     const auto first_point = common::splitCoordinates(parts[0] + " " + parts[1]);
@@ -130,8 +129,8 @@ RouteInfo::RouteInfo(const QString& name, const QGeoCoordinate start, const QGeo
 
     for(int i = 0; i < parts.size(); i += 2) {                                       //
         const auto& point = common::splitCoordinates(parts[i] + " " + parts[i + 1]); //TODO: FIX THIS SHIT AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        if(!isFirst){                                                                //
-            if(point == first_point){
+        if(!isFirst) {                                                                //
+            if(point == first_point) {
                 break;
             }
         }

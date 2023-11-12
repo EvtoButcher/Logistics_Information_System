@@ -9,7 +9,7 @@
 
 #include "CreateDestinationDialog.h"
 
-CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
+CreateDestinationDialog::CreateDestinationDialog(QWidget* parent)
     : QDialog(parent)
 {
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -61,12 +61,12 @@ CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
 
 void CreateDestinationDialog::tryCreateDestination()
 {
-    if(destination_lat_->text().isEmpty() || destination_lng_->text().isEmpty()){
+    if(destination_lat_->text().isEmpty() || destination_lng_->text().isEmpty()) {
         return;
     }
 
     auto destination_position = QGeoCoordinate(destination_lat_->text().toDouble(), destination_lng_->text().toDouble());
-    if(!destination_position.isValid()){
+    if(!destination_position.isValid()) {
         return;
     }
 

@@ -3,21 +3,22 @@
 
 #include <QObject>
 #include <QSqlDatabase>
-#include <QString>
 #include <QColor>
 #include <optional>
+#include <QGeoCoordinate>
 
-#include "RouteModel.h"
 
+#define MAIN_TABLE         "Orders"    //TODO: replace with file.conf
+#define PATH_TABLE         "PathTable" //
+#define WAREHOUSE_TABLE    "Warehouse_table"
+#define DESTINATION_TABLE  "Destination_table"
+
+
+class RouteInfo;
 class QSqlQuery;
+class QString;
 
-#define DATABASE_NAME       "orderDB.db"//
-#define MAIN_TABLE          "Orders"    //TODO: replace with file.conf
-#define PATH_TABLE          "PathTable" //
-#define WAREHOUSE_TABLE     "Warehouse_table"
-#define DESTINATION_TABLE   "Destination_table"
-
-enum class ConnectionStatus{
+enum ConnectionStatus{
     Offline,
     Online
 };
@@ -32,21 +33,20 @@ public:
 
     const QSqlDatabase& DB() const;
 
-    void inserIntoOrderTable(const RouteInfo& info);
-    void updateDistanceFromOrderTable(const QString& code, const int distance);
-    void deleteFromOrderTable(const int index);
+    QColor  selectColor(const int index)    const;
+    QString selectPath(const QString& code) const;
 
-    void   updateColor(const int index, const QString& color);
-    QColor selectColor(const int index);
+    void deleteFromOrderTable(const int index);
+    void updateColor(const int index, const QString& color);
+    void updateDistanceFromOrderTable(const QString& code, const int distance);
+
+    void inserIntoOrderTable(const RouteInfo& info);
+    void insertIntoWarehouseTable(const uint64_t code, const QGeoCoordinate position);
+    void insertIntoDestinationTable(const uint64_t code, const QGeoCoordinate position);
+    void insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cahe);
 
     bool closeDB();
     bool importDB();
-
-    void insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cahe);
-    const QString selectPath(const QString code);
-
-    void insertIntoWarehouseTable(const uint64_t code, const QGeoCoordinate position);
-    void insertIntoDestinationTable(const uint64_t code, const QGeoCoordinate position);
 
 signals:
     void DbIsOpen();

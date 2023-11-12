@@ -6,11 +6,6 @@ AbstractMapPoint::AbstractMapPoint(uint64_t code, QGeoCoordinate position)
 {
 }
 
-//AbstractMapPoint::AbstractMapPoint(const QGeoCoordinate& position)
-//    : position_(position)
-//{
-//}
-
 double AbstractMapPoint::getLatitude() const
 {
     return position_.latitude();

@@ -23,8 +23,7 @@ class OrderAddWidget: public QWidget
     Q_OBJECT
 
 public:
-    explicit OrderAddWidget(QWidget *parent = nullptr);
-    ~OrderAddWidget() = default;
+    explicit OrderAddWidget(QWidget* parent = nullptr);
 
 signals:
      void addRoute(const RouteInfo&);

@@ -6,6 +6,8 @@
 #include <QGeoCoordinate>
 #include <QStateMachine>
 
+class QFinalState;
+
 enum class UploadTrifficStatus{
     Null,
     Colpleted,
@@ -34,13 +36,12 @@ struct TrafficInfo
 class AbstractTrifficModel : public QStateMachine
 {
     Q_OBJECT
-    Q_PROPERTY(double    PosLat    READ  posLat)
-    Q_PROPERTY(double    PosLng    READ  posLng)
-    Q_PROPERTY(QString   CarColor  READ  trafficColor)
+    Q_PROPERTY(double   PosLat    READ  posLat)
+    Q_PROPERTY(double   PosLng    READ  posLng)
+    Q_PROPERTY(QString  CarColor  READ  trafficColor)
 
 public:
     explicit AbstractTrifficModel(QObject* parent = nullptr);
-    ~AbstractTrifficModel();
 
     bool                         arrivedAtDestination(int index);
     void                         setTraffic(const QVector<TrafficInfo>& tr);
@@ -48,11 +49,11 @@ public:
     QVector<TrafficInfo>&        getTraffic();
 
     virtual void                 addTraffic(const TrafficInfo& info);
-    virtual QString              trafficColor()      = 0;
-    virtual double               posLat()            = 0;
-    virtual double               posLng()            = 0;
-    virtual UploadTrifficStatus  checkUploadStatus() = 0;
-    virtual TravelStatus         checkTravelStatus() = 0;
+    virtual QString              trafficColor()      const = 0;
+    virtual double               posLat()            const = 0;
+    virtual double               posLng()            const = 0;
+    virtual UploadTrifficStatus  checkUploadStatus()       = 0;
+    virtual TravelStatus         checkTravelStatus()       = 0;
 
     virtual Q_INVOKABLE void     setUploadStatus(int current_status /*UploadTrifficStatus*/) = 0;
     virtual Q_INVOKABLE void     setTravelStatus(int current_status /*TravelStatus*/)        = 0;
@@ -65,8 +66,6 @@ signals:
     void nextPoint(int);
     void arrived();
     void finished();
-
-    //void restoreTraffic();
 
 protected slots:
     virtual void onInitializing()   = 0;

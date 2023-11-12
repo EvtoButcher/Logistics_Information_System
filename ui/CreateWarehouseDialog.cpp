@@ -14,14 +14,8 @@
 
 CreateWarehouseDialog::CreateWarehouseDialog(QWidget* parent)
     : QDialog(parent)
-    //, settings_map_(new QQuickWidget(parent))
 {
-    //settings_map_->rootContext()->setContextProperty(CONTEXT_WAREHOUSE_NAME,
-                                                     //map->rootContext()->contextProperty(CONTEXT_WAREHOUSE_NAME).value<QObject*>());
-    //settings_map_->setSource(map->source());
-    //settings_map_->setMinimumSize(map->minimumSize());
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    //this->setFixedSize(700, 500);
     setWindowTitle(tr("Create Warehouse"));
 
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
@@ -131,8 +125,6 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget* parent)
     control_lay->addWidget(create_warehouse_button_);
 
     layout()->addItem(control_lay);
-    //layout()->setSpacing(10);
-    //layout()->addWidget(settings_map_);
 
     connect(add_curgo_to_warehouse_button_, &QAbstractButton::clicked, this, &CreateWarehouseDialog::addCurgo);
     connect(create_warehouse_button_, &QAbstractButton::clicked, this, &CreateWarehouseDialog::createWarehouseButtonClicked);
@@ -166,12 +158,12 @@ void CreateWarehouseDialog::enabledAddCurgo(bool status)
 
 void CreateWarehouseDialog::tryCreateWarehouse()
 {
-    if(warehouse_lat_->text().isEmpty() || warehouse_lng_->text().isEmpty()){
+    if(warehouse_lat_->text().isEmpty() || warehouse_lng_->text().isEmpty()) {
         return;
     }
 
     auto warehouse_position = QGeoCoordinate(warehouse_lat_->text().toDouble(), warehouse_lng_->text().toDouble());
-    if(!warehouse_position.isValid()){
+    if(!warehouse_position.isValid()) {
         enabledAddCurgo(false);
         messege_label_->show();
         return;
@@ -196,7 +188,7 @@ void CreateWarehouseDialog::addCurgo()
     int row_count = curgo_table_->rowCount();
     curgo_table_->setRowCount(row_count + 1);
 
-    for(int colum_index = 0; colum_index < curgo_table_->columnCount(); ++colum_index){
+    for(int colum_index = 0; colum_index < curgo_table_->columnCount(); ++colum_index) {
         auto* newItem = new QTableWidgetItem();
         switch (colum_index) {
             case 0:
@@ -244,7 +236,7 @@ void CreateWarehouseDialog::warehouseLngAdding()
         warehouse_lng_->setStyleSheet("color: #b7161a;");
         enabledAddCurgo(false);
         messege_label_->show();
-        if(warehouse_code_->text() != tr("automatic generation")){
+        if(warehouse_code_->text() != tr("automatic generation")) {
             warehouse_code_->setText(tr("automatic generation"));
         }
     }

@@ -8,7 +8,8 @@
 namespace common {
 
 template<typename... Args>
-uint64_t createCode(Args... args){
+uint64_t createCode(Args... args)
+{
     if constexpr(sizeof...(args) == 1) {
 
         double tmp_lat = ((static_cast<QGeoCoordinate>(args).latitude()), ...);

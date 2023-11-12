@@ -16,7 +16,7 @@
 #include "DestinationModel.h"
 #include "Company.h"
 
-CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, WarehouseModel& warehouse_model, QWidget *parent)
+CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, WarehouseModel& warehouse_model, QWidget* parent)
     : QDialog(parent)
     , company_(new Company(parent))
     , settings_map_(new QQuickWidget(parent))
@@ -53,11 +53,8 @@ CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, Wa
 
     create_company_button_ = new QPushButton(tr("Create company"),this);
     create_company_button_->setEnabled(false);
-    //close_button_ = new QPushButton("Close",this);
     auto button_lay = new QHBoxLayout();
     button_lay->addWidget(create_company_button_);
-    //button_lay->addSpacing(10);
-    //button_lay->addWidget(close_button_);
 
     settings_map_->setMinimumSize(QSize(700, 700));
     settings_map_->rootContext()->setContextProperty(CONTEXT_WAREHOUSE_NAME, &warehouse_model);
@@ -80,7 +77,6 @@ CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, Wa
     layout()->setSpacing(10);
     layout()->addWidget(settings_map_);
 
-    //connect(close_button_, &QAbstractButton::clicked, this, &CreateCompanyDialog::close);
     connect(create_company_button_, &QAbstractButton::clicked, this, &CreateCompanyDialog::createComponyButtonClicked);
     connect(company_name_line_edit_, &QLineEdit::textEdited, this, &CreateCompanyDialog::trySetCompanyName);
     connect(warehouse_widget_, &WarehouseWidget::addWarehouseToCompany, this, &CreateCompanyDialog::addWarehouse);
@@ -95,13 +91,11 @@ Company* CreateCompanyDialog::getCompany()
 void CreateCompanyDialog::addWarehouse(Warehouse* warehouse)
 {
     company_->addWarehouse(warehouse);
-    //qDebug() << warehouse->getCode() <<  warehouse->getPosition();
     emit addWarehouseOnMap(warehouse->getCode(), warehouse->getPosition());
 }
 
 void CreateCompanyDialog::addDestination(company_item::Destination* destination)
 {
-    //qDebug() << destination->getPosition().latitude() << destination->getPosition().longitude() << "BBBBBBBBBBBB";
     company_->addDestination(destination);
     emit addDestinationOnMap(destination->getCode(), destination->getPosition());
 }

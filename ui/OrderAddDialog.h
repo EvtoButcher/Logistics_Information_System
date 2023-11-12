@@ -13,8 +13,7 @@ class OrderAddDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit OrderAddDialog(QWidget *parent = nullptr);
-    ~OrderAddDialog() = default;
+    explicit OrderAddDialog(QWidget* parent = nullptr);
 
     const OrderAddWidget* getOrderAddWidget();
 
@@ -22,7 +21,7 @@ signals:
      void addRouteToTableFromDialog(const RouteInfo&);
 
 private slots:
-    void onAddWidgetButtonClicked(const RouteInfo &info);
+    void onAddWidgetButtonClicked(const RouteInfo& info);
     void onCloseButtonClicked();
 
 private:

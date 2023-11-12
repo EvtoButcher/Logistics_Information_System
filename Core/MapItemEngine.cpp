@@ -132,7 +132,7 @@ void MapItemEngine::removeRoute(const int db_index, const int map_index)
     emit route_model_.removeRoute(map_index);
 }
 
-void MapItemEngine::routeColorUpdate(const int db_index, const int map_index, const QString &color)
+void MapItemEngine::routeColorUpdate(const int db_index, const int map_index, const QString& color)
 {
     route_db_->updateColor(db_index, color);
 
