@@ -1,22 +1,25 @@
 #ifndef CREATEDESTINATIONDIALOG_H
 #define CREATEDESTINATIONDIALOG_H
+
 #include <QDialog>
+
+#include "AbstractCompanyItemModel.h"
 
 class QLabel;
 class QLineEdit;
 class QTableWidget;
 class QPushButton;
 class QQuickWidget;
-class Destination;
+class AbstractCompanyItem;
 
 class CreateDestinationDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit CreateDestinationDialog(/*QQuickWidget* map,*/QWidget* parent = nullptr);
+    explicit CreateDestinationDialog(QWidget* parent = nullptr);
 
 signals:
-    void createDestination(Destination*);
+    void createDestination(company_item::Destination*);
 
 private slots:
     void tryCreateDestination();
@@ -28,7 +31,7 @@ private:
     void enabledAddDestination(bool status);
 
 private:
-    Destination* destination_;
+    company_item::Destination* destination_;
 
     QLineEdit*      destination_code_;
     QLineEdit*      destination_lat_;

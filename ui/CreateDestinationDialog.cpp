@@ -8,9 +8,8 @@
 #include <QDebug>
 
 #include "CreateDestinationDialog.h"
-#include "Company.h"
 
-CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
+CreateDestinationDialog::CreateDestinationDialog(QWidget* parent)
     : QDialog(parent)
 {
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -62,16 +61,16 @@ CreateDestinationDialog::CreateDestinationDialog(QWidget *parent)
 
 void CreateDestinationDialog::tryCreateDestination()
 {
-    if(destination_lat_->text().isEmpty() || destination_lng_->text().isEmpty()){
+    if(destination_lat_->text().isEmpty() || destination_lng_->text().isEmpty()) {
         return;
     }
 
     auto destination_position = QGeoCoordinate(destination_lat_->text().toDouble(), destination_lng_->text().toDouble());
-    if(!destination_position.isValid()){
+    if(!destination_position.isValid()) {
         return;
     }
 
-    destination_ = new Destination(destination_position);
+    destination_ = new company_item::Destination(destination_position);
     destination_code_->setText(QString::number(destination_->getCode()));
     destination_code_->setStyleSheet("color: #91918b;");
 

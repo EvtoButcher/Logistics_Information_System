@@ -173,7 +173,7 @@ void OrderAddWidget::addNewWarehouseVariant(Warehouse* warehouse)
     warehouse_combo_->addItem(QString::number(warehouse->getCode()), QVariant::fromValue(warehouse->getPosition()));
 }
 
-void OrderAddWidget::addNewDestinationVariant(Destination* destination)
+void OrderAddWidget::addNewDestinationVariant(company_item::Destination* destination)
 {
    destination_combo_->addItem(QString::number(destination->getCode()), QVariant::fromValue(destination->getPosition()));
 }

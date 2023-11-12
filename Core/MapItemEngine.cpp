@@ -1,14 +1,15 @@
+#include "MapItemEngine.h"
+
 #include <QSqlTableModel>
 #include <QFuture>
 #include <QtConcurrent>
 
 #include "common.h"
-#include "MapItemEngine.h"
 #include "OrderDB.h"
 #include "ApplicationSettings.h"
 
-MapItemEngine::MapItemEngine(QObject *parent)
-    : QObject{parent}
+MapItemEngine::MapItemEngine(QObject* parent)
+    : QObject(parent)
     , route_model_(parent)
     , warehouse_model_(parent)
 {
@@ -26,14 +27,15 @@ void MapItemEngine::restoreMap()
     table_model.select();
 
     if(table_model.rowCount()) {
+
         for (int row = 0; row < table_model.rowCount(); ++row) {
 
-            auto code = table_model.data(table_model.index(row, 7)).toString();
-            RouteInfo info(code,//code
-                           common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()),//start position
-                           common::splitCoordinates(table_model.data(table_model.index(row, 3)).toString()),//end position
-                           route_db_->selectPath(code), //cache
-                           table_model.data(table_model.index(row, 1)).toString());//color
+            auto code = table_model.data(table_model.index(row, 7)).toString();                              // code
+            RouteInfo info(code,                                                                             //
+                           common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()), // start position
+                           common::splitCoordinates(table_model.data(table_model.index(row, 3)).toString()), // end position
+                           route_db_->selectPath(code),                                                      // path cache from DB
+                           table_model.data(table_model.index(row, 1)).toString());                          // color
 
             route_model_.setRoute(info);
 
@@ -53,8 +55,8 @@ void MapItemEngine::restoreMap()
 
         for (int row = 0; row < table_model.rowCount(); ++row) {
 
-            WarehouseInfo info (table_model.data(table_model.index(row, 1)).toInt(),
-                                common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()));
+            map_Item_Info::WarehouseInfo info (table_model.data(table_model.index(row, 1)).toInt(),                               // code
+                                common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())); // position
 
             warehouse_model_.setWarehouse(info);
 
@@ -68,24 +70,25 @@ void MapItemEngine::restoreMap()
     table_model.setTable(DESTINATION_TABLE);
     table_model.select();
 
-    if(!table_model.rowCount()) {
-        return;
+    if(table_model.rowCount()) {
+
+        for (int row = 0; row < table_model.rowCount(); ++row) {
+
+            map_Item_Info::DestinationInfo info (table_model.data(table_model.index(row, 1)).toInt(),                             // code
+                                common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())); // position
+
+            destination_modal_.setDestination(info);
+
+            emit destination_modal_.addDestination();
+
+            while(destination_modal_.checkDestinationStatus() != UploadDestinationStatus::Colpleted);
+            QThread::msleep(10);
+        }
     }
 
-    for (int row = 0; row < table_model.rowCount(); ++row) {
-
-        DestinationInfo info (table_model.data(table_model.index(row, 1)).toInt(),
-                            common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()));
-
-        destination_modal_.setDestination(info);
-
-        emit destination_modal_.addDestination();
-
-        while(destination_modal_.checkDestinationStatus() != UploadDestinationStatus::Colpleted);
-        QThread::msleep(10);
+    if(!traffic_->trafficIsEmpty()) {
+        traffic_->start();
     }
-
-    traffic_->start();
 }
 
 WarehouseModel& MapItemEngine::getWarehouseModel()
@@ -103,7 +106,7 @@ AbstractTrifficModel* MapItemEngine::getTrafficModel()
     return traffic_;
 }
 
-const OrderDB *MapItemEngine::getDB()
+const OrderDB* MapItemEngine::getDB()
 {
     return route_db_;
 }
@@ -113,7 +116,7 @@ void MapItemEngine::OpenDb(const QString& name)
     route_db_ = new OrderDB(name, this);
 }
 
-void MapItemEngine::addRoute(const RouteInfo &info)
+void MapItemEngine::addRoute(const RouteInfo& info)
 {
     route_db_->inserIntoOrderTable(info);
     route_model_.setRoute(info);
@@ -129,9 +132,10 @@ void MapItemEngine::removeRoute(const int db_index, const int map_index)
     emit route_model_.removeRoute(map_index);
 }
 
-void MapItemEngine::routeColorUpdate(const int db_index, const int map_index, const QString &color)
+void MapItemEngine::routeColorUpdate(const int db_index, const int map_index, const QString& color)
 {
     route_db_->updateColor(db_index, color);
+
     emit route_model_.colorChenged(map_index, color);
 }
 
@@ -139,6 +143,7 @@ void MapItemEngine::addWarehouse(const uint64_t code, const QGeoCoordinate posit
 {
     route_db_->insertIntoWarehouseTable(code, position);
     warehouse_model_.setWarehouse({code, position});
+
     emit warehouse_model_.addWarehouse();
 }
 
@@ -146,6 +151,7 @@ void MapItemEngine::addDestination(const uint64_t code, const QGeoCoordinate pos
 {
     route_db_->insertIntoDestinationTable(code, position);
     destination_modal_.setDestination({code, position});
+
     emit destination_modal_.addDestination();
 }
 
@@ -172,26 +178,3 @@ void MapItemEngine::setPathCacheAndDistance()
     emit distanceUpdated();
 }
 
-//void OrderTable::closeDbConnection()
-//{
-//    emit map_item_engine_.getRouteModel().removeAllRoutes();
-//    route_db_->closeDB();
-//    table_model_->select();
-//}
-
-//void OrderTable::importFromDB()
-//{
-//    route_db_->importDB();
-//    table_model_->setTable(MAIN_TABLE);
-//    table_model_->select();
-
-//    table_view_->setModel(table_model_);
-//    table_view_->setItemDelegate(&table_delegate);
-//    table_view_->resizeColumnsToContents();
-//    table_view_->setColumnWidth(1, 1);
-//    table_view_->setColumnHidden(0,true);//id
-//    table_view_->setColumnHidden(2,true);//StartPos
-//    table_view_->setColumnHidden(3,true);//EndPos
-
-//    QFuture<void> future = QtConcurrent::run(this, &OrderTable::restoreRoutOnMap);
-//}

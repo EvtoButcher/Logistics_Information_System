@@ -3,13 +3,13 @@
 #include "RouteModel.h"
 #include "common.h"
 
-RouteModel::RouteModel(QObject *parent)
+RouteModel::RouteModel(QObject* parent)
     : QObject{parent}
 {
 
 }
 
-void RouteModel::setRoute(const RouteInfo &new_route)
+void RouteModel::setRoute(const RouteInfo& new_route)
 {
     route_ = new_route;
 }
@@ -42,37 +42,37 @@ UploadRouteStatus RouteModel::checkRouteStatus()
     return route_status_;
 }
 
-const RouteInfo& RouteModel::getInfo()
+const RouteInfo& RouteModel::getInfo() const
 {
     return route_;
 }
 
-double RouteModel::startLat()
+double RouteModel::startLat() const
 {
     return route_.start_route_point_.latitude();
 }
 
-double RouteModel::startLng()
+double RouteModel::startLng() const
 {
     return route_.start_route_point_.longitude();
 }
 
-double RouteModel::endLat()
+double RouteModel::endLat() const
 {
     return route_.end_route_point_.latitude();
 }
 
-double RouteModel::endLng()
+double RouteModel::endLng() const
 {
     return route_.end_route_point_.longitude();
 }
 
-QString RouteModel::routeColor()
+QString RouteModel::routeColor() const
 {
     return route_.route_color_;
 }
 
-QVariantList RouteModel::routePath()
+QVariantList RouteModel::routePath() const
 {
     QVariantList list;
 
@@ -83,7 +83,7 @@ QVariantList RouteModel::routePath()
     return list;
 }
 
-void RouteModel::setPathCache(QJSValue path)
+void RouteModel::setPathCache(const QJSValue& path)
 {
     QVariantList coordinate_list = qvariant_cast<QVariantList>(path.toVariant());
 
@@ -103,7 +103,7 @@ void RouteModel::setPathCache(QJSValue path)
     path_cache_status_ = UploadRouteStatus::Colpleted;
 }
 
-RouteInfo::RouteInfo(QString name, double start_lat, double start_lng, double end_lat, double end_lng, QString color)
+RouteInfo::RouteInfo(const QString& name, double start_lat, double start_lng, double end_lat, double end_lng, const QString& color)
     : code_(name)
     , start_route_point_(QGeoCoordinate(start_lat, start_lng))
     , end_route_point_(QGeoCoordinate(end_lat, end_lng))
@@ -112,17 +112,16 @@ RouteInfo::RouteInfo(QString name, double start_lat, double start_lng, double en
 
 }
 
-RouteInfo::RouteInfo(const QString name, const QGeoCoordinate start, const QGeoCoordinate end, const QString &path_cache, const QString color)
+RouteInfo::RouteInfo(const QString& name, const QGeoCoordinate start, const QGeoCoordinate end, const QString& path_cache, const QString& color)
    : code_(name)
    , start_route_point_(start)
    , end_route_point_(end)
    , route_color_(color)
 {
-    //if(path_cache.isEmpty()){
-    //    return;
-    //}
+    if(path_cache.isEmpty()){
+        return;
+    }
 
-    //path_cache_ = common::pathFromString(path_cache);
     QStringList parts = path_cache.split(" ", Qt::SkipEmptyParts);
 
     const auto first_point = common::splitCoordinates(parts[0] + " " + parts[1]);
@@ -130,8 +129,8 @@ RouteInfo::RouteInfo(const QString name, const QGeoCoordinate start, const QGeoC
 
     for(int i = 0; i < parts.size(); i += 2) {                                       //
         const auto& point = common::splitCoordinates(parts[i] + " " + parts[i + 1]); //TODO: FIX THIS SHIT AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        if(!isFirst){                                                                //
-            if(point == first_point){
+        if(!isFirst) {                                                                //
+            if(point == first_point) {
                 break;
             }
         }

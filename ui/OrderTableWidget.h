@@ -15,8 +15,9 @@ class QPushButton;
 class OrderTable : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit OrderTable(const OrderDB *db, QWidget *parent = nullptr);
+    explicit OrderTable(const OrderDB* db, QWidget* parent = nullptr);
 
 public slots:
     void updateTable();

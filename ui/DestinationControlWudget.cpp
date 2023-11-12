@@ -9,7 +9,7 @@
 #include "DestinationControlWudget.h"
 #include "CreateDestinationDialog.h"
 
-DestinationWudget::DestinationWudget(QWidget *parent)
+DestinationWudget::DestinationWudget(QWidget* parent)
     : QWidget(parent)
 {
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
@@ -48,14 +48,14 @@ DestinationWudget::DestinationWudget(QWidget *parent)
     connect(create_destination_dialog_, &CreateDestinationDialog::createDestination, this, &DestinationWudget::addDestination);
 }
 
-void DestinationWudget::addDestination(Destination *destination)
+void DestinationWudget::addDestination(company_item::Destination* destination)
 {
     emit addDestinationToCompany(destination);
 
     int row_count = destination_table_->rowCount();
     destination_table_->setRowCount(row_count + 1);
 
-    for(int colum_index = 0; colum_index < destination_table_->columnCount(); ++colum_index){
+    for(int colum_index = 0; colum_index < destination_table_->columnCount(); ++colum_index) {
         auto* newItem = new QTableWidgetItem();
         switch (colum_index) {
             case 0:

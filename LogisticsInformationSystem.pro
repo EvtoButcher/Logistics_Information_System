@@ -7,6 +7,7 @@ CONFIG += c++17
 INCLUDEPATH += \
     ui \
     Core \
+    Core/AbstractModels \
     Core/ModelForQML \
     Core/Qml \
     Common \
@@ -15,9 +16,11 @@ INCLUDEPATH += \
 
 
 HEADERS += \
+    Core/AbstractModels/AbstractCompanyItemModel.h \
+    Core/AbstractModels/AbstractMapItemModel.h \
     Core/ApplicationSettings.h \
     Core/Company.h \
-    Core/ModelForQML/AbstractTrafficModel.h \
+    Core/AbstractModels/AbstractTrafficModel.h \
     Core/ModelForQML/CarSimulatorModel.h \
     ui/CreateCompanyDialog.h \
     ui/CreateDestinationDialog.h \
@@ -38,9 +41,11 @@ HEADERS += \
     ui/mainwindow.h
 
 SOURCES += \
+    Core/AbstractModels/AbstractCompanyItemModel.cpp \
+    Core/AbstractModels/AbstractMapItemModel.cpp \
     Core/ApplicationSettings.cpp \
     Core/Company.cpp \
-    Core/ModelForQML/AbstractTrafficModel.cpp \
+    Core/AbstractModels/AbstractTrafficModel.cpp \
     Core/ModelForQML/CarSimulatorModel.cpp \
     ui/CreateCompanyDialog.cpp \
     ui/CreateDestinationDialog.cpp \

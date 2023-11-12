@@ -1,25 +1,25 @@
 #include "WarehouseModel.h"
 
 
-WarehouseModel::WarehouseModel(QObject *parent)
+WarehouseModel::WarehouseModel(QObject* parent)
     : QObject(parent)
 {
 
 }
 
-void WarehouseModel::setWarehouse(const WarehouseInfo &new_warehouse)
+void WarehouseModel::setWarehouse(const map_Item_Info::WarehouseInfo& new_warehouse)
 {
     info_ = new_warehouse;
 }
 
-double WarehouseModel::lat()
+double WarehouseModel::lat() const
 {
-    return info_.position_.latitude();
+    return info_.getLatitude();
 }
 
-double WarehouseModel::lng()
+double WarehouseModel::lng() const
 {
-    return info_.position_.longitude();
+    return info_.getLongitude();
 }
 
 void WarehouseModel::setWarehouseStatus(int current_status)
@@ -34,11 +34,4 @@ UploadWarehouseStatus WarehouseModel::checkWarehouseStatus()
            return UploadWarehouseStatus::Colpleted;
     }
     return warehouse_status_;
-}
-
-WarehouseInfo::WarehouseInfo(const uint64_t code, const QGeoCoordinate pos)
-    : code_(code)
-    , position_(pos)
-{
-
 }

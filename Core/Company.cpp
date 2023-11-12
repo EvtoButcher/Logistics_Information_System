@@ -1,15 +1,13 @@
+#include "Company.h"
+
 #include <QSqlTableModel>
 
-#include <QDebug>
-
-#include "Company.h"
 #include "OrderDB.h"
 #include "common.h"
 
-Company::Company(QObject *parent)
+Company::Company(QObject* parent)
    : QObject(parent)
 {
-
 }
 
 Company::~Company()
@@ -26,17 +24,17 @@ Company::~Company()
     this->QObject::~QObject();
 }
 
-void Company::setName(const QString &name)
+void Company::setName(const QString& name)
 {
     company_name_ = name;
 }
 
-void Company::addWarehouse(Warehouse *warehouse)
+void Company::addWarehouse(Warehouse* warehouse)
 {
     warehouses_.push_back(warehouse);
 }
 
-void Company::addDestination(Destination *destination)
+void Company::addDestination(company_item::Destination* destination)
 {
     destinations_.push_back(destination);
 }
@@ -48,14 +46,12 @@ const QString Company::getName() const
 
 void Company::restorCompany(const OrderDB* route_db)
 {
-     //auto route_db_ = OrderDB(setting, nullptr);
-
      QSqlTableModel table_model(nullptr, route_db->DB());
 
      table_model.setTable(WAREHOUSE_TABLE);
      table_model.select();
 
-     if(table_model.rowCount()){
+     if(table_model.rowCount()) {
          warehouses_.reserve(table_model.rowCount());
          for (int row = 0; row < table_model.rowCount(); ++row) {
 
@@ -69,34 +65,26 @@ void Company::restorCompany(const OrderDB* route_db)
      table_model.setTable(DESTINATION_TABLE);
      table_model.select();
 
-     if(table_model.rowCount()){
+     if(table_model.rowCount()) {
          destinations_.reserve(table_model.rowCount());
          for (int row = 0; row < table_model.rowCount(); ++row) {
 
-             addDestination(new Destination(table_model.data(table_model.index(row, 1)).toInt(),
-                                    common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())));
+             addDestination(new company_item::Destination(table_model.data(table_model.index(row, 1)).toInt(),
+                                              common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())));
 
              emit addedNewDestination(destinations_.back());
          }
      }
 }
 
-Warehouse::Warehouse(const QGeoCoordinate &pos)
-    : position_(pos)
+Warehouse::Warehouse(const QGeoCoordinate pos)
+    : AbstractCompanyItem(pos)
 {
-    double tmp_lat = position_.latitude();
-    double tmp_lng = position_.longitude();
-    uint64_t hash_lat = *reinterpret_cast<uint64_t*>(&tmp_lat);
-    uint64_t hash_lng = *reinterpret_cast<uint64_t*>(&tmp_lng);
-
-    code_ = hash_lat ^ hash_lng;
 }
 
-Warehouse::Warehouse(const uint64_t code, const QGeoCoordinate &pos)
-    : code_(code)
-    , position_(pos)
+Warehouse::Warehouse(const uint64_t code, const QGeoCoordinate pos)
+    : AbstractCompanyItem(code, pos)
 {
-
 }
 
 Warehouse::~Warehouse()
@@ -106,72 +94,19 @@ Warehouse::~Warehouse()
     }
 }
 
-void Warehouse::addCurgo(Curgo *curgo)
+void Warehouse::addCargo(Cargo* curgo)
 {
     map_of_curgo_[curgo->code_] = curgo;
 }
 
-uint64_t Warehouse::getCode() const
-{
-    return code_;
-}
-
-const QGeoCoordinate &Warehouse::getPosition() const
-{
-    return position_;
-}
-
-const std::unordered_map<uint64_t, Curgo *> Warehouse::getCurgo() const
+const std::unordered_map<uint64_t, Cargo*> Warehouse::getCargo() const
 {
     return map_of_curgo_;
 }
 
-bool Warehouse::isValid() const
-{
-    return code_ && position_.isValid();
-}
-
-Destination::Destination(const QGeoCoordinate &pos)
-    : position_(pos)
-{
-    double tmp_lat = pos.latitude();
-    double tmp_lng = pos.longitude();
-    uint64_t hash_lat = *reinterpret_cast<uint64_t*>(&tmp_lat);
-    uint64_t hash_lng = *reinterpret_cast<uint64_t*>(&tmp_lng);
-
-    code_ = hash_lat ^ hash_lng;
-}
-
-Destination::Destination(const uint64_t code, const QGeoCoordinate &pos)
-    : code_(code)
-    , position_(pos)
-{
-
-}
-
-uint64_t Destination::getCode() const
-{
-    return code_;
-}
-
-const QGeoCoordinate &Destination::getPosition() const
-{
-    return position_;
-}
-
-bool Destination::isValid() const
-{
-    return code_ && position_.isValid();
-}
-
-Curgo::Curgo(const double weight, const int volume)
-    : weight_(weight)
+Cargo::Cargo(const double weight, const int volume)
+    : code_(common::createCode(weight, volume))
+    , weight_(weight)
     , volume_(volume)
 {
-    double tmp_weight = weight;
-    double tmp_volume = volume;
-    uint64_t hash_weight = *reinterpret_cast<uint64_t*>(&tmp_weight);
-    uint64_t hash_volume = *reinterpret_cast<uint64_t*>(&tmp_volume);
-
-    code_ = hash_weight ^ hash_volume;
 }

@@ -108,7 +108,7 @@ void WarehouseWidget::addWarehouse(Warehouse *warehouse)
     if(curgo_from_warehouses_table_->rowCount()){
         curgo_from_warehouses_table_->setRowCount(0);
     }
-    for(const auto& [code, curgo] : warehouse->getCurgo()){
+    for(const auto& [code, curgo] : warehouse->getCargo()){
         row_count = curgo_from_warehouses_table_->rowCount();
         curgo_from_warehouses_table_->setRowCount(row_count + 1);
 
@@ -158,7 +158,7 @@ void WarehouseWidget::warehouseSelectedOnTable()
         return;
     }
 
-    for(const auto [code, curgo] : warehouses_table_cahe_[indexes[0].data(Qt::DisplayRole).toString().remove(0,1)]->getCurgo()){
+    for(const auto [code, curgo] : warehouses_table_cahe_[indexes[0].data(Qt::DisplayRole).toString().remove(0,1)]->getCargo()){
         int row_count = curgo_from_warehouses_table_->rowCount();
         curgo_from_warehouses_table_->setRowCount(row_count + 1);
 
