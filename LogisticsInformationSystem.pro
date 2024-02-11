@@ -66,10 +66,7 @@ SOURCES += \
     ui/mainwindow.cpp
 
 FORMS += \
-    Forms/MainWindow.ui \
-    Forms/OrderEdit.ui \
-    Forms/TruckEdit.ui \
-    Forms/WarehouseEdit.ui
+    Forms/mainwindow.ui
 
 TRANSLATIONS += \
     locale/OctopusLogistics_ru.ts
@@ -84,7 +81,5 @@ RESOURCES += \
     Resources/Images.qrc \
     Core/Qml/qml.qrc \
     locale/translate.qrc
-
-DISTFILES +=
 
 
