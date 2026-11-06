@@ -43,7 +43,7 @@ public:
     void inserIntoOrderTable(const RouteInfo& info);
     void insertIntoWarehouseTable(const uint64_t code, const QGeoCoordinate position);
     void insertIntoDestinationTable(const uint64_t code, const QGeoCoordinate position);
-    void insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cahe);
+    void insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cache);
 
     bool closeDB();
     bool importDB();

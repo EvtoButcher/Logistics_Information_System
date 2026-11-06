@@ -1,0 +1,10 @@
+* text=auto
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.pro text eol=lf
+*.pri text eol=lf
+*.ts text eol=lf linguist-generated=true
+*.qm binary
+*.png binary
+*.ico binary
+*.svg text eol=lf

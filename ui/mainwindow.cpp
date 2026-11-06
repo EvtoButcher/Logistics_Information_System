@@ -90,7 +90,7 @@ void MainWindow::on_menuFileExit_triggered()
 
 void MainWindow::on_menuHelpAboutProgram_triggered()
 {
-    QMessageBox::information(this, tr("About Program"), message_text::about_program);
+    QMessageBox::information(this, tr("About Program"), message_text::aboutProgram());
 }
 
 

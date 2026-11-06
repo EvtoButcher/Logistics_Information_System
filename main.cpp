@@ -1,15 +1,16 @@
 #include <QApplication>
-#include <QTranslator>
+#include <QCoreApplication>
 
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QCoreApplication::setOrganizationName(QStringLiteral("TheKramarch"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("github.com/TheKramarch"));
+    QCoreApplication::setApplicationName(QStringLiteral("LogisticsInformationSystem"));
+    QCoreApplication::setApplicationVersion(QStringLiteral(APP_VERSION));
 
-//    QTranslator translater;
-//    translater.load(QString(":/OctopusLogistics_%1.qm").arg(ApplicationSettings::getLocale()));
-//    a.installTranslator(&translater);
+    QApplication a(argc, argv);
 
     MainWindow w;
     w.show();
