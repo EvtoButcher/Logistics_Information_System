@@ -30,7 +30,7 @@ UploadRouteStatus RouteModel:: checkPathCacheStatus()
            path_cache_status_ = UploadRouteStatus::Null;
            return UploadRouteStatus::Colpleted;
     }
-    return route_status_;
+    return path_cache_status_;
 }
 
 UploadRouteStatus RouteModel::checkRouteStatus()
@@ -89,6 +89,7 @@ void RouteModel::setPathCache(const QJSValue& path)
 
     bool isFirstIteration = true;
     double distance = 0;
+    route_.path_cache_.clear();
     route_.path_cache_.reserve(coordinate_list.size());
     for(QVariant position : coordinate_list) {
         if(!isFirstIteration) {
@@ -124,12 +125,16 @@ RouteInfo::RouteInfo(const QString& name, const QGeoCoordinate start, const QGeo
 
     QStringList parts = path_cache.split(" ", Qt::SkipEmptyParts);
 
+    if(parts.size() < 2) {
+        return;
+    }
+
     const auto first_point = common::splitCoordinates(parts[0] + " " + parts[1]);
     bool isFirst = true;
 
-    for(int i = 0; i < parts.size(); i += 2) {                                       //
-        const auto& point = common::splitCoordinates(parts[i] + " " + parts[i + 1]); //TODO: FIX THIS SHIT AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        if(!isFirst) {                                                                //
+    for(int i = 0; i + 1 < parts.size(); i += 2) {
+        const auto& point = common::splitCoordinates(parts[i] + " " + parts[i + 1]);
+        if(!isFirst) {
             if(point == first_point) {
                 break;
             }

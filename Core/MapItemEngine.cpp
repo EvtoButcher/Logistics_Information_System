@@ -155,18 +155,6 @@ void MapItemEngine::addDestination(const uint64_t code, const QGeoCoordinate pos
     emit destination_modal_.addDestination();
 }
 
-void MapItemEngine::addTraffic(const uint64_t code, const QGeoCoordinate position)
-{
-    //route_db_->insertIntoTrafficTable(code, position);
-    //destination_modal_.setDestination({code, position});
-    //emit destination_modal_.addDestination();
-}
-
-void MapItemEngine::advanceNextTrafficPoint(const QGeoCoordinate position)
-{
-
-}
-
 void MapItemEngine::setPathCacheAndDistance()
 {
     while(route_model_.checkRouteStatus() != UploadRouteStatus::Colpleted);

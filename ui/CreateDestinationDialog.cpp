@@ -59,6 +59,11 @@ CreateDestinationDialog::CreateDestinationDialog(QWidget* parent)
     connect(destination_lng_, &QLineEdit::textEdited, this, &CreateDestinationDialog::destinationLngAdding);
 }
 
+CreateDestinationDialog::~CreateDestinationDialog()
+{
+    delete destination_;
+}
+
 void CreateDestinationDialog::tryCreateDestination()
 {
     if(destination_lat_->text().isEmpty() || destination_lng_->text().isEmpty()) {
@@ -70,6 +75,7 @@ void CreateDestinationDialog::tryCreateDestination()
         return;
     }
 
+    delete destination_;
     destination_ = new company_item::Destination(destination_position);
     destination_code_->setText(QString::number(destination_->getCode()));
     destination_code_->setStyleSheet("color: #91918b;");
@@ -111,7 +117,13 @@ void CreateDestinationDialog::destinationLngAdding()
 
 void CreateDestinationDialog::createDestinationButtonClicked()
 {
+    if(!destination_) {
+        return;
+    }
+
     emit createDestination(destination_);
+    destination_ = nullptr;
+
     destination_lat_->clear();
     destination_lng_->clear();
     this->close();

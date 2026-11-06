@@ -132,9 +132,20 @@ CreateWarehouseDialog::CreateWarehouseDialog(QWidget* parent)
     connect(warehouse_lng_, &QLineEdit::textEdited, this, &CreateWarehouseDialog::warehouseLngAdding);
 }
 
+CreateWarehouseDialog::~CreateWarehouseDialog()
+{
+    delete warehouse_;
+}
+
 void CreateWarehouseDialog::createWarehouseButtonClicked()
 {
+    if(!warehouse_) {
+        return;
+    }
+
     emit createWarehouse(warehouse_);
+    warehouse_ = nullptr;
+
     curgo_table_->setRowCount(0);
     curgo_volume_line_edit_->clear();
     curgo_weight_line_edit_->clear();
@@ -169,6 +180,7 @@ void CreateWarehouseDialog::tryCreateWarehouse()
         return;
     }
 
+    delete warehouse_;
     warehouse_ = new Warehouse(warehouse_position);
     warehouse_code_->setText(QString::number(warehouse_->getCode()));
 
@@ -182,6 +194,10 @@ void CreateWarehouseDialog::tryCreateWarehouse()
 
 void CreateWarehouseDialog::addCurgo()
 {
+    if(!warehouse_) {
+        return;
+    }
+
     auto current_curgo = new Cargo(curgo_weight_line_edit_->text().toDouble(), curgo_volume_line_edit_->text().toInt());
     warehouse_->addCargo(current_curgo);
 

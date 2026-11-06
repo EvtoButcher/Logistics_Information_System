@@ -1,6 +1,7 @@
 #include "Company.h"
 
 #include <QSqlTableModel>
+#include <QtAlgorithms>
 
 #include "OrderDB.h"
 #include "common.h"
@@ -12,16 +13,8 @@ Company::Company(QObject* parent)
 
 Company::~Company()
 {
-    for(auto warehouse : warehouses_){ // MB delete []
-        warehouse->~Warehouse();
-        delete warehouse;
-    }
-
-    for(auto destination : destinations_){
-        delete destination;
-    }
-
-    this->QObject::~QObject();
+    qDeleteAll(warehouses_);
+    qDeleteAll(destinations_);
 }
 
 void Company::setName(const QString& name)
