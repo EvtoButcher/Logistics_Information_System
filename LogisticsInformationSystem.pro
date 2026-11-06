@@ -2,7 +2,15 @@ QT       += core gui sql concurrent positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quickwidgets
 
-CONFIG += c++17
+CONFIG += c++17 warn_on
+
+VERSION = 0.1.0
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
+QMAKE_TARGET_PRODUCT     = LogisticsInformationSystem
+QMAKE_TARGET_DESCRIPTION = Logistics Information System
+QMAKE_TARGET_COMPANY     = TheKramarch
+QMAKE_TARGET_COPYRIGHT   = Copyright (C) 2023-2026 TheKramarch, EvtoButcher and contributors
 
 INCLUDEPATH += \
     ui \
@@ -69,8 +77,7 @@ FORMS += \
     Forms/mainwindow.ui
 
 TRANSLATIONS += \
-    locale/OctopusLogistics_ru.ts
-    #locale/locale.qrc
+    locale/LogisticsInformationSystem_ru.ts
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -3,7 +3,7 @@
 
 #include <QString>
 
-#define APPLICATION_NAME   "OctopusLogistics"
+#define APPLICATION_NAME   "LogisticsInformationSystem"
 
 class Company;
 
