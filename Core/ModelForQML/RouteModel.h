@@ -69,6 +69,7 @@ public:
 signals:
     void addRoute();
     void restorRoute();
+    void pathCacheReady();
     void removeRoute(int);
     void removeAllRoutes();
     void unselectRouteOnMap();

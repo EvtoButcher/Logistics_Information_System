@@ -1,8 +1,6 @@
 #include "MapItemEngine.h"
 
 #include <QSqlTableModel>
-#include <QFuture>
-#include <QtConcurrent>
 
 #include "common.h"
 #include "OrderDB.h"
@@ -11,9 +9,11 @@
 
 MapItemEngine::MapItemEngine(QObject* parent)
     : QObject(parent)
-    , route_model_(parent)
-    , warehouse_model_(parent)
+    , route_model_()
+    , warehouse_model_()
 {
+    connect(&route_model_, &RouteModel::pathCacheReady,
+            this, &MapItemEngine::onPathCacheReady);
 }
 
 RouteModel& MapItemEngine::getRouteModel()
@@ -42,9 +42,6 @@ void MapItemEngine::restoreMap()
 
             emit route_model_.restorRoute();
 
-            while(route_model_.checkPathCacheStatus() != UploadRouteStatus::Colpleted); //waiting for the route to be loaded on the map
-            QThread::msleep(10);
-
             traffic_->getTraffic().push_back(TrafficInfo{info.path_cache_, info.route_color_});
         }
     }
@@ -62,9 +59,6 @@ void MapItemEngine::restoreMap()
             warehouse_model_.setWarehouse(info);
 
             emit warehouse_model_.restorWarehouse();
-
-            while(warehouse_model_.checkWarehouseStatus() != UploadWarehouseStatus::Colpleted);
-            QThread::msleep(10);
         }
     }
 
@@ -81,9 +75,6 @@ void MapItemEngine::restoreMap()
             destination_modal_.setDestination(info);
 
             emit destination_modal_.addDestination();
-
-            while(destination_modal_.checkDestinationStatus() != UploadDestinationStatus::Colpleted);
-            QThread::msleep(10);
         }
     }
 
@@ -120,8 +111,6 @@ void MapItemEngine::addRoute(const RouteInfo& info)
     route_db_->insertIntoOrderTable(info);
     route_model_.setRoute(info);
     emit route_model_.addRoute();
-
-    QFuture<void> future = QtConcurrent::run(this, &MapItemEngine::setPathCacheAndDistance);
 }
 
 void MapItemEngine::removeRoute(const int db_index, const int map_index)
@@ -168,13 +157,15 @@ void MapItemEngine::addDestination(const uint64_t code, const QGeoCoordinate pos
     emit destination_modal_.addDestination();
 }
 
-void MapItemEngine::setPathCacheAndDistance()
+void MapItemEngine::onPathCacheReady()
 {
-    while(route_model_.checkRouteStatus() != UploadRouteStatus::Colpleted);
-    QThread::sleep(1);
+    if(!route_db_ || !route_db_->isOpen()) {
+        return;
+    }
 
-    route_db_->insertIntoPathTable(route_model_.getInfo().code_, route_model_.getInfo().path_cache_);
-    route_db_->updateDistanceFromOrderTable(route_model_.getInfo().code_, route_model_.getInfo().path_distance_);
+    const RouteInfo& info = route_model_.getInfo();
+    route_db_->insertIntoPathTable(info.code_, info.path_cache_);
+    route_db_->updateDistanceFromOrderTable(info.code_, info.path_distance_);
 
     emit distanceUpdated();
 }

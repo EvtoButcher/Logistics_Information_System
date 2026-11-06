@@ -43,11 +43,11 @@ public slots:
     void addWarehouse(Warehouse* warehouse);
     void addDestination(const uint64_t code, const QGeoCoordinate position);
 
-private:
-    void setPathCacheAndDistance();
+private slots:
+    void onPathCacheReady();
 
 private:
-    OrderDB*              route_db_;
+    OrderDB*              route_db_ = nullptr;
     RouteModel            route_model_;
     WarehouseModel        warehouse_model_;
     DestinationModel      destination_modal_;

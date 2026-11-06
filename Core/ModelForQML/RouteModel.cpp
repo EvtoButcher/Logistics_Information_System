@@ -105,6 +105,7 @@ void RouteModel::setPathCache(const QJSValue& path)
     route_.path_distance_ = distance / 1000;
 
     path_cache_status_ = UploadRouteStatus::Colpleted;
+    emit pathCacheReady();
 }
 
 RouteInfo::RouteInfo(const QString& name, double start_lat, double start_lng, double end_lat, double end_lng, const QString& color)

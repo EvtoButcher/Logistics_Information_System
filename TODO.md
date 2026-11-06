@@ -45,11 +45,12 @@
 
 ## PR 4 — `refactor/models-threading`
 
-- [ ] Убрать `QtConcurrent`/`QThread::msleep`/`processEvents` из restore/route
-- [ ] Все операции с SQLite — в одном потоке
-- [ ] Заменить статусные «рукопожатия» на сигналы
-- [ ] Перевести карту на list-модели (или синхронное восстановление)
-- [ ] Проверить отсутствие cross-thread warning’ов
+- [x] Убрать `QtConcurrent`/`QThread::msleep` из restore/route
+- [x] Все операции с SQLite — в одном потоке
+- [x] Заменить ожидание статусов на сигнал `pathCacheReady`
+- [x] Синхронное восстановление карты через `QTimer::singleShot`
+- [x] Проверить отсутствие cross-thread warning’ов
+- [x] Исправить parent у value-моделей `MapItemEngine`
 
 ## PR 5 — `refactor/ui-devtools`
 
