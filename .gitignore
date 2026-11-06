@@ -1,1 +1,34 @@
 LogisticsInformationSystem.pro.user
+LogisticsInformationSystem.pro.user.*
+
+# Build output
+build/
+dist/
+debug/
+release/
+*.o
+*.obj
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+Makefile
+Makefile.*
+.qmake.stash
+object_script.*
+*.exe
+*.dll
+
+# Local data and settings
+*.db
+*.db-*
+LogisticsInformationSystem.ini
+
+# IDE / editor
+.vscode/
+.idea/
+*.autosave
+
+# OS
+Thumbs.db
+.DS_Store
