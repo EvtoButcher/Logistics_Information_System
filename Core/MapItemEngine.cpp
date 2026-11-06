@@ -42,7 +42,7 @@ void MapItemEngine::restoreMap()
 
             emit route_model_.restorRoute();
 
-            traffic_->getTraffic().push_back(TrafficInfo{info.path_cache_, info.route_color_});
+            traffic_->addTraffic(TrafficInfo{info.path_cache_, info.route_color_});
         }
     }
 
@@ -157,6 +157,18 @@ void MapItemEngine::addDestination(const uint64_t code, const QGeoCoordinate pos
     emit destination_modal_.addDestination();
 }
 
+void MapItemEngine::removeWarehouse(const uint64_t code, const int index)
+{
+    route_db_->deleteWarehouse(code);
+    emit warehouse_model_.removeWarehouse(index);
+}
+
+void MapItemEngine::removeDestination(const uint64_t code, const int index)
+{
+    route_db_->deleteDestination(code);
+    emit destination_modal_.removeDestination(index);
+}
+
 void MapItemEngine::onPathCacheReady()
 {
     if(!route_db_ || !route_db_->isOpen()) {
@@ -166,6 +178,10 @@ void MapItemEngine::onPathCacheReady()
     const RouteInfo& info = route_model_.getInfo();
     route_db_->insertIntoPathTable(info.code_, info.path_cache_);
     route_db_->updateDistanceFromOrderTable(info.code_, info.path_distance_);
+
+    if(traffic_) {
+        traffic_->addTraffic(TrafficInfo{info.path_cache_, info.route_color_});
+    }
 
     emit distanceUpdated();
 }

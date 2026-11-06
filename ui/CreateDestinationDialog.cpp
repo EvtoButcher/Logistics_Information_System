@@ -13,7 +13,7 @@ CreateDestinationDialog::CreateDestinationDialog(QWidget* parent)
     : QDialog(parent)
 {
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    setWindowTitle(tr("Create Warehouse"));
+    setWindowTitle(tr("Create Destination"));
 
     auto bold_font = QFont("Ubuntu", 11, QFont::Bold);
     auto destination_code_label = new QLabel(tr("Destination Code"), this);

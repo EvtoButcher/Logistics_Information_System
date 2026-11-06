@@ -34,6 +34,7 @@ public:
 signals:
     void addDestination();
     void restorDestination();
+    void removeDestination(int index);
 
 private:
     map_Item_Info::DestinationInfo info_;

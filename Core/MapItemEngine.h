@@ -42,6 +42,8 @@ public slots:
 
     void addWarehouse(Warehouse* warehouse);
     void addDestination(const uint64_t code, const QGeoCoordinate position);
+    void removeWarehouse(const uint64_t code, const int index);
+    void removeDestination(const uint64_t code, const int index);
 
 private slots:
     void onPathCacheReady();

@@ -15,6 +15,7 @@
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QPair>
+#include <QMessageBox>
 
 #include "OrderAddWidget.h"
 #include "Company.h"
@@ -26,7 +27,8 @@ OrderAddWidget::OrderAddWidget(QWidget *parent)
 
     auto route_name_label = new QLabel(tr("Route name:"), this);
     route_name_label->setFont(bold_font);
-    name_line_edit_ = new QLineEdit(tr("enter the name of the route"), this);
+    name_line_edit_ = new QLineEdit(this);
+    name_line_edit_->setPlaceholderText(tr("enter the name of the route"));
 
     auto color_label = new QLabel(tr("Color"), this);
     color_label->setFont(bold_font);
@@ -181,8 +183,14 @@ void OrderAddWidget::addNewDestinationVariant(company_item::Destination* destina
 
 void OrderAddWidget::onAddButtonClicked()
 {
+    const QString routeName = name_line_edit_->text().trimmed();
+    if(routeName.isEmpty()) {
+        QMessageBox::warning(this, tr("Route"), tr("Enter the route name."));
+        return;
+    }
+
     RouteInfo route_info;
-    route_info.code_ = name_line_edit_->text();
+    route_info.code_ = routeName;
 
     if(choose_destination_type_->isChecked()) {
         route_info.end_route_point_ = qvariant_cast<QGeoCoordinate>(destination_combo_->currentData());
@@ -198,20 +206,16 @@ void OrderAddWidget::onAddButtonClicked()
         route_info.start_route_point_ = QGeoCoordinate(start_point_lat_->text().toDouble(), start_point_lng_->text().toDouble());
     }
 
+    if(!route_info.start_route_point_.isValid() || !route_info.end_route_point_.isValid()) {
+        QMessageBox::warning(this, tr("Route"),
+                             tr("Start and end points must contain valid coordinates."));
+        return;
+    }
+
     route_info.route_color_ = color_dialog_->currentColor().name();
 
-
-//    RouteInfo route_info(name_line_edit_->text(),
-//                        start_point_lat_->text().toDouble(),
-//                        start_point_lng_->text().toDouble(),
-//                        end_point_lat_->text().toDouble(),
-//                        end_point_lng_->text().toDouble(),
-//                        color_dialog_->currentColor().name());
-
-    qDebug() << route_info.end_route_point_;
-    qDebug() << route_info.start_route_point_;
-
     emit addRoute(route_info);
+    name_line_edit_->clear();
 }
 
 void OrderAddWidget::onColorChangeButtonClicked()

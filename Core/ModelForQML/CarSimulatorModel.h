@@ -1,9 +1,8 @@
 #ifndef CARSIMULATORMODEL_H
 #define CARSIMULATORMODEL_H
 
-#include <QVector>
-#include <QVariantList>
 #include <QSet>
+#include <QTimer>
 
 #include "AbstractTrafficModel.h"
 
@@ -24,20 +23,21 @@ public:
     Q_INVOKABLE void     setUploadStatus(int current_status) override;
     Q_INVOKABLE void     setTravelStatus(int current_status) override;
 
-protected slots:
-    void onInitializing() override;
-    void onWaiting()      override;
-    void onOnWay()        override;
-    void onArrived()      override;
-    void onFinished()     override;
+    void                 startSimulation(int simulation_speed) override;
+    void                 stopSimulation() override;
+    void                 resetSimulation() override;
+    void                 setSimulationSpeed(int simulation_speed) override;
 
 private slots:
-    void addIgnore(int index);
+    void tick();
 
 private:
-    TrafficInfo traffic_model_;
-    QSet<int> ignore_traffic_;
+    TrafficInfo          traffic_model_;
+    QVector<TrafficInfo> initial_traffic_;
+    QVector<int>         qml_cars_;
+    QSet<int>            finished_;
+    QTimer               timer_;
+    int                  speed_ = 1;
 };
 
 #endif // CARSIMULATORMODEL_H
-

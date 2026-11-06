@@ -2,6 +2,10 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QTimer>
+#include <QCoreApplication>
+#include <QMenu>
+#include <QAction>
+#include <QActionGroup>
 
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
@@ -33,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(create_company_dialog_, &CreateCompanyDialog::addWarehouseOnMap,  map_engine_,  &MapItemEngine::addWarehouse);
     connect(create_company_dialog_, &CreateCompanyDialog::addDestinationOnMap, map_engine_, &MapItemEngine::addDestination);
+    connect(create_company_dialog_, &CreateCompanyDialog::removeWarehouseOnMap, map_engine_, &MapItemEngine::removeWarehouse);
+    connect(create_company_dialog_, &CreateCompanyDialog::removeDestinationOnMap, map_engine_, &MapItemEngine::removeDestination);
 
     connect(company_, &Company::addedNewWarehouse,   order_add_,                            &OrderAddWidget::addNewWarehouseVariant);
     connect(company_, &Company::addedNewDestination, order_add_,                            &OrderAddWidget::addNewDestinationVariant);
@@ -46,10 +52,11 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     if(!ApplicationSettings::companyIsValid()) {
-         create_company_dialog_->exec();
-         company_ = create_company_dialog_->getCompany();
-         ApplicationSettings::setCompanyName(company_->getName());
-         //ApplicationSettings::setDbName(...);     //TODO: add ability to write db name in ui
+         if(create_company_dialog_->exec() == QDialog::Accepted) {
+             company_ = create_company_dialog_->getCompany();
+             ApplicationSettings::setCompanyName(company_->getName());
+             //ApplicationSettings::setDbName(...);     //TODO: add ability to write db name in ui
+         }
     }
     else {
         company_->restorCompany(map_engine_->getDB());
@@ -77,7 +84,54 @@ MainWindow::MainWindow(QWidget *parent)
     connect(order_dialog_,    &OrderAddDialog::addRouteToTableFromDialog, map_engine_,  &MapItemEngine::addRoute);
     connect(map_engine_,      &MapItemEngine::distanceUpdated,            order_table_, &OrderTable::updateTable);
 
+    createDevToolsMenu();
+
     QTimer::singleShot(0, map_engine_, &MapItemEngine::restoreMap);
+}
+
+void MainWindow::createDevToolsMenu()
+{
+    if(!QCoreApplication::arguments().contains(QStringLiteral("--dev"))) {
+        return;
+    }
+
+    AbstractTrifficModel* traffic = map_engine_->getTrafficModel();
+    QMenu* devToolsMenu = menuBar()->addMenu(tr("&DevTools"));
+
+    QAction* startAction = devToolsMenu->addAction(tr("Start simulation"));
+    QAction* stopAction = devToolsMenu->addAction(tr("Stop simulation"));
+    QAction* resetAction = devToolsMenu->addAction(tr("Reset simulation"));
+
+    devToolsMenu->addSeparator();
+    QMenu* speedMenu = devToolsMenu->addMenu(tr("Simulation speed"));
+    auto* speedGroup = new QActionGroup(this);
+
+    const QList<int> speeds = {1, 2, 5, 10};
+    for(const int speed : speeds) {
+        QAction* action = speedMenu->addAction(tr("%1x").arg(speed));
+        action->setCheckable(true);
+        action->setData(speed);
+        action->setActionGroup(speedGroup);
+        if(speed == 1) {
+            action->setChecked(true);
+        }
+
+        connect(action, &QAction::triggered, this, [traffic, speed]() {
+            traffic->setSimulationSpeed(speed);
+        });
+    }
+
+    connect(startAction, &QAction::triggered, this, [traffic, speedGroup]() {
+        const QAction* checked = speedGroup->checkedAction();
+        const int speed = checked ? checked->data().toInt() : 1;
+        traffic->startSimulation(speed);
+    });
+    connect(stopAction, &QAction::triggered, this, [traffic]() {
+        traffic->stopSimulation();
+    });
+    connect(resetAction, &QAction::triggered, this, [traffic]() {
+        traffic->resetSimulation();
+    });
 }
 
 MainWindow::~MainWindow()

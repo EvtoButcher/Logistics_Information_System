@@ -198,7 +198,18 @@ void CreateWarehouseDialog::addCurgo()
         return;
     }
 
-    auto current_curgo = new Cargo(curgo_weight_line_edit_->text().toDouble(), curgo_volume_line_edit_->text().toInt());
+    bool weightOk = false;
+    bool volumeOk = false;
+    const double weight = curgo_weight_line_edit_->text().toDouble(&weightOk);
+    const int volume = curgo_volume_line_edit_->text().toInt(&volumeOk);
+
+    if(!weightOk || !volumeOk || weight <= 0.0 || volume <= 0) {
+        messege_label_->setText(tr("Enter a positive cargo weight and volume."));
+        messege_label_->show();
+        return;
+    }
+
+    auto current_curgo = new Cargo(weight, volume);
     warehouse_->addCargo(current_curgo);
 
     int row_count = curgo_table_->rowCount();
@@ -211,10 +222,10 @@ void CreateWarehouseDialog::addCurgo()
                 newItem->setText("#" + QString::number(current_curgo->code_)); /*Code*/
                 break;
             case 1:
-                newItem->setText(curgo_weight_line_edit_->text() + tr(" kg")); /*Weight*/
+                newItem->setText(QString::number(weight) + tr(" kg")); /*Weight*/
                 break;
             case 2:
-                newItem->setText(curgo_volume_line_edit_->text() + tr(" сm³")); /*Volume*/
+                newItem->setText(QString::number(volume) + tr(" cm³")); /*Volume*/
                 break;
         }
         curgo_table_->setItem(row_count, colum_index, newItem);
@@ -224,6 +235,7 @@ void CreateWarehouseDialog::addCurgo()
 
     curgo_weight_line_edit_->clear();
     curgo_volume_line_edit_->clear();
+    messege_label_->hide();
 }
 
 void CreateWarehouseDialog::warehouseLatAdding()

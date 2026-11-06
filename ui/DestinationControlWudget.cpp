@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QTableWidget>
+#include <QItemSelectionModel>
 #include <QLabel>
 #include <QStringList>
 
@@ -26,7 +27,7 @@ DestinationWudget::DestinationWudget(QWidget* parent)
     auto button_lay = new QHBoxLayout();
 
     add_destination_button_ = new QPushButton(tr("add a new destination"), this);
-    delete_destination_button_ = new QPushButton(tr("delete a warehouse"), this);
+    delete_destination_button_ = new QPushButton(tr("delete a destination"), this);
     delete_destination_button_->setStyleSheet("QPushButton {color: rgba(183, 22, 26, 80);}");
     delete_destination_button_->setEnabled(false);
 
@@ -46,6 +47,10 @@ DestinationWudget::DestinationWudget(QWidget* parent)
 
     connect(add_destination_button_, &QAbstractButton::clicked, [=](){create_destination_dialog_->exec();});
     connect(create_destination_dialog_, &CreateDestinationDialog::createDestination, this, &DestinationWudget::addDestination);
+    connect(delete_destination_button_, &QAbstractButton::clicked, this, &DestinationWudget::deleteDestinationButtonClicked);
+    connect(destination_table_->selectionModel(), &QItemSelectionModel::selectionChanged, this, [this]() {
+        delete_destination_button_->setEnabled(!destination_table_->selectionModel()->selectedRows().isEmpty());
+    });
 }
 
 void DestinationWudget::addDestination(company_item::Destination* destination)
@@ -68,4 +73,19 @@ void DestinationWudget::addDestination(company_item::Destination* destination)
         destination_table_->setItem(row_count, colum_index, newItem);
         destination_table_->resizeColumnToContents(1);
     }
+}
+
+void DestinationWudget::deleteDestinationButtonClicked()
+{
+    const QModelIndexList indexes = destination_table_->selectionModel()->selectedRows();
+    if(indexes.isEmpty()) {
+        return;
+    }
+
+    const int row = indexes.at(0).row();
+    const QString codeText = indexes[0].data(Qt::DisplayRole).toString().remove(0, 1);
+
+    emit removeDestinationFromCompany(codeText.toULongLong(), row);
+
+    destination_table_->removeRow(row);
 }

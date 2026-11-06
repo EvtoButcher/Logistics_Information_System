@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QFont>
 #include <QTableWidget>
+#include <QItemSelectionModel>
 #include <QStringList>
 #include <QPushButton>
 #include <QQuickWidget>
@@ -188,10 +189,16 @@ void WarehouseWidget::deleteWarehouseButtotClicked()
     QModelIndexList indexes = selectionModel->selectedRows();
 
     if(indexes.isEmpty()){
-        return; //TODO: add error handling
+        return;
     }
 
-    warehouses_table_->removeRow(indexes.at(0).row());
+    const int row = indexes.at(0).row();
+    const QString codeText = indexes[0].data(Qt::DisplayRole).toString().remove(0, 1);
 
-    warehouses_table_cahe_.erase(indexes[0].data(Qt::DisplayRole).toString().remove(0,1));
+    emit removeWarehouseFromCompany(codeText.toULongLong(), row);
+
+    warehouses_table_->removeRow(row);
+    warehouses_table_cahe_.erase(codeText);
+    curgo_from_warehouses_table_->setRowCount(0);
+    delete_warehouse_button_->setEnabled(false);
 }

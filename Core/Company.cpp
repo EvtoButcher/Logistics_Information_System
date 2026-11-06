@@ -32,6 +32,32 @@ void Company::addDestination(company_item::Destination* destination)
     destinations_.push_back(destination);
 }
 
+bool Company::removeWarehouse(uint64_t code)
+{
+    for(auto iterator = warehouses_.begin(); iterator != warehouses_.end(); ++iterator) {
+        if((*iterator)->getCode() == code) {
+            delete *iterator;
+            warehouses_.erase(iterator);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Company::removeDestination(uint64_t code)
+{
+    for(auto iterator = destinations_.begin(); iterator != destinations_.end(); ++iterator) {
+        if((*iterator)->getCode() == code) {
+            delete *iterator;
+            destinations_.erase(iterator);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const QString Company::getName() const
 {
     return company_name_;

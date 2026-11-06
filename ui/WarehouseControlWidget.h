@@ -18,6 +18,7 @@ public:
 
 signals:
     void addWarehouseToCompany(Warehouse*);
+    void removeWarehouseFromCompany(const uint64_t code, const int row);
 
 public slots:
     void addWarehouse(Warehouse* warehouse);

@@ -51,6 +51,8 @@ public:
     void insertIntoDestinationTable(const uint64_t code, const QGeoCoordinate& position);
     void insertIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cache);
     void insertCargo(const QString& warehouseCode, const uint64_t code, const double weight, const int volume);
+    void deleteWarehouse(const uint64_t code);
+    void deleteDestination(const uint64_t code);
 
     bool closeDB();
     bool importDB();

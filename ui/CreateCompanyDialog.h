@@ -26,10 +26,14 @@ public:
 signals:
     void addWarehouseOnMap(Warehouse* warehouse);
     void addDestinationOnMap(const uint64_t code, const QGeoCoordinate position);
+    void removeWarehouseOnMap(const uint64_t code, const int row);
+    void removeDestinationOnMap(const uint64_t code, const int row);
 
 private slots:
     void addWarehouse(Warehouse* warehouse);
     void addDestination(company_item::Destination* destination);
+    void removeWarehouse(const uint64_t code, const int row);
+    void removeDestination(const uint64_t code, const int row);
     void trySetCompanyName();
     void createComponyButtonClicked();
 

@@ -24,6 +24,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private:
+    void createDevToolsMenu();
+
 private slots:
     void on_menuFileExit_triggered();
     void on_menuHelpAboutProgram_triggered();
