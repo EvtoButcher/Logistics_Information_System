@@ -73,6 +73,17 @@ build\debug\LogisticsInformationSystem.exe --dev
 В меню доступны запуск/остановка симуляции, скорость (1x/2x/5x/10x) и сброс.
 Симуляция использует `QTimer` и не блокирует интерфейс.
 
+### Тесты
+
+```bat
+mkdir build\tests
+cd build\tests
+qmake ..\..\tests\tests.pro -spec win32-g++ "CONFIG+=debug"
+mingw32-make
+debug\tst_core.exe -o test-results.txt,txt
+type test-results.txt
+```
+
 ## Известные особенности (не блокируют работу)
 
 * `QObject::connect(QQuickWindow, QDeclarativeGeoMap): invalid nullptr parameter` —

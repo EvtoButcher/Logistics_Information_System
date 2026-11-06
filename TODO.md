@@ -64,11 +64,11 @@
 
 ## PR 6 — `test/release-0.1.0`
 
-- [ ] QtTest: `common`, `RouteInfo`, БД, настройки, модели
-- [ ] CI: тесты + сборка release
-- [ ] README: реальные возможности, сборка, скриншоты, roadmap
-- [ ] CHANGELOG, `docs/ARCHITECTURE.md`, `docs/BUILD.md`
-- [ ] Portable zip: `windeployqt` + OpenSSL + exe
+- [x] QtTest: `common`, `RouteInfo`, БД, миграция, симуляция
+- [x] CI: тесты + сборка
+- [x] README: реальные возможности, сборка, DevTools, тесты
+- [x] CHANGELOG, `docs/ARCHITECTURE.md`
+- [x] Release-workflow: portable zip (`windeployqt` + OpenSSL + exe)
 - [ ] Тег `v0.1.0` и GitHub Release
 
 ## Backlog v0.2.0

@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Windows portable build
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_mingw81'
+          tools: 'tools_mingw81,qt.tools.win64_mingw810'
+          cache: true
+
+      - name: Build release
+        shell: cmd
+        run: |
+          if not exist build\release mkdir build\release
+          cd build\release
+          qmake ..\..\LogisticsInformationSystem.pro -spec win32-g++ "CONFIG+=release"
+          mingw32-make -j%NUMBER_OF_PROCESSORS%
+
+      - name: Deploy
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item 'build\release\LogisticsInformationSystem.exe' dist\
+
+          Push-Location dist
+          windeployqt --release --compiler-runtime --no-translations --qmldir ..\Core\Qml LogisticsInformationSystem.exe
+          Pop-Location
+
+          $sslInstaller = Join-Path $env:RUNNER_TEMP 'Win64OpenSSL.exe'
+          Invoke-WebRequest -Uri 'https://slproweb.com/download/Win64OpenSSL-1_1_1w.exe' -OutFile $sslInstaller
+          Start-Process -FilePath $sslInstaller `
+              -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/DIR=C:\OpenSSL-Win64' `
+              -Wait
+
+          Copy-Item 'C:\OpenSSL-Win64\bin\libssl-1_1-x64.dll' dist\
+          Copy-Item 'C:\OpenSSL-Win64\bin\libcrypto-1_1-x64.dll' dist\
+          Copy-Item 'LICENSE','THIRD_PARTY_NOTICES.md','README.md' dist\
+
+          Compress-Archive -Path 'dist\*' -DestinationPath 'LogisticsInformationSystem-0.1.0-win64.zip'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LogisticsInformationSystem-0.1.0-win64
+          path: LogisticsInformationSystem-0.1.0-win64.zip
+
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: LogisticsInformationSystem-0.1.0-win64.zip
+          generate_release_notes: true

@@ -45,3 +45,20 @@ jobs:
         run: |
           cd build
           mingw32-make -j%NUMBER_OF_PROCESSORS%
+
+      - name: Build tests
+        shell: cmd
+        run: |
+          if not exist build\tests mkdir build\tests
+          cd build\tests
+          qmake ..\..\tests\tests.pro -spec win32-g++ "CONFIG+=debug"
+          mingw32-make -j%NUMBER_OF_PROCESSORS%
+
+      - name: Run tests
+        shell: cmd
+        run: |
+          cd build\tests
+          debug\tst_core.exe -o test-results.txt,txt
+          set TEST_EXIT=%ERRORLEVEL%
+          type test-results.txt
+          exit /b %TEST_EXIT%

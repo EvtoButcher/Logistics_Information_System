@@ -40,6 +40,31 @@ run.bat release      :: запуск release-сборки
 
 Для VS Code в проекте есть `.vscode` (сборка по `Ctrl+Shift+B`, запуск по `F5`).
 
+### DevTools
+
+Симуляция грузовиков доступна только в dev-режиме:
+
+```bat
+build\debug\LogisticsInformationSystem.exe --dev
+```
+
+В меню **DevTools** есть запуск/остановка, скорость и сброс симуляции.
+
+### Тесты
+
+```bat
+mkdir build\tests
+cd build\tests
+qmake ..\..\tests\tests.pro -spec win32-g++ "CONFIG+=debug"
+mingw32-make
+debug\tst_core.exe
+```
+
+### Данные
+
+База и резервные копии: `%APPDATA%\TheKramarch\LogisticsInformationSystem`.
+Настройки: `HKEY_CURRENT_USER\Software\TheKramarch\LogisticsInformationSystem`.
+
 ## Скриншоты
 
 ### Главное окно
@@ -65,8 +90,9 @@ run.bat release      :: запуск release-сборки
 ## Документация
 
 - [SETUP.md](SETUP.md) — окружение, сборка, запуск, известные особенности;
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — слои, потоки и схема БД;
 - [TODO.md](TODO.md) — план v0.1.0 и backlog;
-- [CHANGELOG.md](CHANGELOG.md) — история версий (будет добавлен к релизу).
+- [CHANGELOG.md](CHANGELOG.md) — история версий.
 
 ## Лицензия
 
