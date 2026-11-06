@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project TODO and v0.1.0 roadmap.
 - DevTools menu (behind `--dev`) with start/stop/reset/speed for truck simulation.
 - Truck simulation moved to a non-blocking `QTimer` implementation.
+- QtTest coverage for coordinate parsing, code generation, route formats,
+  database CRUD, legacy migration and simulation.
+- GitHub Actions CI (build + tests) and a tagged release workflow with a
+  portable Windows archive.
 
 ### Changed
 
@@ -33,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deleting a warehouse or destination updates the company, map and database.
 - Route name, coordinates and cargo values are validated before creation.
 
-## [0.1.0] - TBD
+## [0.1.0] - 2026-11-06
 
 ### Added
 
