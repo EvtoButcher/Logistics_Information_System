@@ -19,6 +19,11 @@ Rectangle {
     Plugin{
         id: osmPlugin
         name:"osm"
+        PluginParameter { name: "osm.mapping.custom.host"; value: "https://tile.openstreetmap.org/" }
+        PluginParameter { name: "osm.mapping.providersrepository.disabled"; value: true }
+        PluginParameter { name: "osm.mapping.custom.mapcopyright"; value: "© OpenStreetMap contributors" }
+        PluginParameter { name: "osm.mapping.custom.datacopyright"; value: "© OpenStreetMap contributors" }
+        PluginParameter { name: "osm.useragent"; value: "LogisticsInformationSystem/1.0" }
     }
 
     ListModel{
@@ -96,7 +101,8 @@ Rectangle {
         id: map
         anchors.fill:  parent
         z:1
-        plugin: Plugin{name: "mapboxgl"}
+        plugin: osmPlugin
+        activeMapType: supportedMapTypes[supportedMapTypes.length - 1]
         center: QtPositioning.coordinate(centrMapLat, centrMapLng)
         zoomLevel: zoomBar.currentScale
 

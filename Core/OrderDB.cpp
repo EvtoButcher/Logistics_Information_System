@@ -143,11 +143,11 @@ QString OrderDB::selectPath(const QString& code) const
     return query->value(0).toString();
 }
 
-void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_caсhe)
+void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cache)
 {
     QString path;
 
-    for(const auto& coordinate : position_caсhe) {
+    for(const auto& coordinate : position_cache) {
         path += QString::number(coordinate.latitude(), 'f', 6) + " " + QString::number(coordinate.longitude(), 'f', 6) + " ";
     }
 
