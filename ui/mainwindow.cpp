@@ -1,8 +1,7 @@
 #include <QQmlContext>
 #include <QMessageBox>
 #include <QDesktopServices>
-#include <QFuture>
-#include <QtConcurrent>
+#include <QTimer>
 
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
@@ -78,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(order_dialog_,    &OrderAddDialog::addRouteToTableFromDialog, map_engine_,  &MapItemEngine::addRoute);
     connect(map_engine_,      &MapItemEngine::distanceUpdated,            order_table_, &OrderTable::updateTable);
 
-    QFuture<void> future = QtConcurrent::run(map_engine_, &MapItemEngine::restoreMap);
+    QTimer::singleShot(0, map_engine_, &MapItemEngine::restoreMap);
 }
 
 MainWindow::~MainWindow()

@@ -7,8 +7,6 @@
 #include <QSqlTableModel>
 #include <QTableView>
 #include <QPushButton>
-#include <QFuture>
-#include <QtConcurrent>
 #include <QColorDialog>
 
 #include "OrderTableWidget.h"
