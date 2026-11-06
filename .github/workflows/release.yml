@@ -32,9 +32,9 @@ jobs:
       - name: Build release
         shell: cmd
         run: |
-          if not exist build\release mkdir build\release
-          cd build\release
-          qmake ..\..\LogisticsInformationSystem.pro -spec win32-g++ "CONFIG+=release"
+          if not exist build mkdir build
+          cd build
+          qmake ..\LogisticsInformationSystem.pro -spec win32-g++ "CONFIG+=release"
           mingw32-make -j%NUMBER_OF_PROCESSORS%
 
       - name: Deploy
