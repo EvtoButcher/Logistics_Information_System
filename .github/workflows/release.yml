@@ -44,7 +44,7 @@ jobs:
           Copy-Item 'build\release\LogisticsInformationSystem.exe' dist\
 
           Push-Location dist
-          windeployqt --release --compiler-runtime --no-translations --qmldir ..\Core\Qml LogisticsInformationSystem.exe
+          windeployqt --compiler-runtime --no-translations --qmldir ..\Core\Qml LogisticsInformationSystem.exe
           Pop-Location
 
           $sslInstaller = Join-Path $env:RUNNER_TEMP 'Win64OpenSSL.exe'
@@ -71,3 +71,4 @@ jobs:
         with:
           files: LogisticsInformationSystem-0.1.0-win64.zip
           generate_release_notes: true
+
