@@ -18,11 +18,19 @@ QString CarSimulatorModel::trafficColor() const
 
 double CarSimulatorModel::posLat() const
 {
+    if(traffic_model_.path_.isEmpty()) {
+        return 0.0;
+    }
+
     return traffic_model_.path_.front().latitude();
 }
 
 double CarSimulatorModel::posLng() const
 {
+    if(traffic_model_.path_.isEmpty()) {
+        return 0.0;
+    }
+
     return traffic_model_.path_.front().longitude();
 }
 
@@ -38,7 +46,7 @@ UploadTrifficStatus CarSimulatorModel::checkUploadStatus()
 
 TravelStatus CarSimulatorModel::checkTravelStatus()
 {
-
+    return traffic_model_.travel_Status_;
 }
 
 void CarSimulatorModel::addTraffic(const TrafficInfo& info)
@@ -53,13 +61,7 @@ void CarSimulatorModel::setUploadStatus(int current_status)
 
 void CarSimulatorModel::setTravelStatus(int current_status)
 {
-
-}
-
-
-void CarSimulatorModel::startSimulation(int simulation_speed)
-{
-
+    traffic_model_.travel_Status_ = static_cast<TravelStatus>(current_status);
 }
 
 
@@ -91,10 +93,15 @@ void CarSimulatorModel::onOnWay()
             continue;
         }
 
-        traffic[i].path_.pop_front();//LOL
+        if(traffic[i].path_.isEmpty()) {
+            emit finished_state(i);
+            continue;
+        }
+
+        traffic[i].path_.pop_front();
         traffic_model_ = traffic[i];
 
-        if(!traffic_model_.path_.size()) {
+        if(traffic_model_.path_.isEmpty()) {
              emit finished_state(i);
              continue;
         }
