@@ -23,6 +23,9 @@ public:
 
     static void     setDbName(const QString& name);
     static QString  dbName();
+    static QString  dbPath();
+
+    static QString  dataDirectory();
 
 private:
     static QString makeIniPath(const char* section, const char* key);
@@ -37,6 +40,8 @@ private:
     static constexpr const char* keyUiLocale_     = "Locale";
     static constexpr const char* keyCompanyName_ = "company_name";
     static constexpr const char* keyDbName_      = "db_name";
+
+    static constexpr const char* defaultDbName_   = "logistics.db";
 };
 
 #endif // APPLICATIONSETTINGS_H

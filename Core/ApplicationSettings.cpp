@@ -1,43 +1,67 @@
-#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
 #include <QSettings>
+#include <QStandardPaths>
 
 #include "ApplicationSettings.h"
-#include "Company.h"
 
 void ApplicationSettings::setLocale(Locale locale)
 {
-    QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).setValue(makeIniPath(sectionUi_, keyUiLocale_),
-                                                                       locale == Locale::RU ? "ru" : "eng");
+    QSettings settings;
+    settings.setValue(makeIniPath(sectionUi_, keyUiLocale_), locale == Locale::RU ? "ru" : "eng");
 }
 
 QString ApplicationSettings::getLocale()
 {
-    return QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).value(makeIniPath(sectionUi_, keyUiLocale_)).toString();
+    QSettings settings;
+    return settings.value(makeIniPath(sectionUi_, keyUiLocale_), "eng").toString();
 }
 
 void ApplicationSettings::setCompanyName(const QString& name)
 {
-    QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).setValue(makeIniPath(sectionCompany_, keyCompanyName_), name);
+    QSettings settings;
+    settings.setValue(makeIniPath(sectionCompany_, keyCompanyName_), name);
 }
 
 void ApplicationSettings::setDbName(const QString& name)
 {
-    QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).setValue(makeIniPath(sectionDb_, keyDbName_), name);
+    QSettings settings;
+    settings.setValue(makeIniPath(sectionDb_, keyDbName_), name);
 }
 
 QString ApplicationSettings::dbName()
 {
-    return QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).value(makeIniPath(sectionDb_, keyDbName_)).toString();
+    QSettings settings;
+    return settings.value(makeIniPath(sectionDb_, keyDbName_), defaultDbName_).toString();
+}
+
+QString ApplicationSettings::dbPath()
+{
+    const QString name = dbName();
+    const QFileInfo info(name);
+    if(info.isAbsolute()) {
+        return name;
+    }
+
+    return QDir(dataDirectory()).filePath(name);
 }
 
 QString ApplicationSettings::companyName()
 {
-    return QSettings(APPLICATION_NAME, QSettings::Format::IniFormat).value(makeIniPath(sectionCompany_, keyCompanyName_)).toString();
+    QSettings settings;
+    return settings.value(makeIniPath(sectionCompany_, keyCompanyName_)).toString();
 }
 
 bool ApplicationSettings::companyIsValid()
 {
-    return companyName() != "";
+    return !companyName().trimmed().isEmpty();
+}
+
+QString ApplicationSettings::dataDirectory()
+{
+    const QString directory = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(directory);
+    return directory;
 }
 
 QString ApplicationSettings::makeIniPath(const char* section, const char* key)

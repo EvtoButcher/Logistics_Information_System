@@ -14,6 +14,7 @@
 struct Cargo
 {
     explicit Cargo(const double weight, const int volume);
+    explicit Cargo(const uint64_t code, const double weight, const int volume);
 
     uint64_t code_;
     double   weight_;
@@ -30,7 +31,7 @@ public:
     void addCargo(Cargo* curgo);
     void loadCurgo();
 
-    const std::unordered_map<uint64_t, Cargo*> getCargo() const;
+    const std::unordered_map<uint64_t, Cargo*>& getCargo() const;
     const Cargo* cargoAt(const uint64_t code)  const;
 
 private:

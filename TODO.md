@@ -32,14 +32,16 @@
 
 ## PR 3 — `refactor/data-layer`
 
-- [ ] `ApplicationSettings`: `QSettings` org/app, а не файл в CWD
-- [ ] БД в `QStandardPaths::AppDataLocation`, имя `logistics.db`
-- [ ] Проверять `name` и `name + ".db"`, закрывать соединение
-- [ ] Уникальное имя SQLite-соединения, `QSqlQuery` без утечки
-- [ ] Схема v1 + `PRAGMA user_version` + миграция с бэкапом
-- [ ] Удаление пути по `main_code`, транзакции, `foreign_keys=ON`
-- [ ] Хранить путь как JSON, добавить `Cargo_table`
-- [ ] Тесты CRUD и миграции legacy-БД
+- [x] `ApplicationSettings`: `QSettings` org/app, а не файл в CWD
+- [x] БД в `QStandardPaths::AppDataLocation`, имя `logistics.db`
+- [x] Абсолютный путь к БД, каталог создаётся автоматически
+- [x] Уникальное имя SQLite-соединения, `QSqlQuery` без утечки, `removeDatabase`
+- [x] Схема v1 + `PRAGMA user_version` + миграция с бэкапом
+- [x] Удаление пути по `main_code`, транзакции, `foreign_keys=ON`
+- [x] Хранить путь как JSON, добавить `Cargo_table`
+- [x] Сохранять и восстанавливать грузы складов
+- [x] Не запускать симуляцию автоматически при восстановлении карты
+- [ ] Тесты CRUD и миграции legacy-БД (PR 6)
 
 ## PR 4 — `refactor/models-threading`
 

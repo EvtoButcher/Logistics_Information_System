@@ -91,7 +91,7 @@ Company* CreateCompanyDialog::getCompany()
 void CreateCompanyDialog::addWarehouse(Warehouse* warehouse)
 {
     company_->addWarehouse(warehouse);
-    emit addWarehouseOnMap(warehouse->getCode(), warehouse->getPosition());
+    emit addWarehouseOnMap(warehouse);
 }
 
 void CreateCompanyDialog::addDestination(company_item::Destination* destination)

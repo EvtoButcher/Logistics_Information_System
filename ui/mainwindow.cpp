@@ -13,9 +13,9 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , map_engine_(new MapItemEngine(parent))
-    , order_add_(new OrderAddWidget(parent))
-    , order_dialog_(new OrderAddDialog(parent))
+    , map_engine_(new MapItemEngine(this))
+    , order_add_(new OrderAddWidget(this))
+    , order_dialog_(new OrderAddDialog(this))
     , company_(new Company(this))
 {
     ui->setupUi(this);
@@ -40,7 +40,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(company_, &Company::addedNewWarehouse,   order_dialog_->getOrderAddWidget(),    &OrderAddWidget::addNewWarehouseVariant);
     connect(company_, &Company::addedNewDestination, order_dialog_->getOrderAddWidget(),    &OrderAddWidget::addNewDestinationVariant);
 
-    map_engine_->OpenDb(ApplicationSettings::dbName());
+    map_engine_->OpenDb(ApplicationSettings::dbPath());
+
+    if(!map_engine_->getDB()->isOpen()) {
+        QMessageBox::critical(this, tr("Database error"), map_engine_->getDB()->lastError());
+    }
 
     if(!ApplicationSettings::companyIsValid()) {
          create_company_dialog_->exec();
@@ -79,6 +83,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    // The table model holds a database connection owned by map_engine_.
+    delete order_table_;
+    order_table_ = nullptr;
+
     delete ui;
 }
 
