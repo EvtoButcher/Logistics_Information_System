@@ -5,7 +5,7 @@
 OpenStreetMap, хранит заказы в SQLite и позволяет запускать симуляцию движения
 грузовиков в режиме разработчика.
 
-Статус: **v0.1.0** (стабилизация текущего функционала).
+Статус: **v0.1.0** — [скачать portable-сборку](https://github.com/EvtoButcher/Logistics_Information_System/releases/tag/v0.1.0).
 
 ## Возможности v0.1.0
 

@@ -69,7 +69,7 @@
 - [x] README: реальные возможности, сборка, DevTools, тесты
 - [x] CHANGELOG, `docs/ARCHITECTURE.md`
 - [x] Release-workflow: portable zip (`windeployqt` + OpenSSL + exe)
-- [ ] Тег `v0.1.0` и GitHub Release
+- [x] Тег `v0.1.0` и GitHub Release
 
 ## Backlog v0.2.0
 
