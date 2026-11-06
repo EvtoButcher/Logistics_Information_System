@@ -37,11 +37,11 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    MapItemEngine*       map_engine_;
-    CreateCompanyDialog* create_company_dialog_;
-    OrderTable*          order_table_;
-    OrderAddWidget*      order_add_;
-    OrderAddDialog*      order_dialog_;
-    Company*             company_;
+    MapItemEngine*       map_engine_ = nullptr;
+    CreateCompanyDialog* create_company_dialog_ = nullptr;
+    OrderTable*          order_table_ = nullptr;
+    OrderAddWidget*      order_add_ = nullptr;
+    OrderAddDialog*      order_dialog_ = nullptr;
+    Company*             company_ = nullptr;
 };
 #endif // MAINWINDOW_H

@@ -17,6 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Project branding: `OctopusLogistics` → `LogisticsInformationSystem`.
 - Application version is now `0.1.0`.
+- Settings now use `QSettings` with the application identity; the database
+  lives in `%APPDATA%\TheKramarch\LogisticsInformationSystem\logistics.db`.
+- Database schema v1 with `user_version`, transactions, foreign keys,
+  JSON-encoded route paths and a cargo table.
+- Legacy databases are backed up and migrated automatically.
+
+### Fixed
+
+- Cargo is persisted and restored with warehouses.
+- Path cache rows are deleted by order code instead of a row id.
+- 64-bit warehouse/destination codes are read without integer overflow.
 
 ## [0.1.0] - TBD
 

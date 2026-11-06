@@ -24,7 +24,7 @@ public:
     Company* getCompany();
 
 signals:
-    void addWarehouseOnMap(const uint64_t code, const QGeoCoordinate position);
+    void addWarehouseOnMap(Warehouse* warehouse);
     void addDestinationOnMap(const uint64_t code, const QGeoCoordinate position);
 
 private slots:

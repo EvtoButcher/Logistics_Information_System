@@ -25,7 +25,7 @@ struct RouteInfo {
     QGeoCoordinate end_route_point_;
     QString        route_color_;
 
-    int path_distance_;
+    double path_distance_ = 0.0;
     QVector<QGeoCoordinate> path_cache_;
 };
 

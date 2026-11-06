@@ -11,6 +11,7 @@
 
 class OrderDB;
 class ApplicationSettings;
+class Warehouse;
 
 class MapItemEngine : public QObject
 {
@@ -39,7 +40,7 @@ public slots:
     void removeRoute(const int db_index, const int map_index);
     void routeColorUpdate(const int db_index, const int map_index, const QString& color);
 
-    void addWarehouse(const uint64_t code, const QGeoCoordinate position);
+    void addWarehouse(Warehouse* warehouse);
     void addDestination(const uint64_t code, const QGeoCoordinate position);
 
 private:

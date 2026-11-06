@@ -1,281 +1,613 @@
-#include <QDebug>
-#include <QFileInfo>
-#include <QLocale>
-#include <QDate>
-#include <QSqlError>
-#include <QSql>
-#include <QSqlQuery>
-#include <QFileDialog>
 #include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QSqlError>
+#include <QSqlQuery>
 
 #include "OrderDB.h"
-#include "common.h"
 #include "ApplicationSettings.h"
-#include "RouteModel.h"
+#include "ModelForQML/RouteModel.h"
+
+namespace {
+
+QString positionToString(const QGeoCoordinate& position)
+{
+    return QString::number(position.latitude(), 'f', 6) + " " +
+           QString::number(position.longitude(), 'f', 6);
+}
+
+} // namespace
 
 OrderDB::OrderDB(const QString& name, QObject* parent)
-     : QObject(parent)
-     , db(QSqlDatabase::addDatabase("QSQLITE"))
+    : QObject(parent)
+    , connectionName_(QStringLiteral("orders_") + QString::number(reinterpret_cast<quintptr>(this), 16))
 {
-    query = new QSqlQuery(db);
+    dbPath_ = name.isEmpty() ? ApplicationSettings::dbPath() : name;
 
-    if(common::fileExists(name)) {
-        openDB(name);
+    db = QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), connectionName_);
+    db.setDatabaseName(dbPath_);
+
+    if(!db.open()) {
+        setLastError(db.lastError().text());
+        return;
     }
-    else {
-        createDB(name + ".db");
+
+    QSqlQuery pragma(db);
+    exec(pragma, QStringLiteral("PRAGMA foreign_keys = ON"));
+    exec(pragma, QStringLiteral("PRAGMA busy_timeout = 5000"));
+
+    if(!initializeSchema()) {
+        db.close();
+        return;
+    }
+
+    emit DbIsOpen();
+}
+
+OrderDB::~OrderDB()
+{
+    if(db.isValid()) {
+        db.close();
+        db = QSqlDatabase();
+        QSqlDatabase::removeDatabase(connectionName_);
     }
 }
 
-const QSqlDatabase &OrderDB::DB() const
+const QSqlDatabase& OrderDB::DB() const
 {
     return db;
 }
 
-void OrderDB::inserIntoOrderTable(const RouteInfo& info)
+bool OrderDB::isOpen() const
 {
-    query->prepare("INSERT INTO " MAIN_TABLE "("
-                                              "color, "
-                                              "start_p, "
-                                              "end_p, "
-                                              "start_time, "
-                                              "distance, "
-                                              "end_time, "
-                                              "code) "
-                  "VALUES (:RouteColor, :StartPos, :EndPos, :StartDate, :Distance, :EndDate, :Code)");
-
-    const double tmp_s_lat = info.start_route_point_.latitude();
-    const double tmp_s_lng = info.start_route_point_.longitude();
-    const QString start = QString::number(tmp_s_lat, 'f', 6) + " " + QString::number(tmp_s_lng,'f', 6);
-
-    const double tmp_e_lat = info.end_route_point_.latitude();
-    const double tmp_e_lng = info.end_route_point_.longitude();
-    const QString end = QString::number(tmp_e_lat, 'f', 6) + " " + QString::number(tmp_e_lng, 'f', 6);
-
-    query->bindValue(":Code",       info.code_);
-    query->bindValue(":StartPos",   start);
-    query->bindValue(":EndPos",     end);
-    query->bindValue(":Distance",   000);
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    query->bindValue(":StartDate",  QDateTime::currentDateTime().toString(Qt::DateFormat::LocalDate));
-    query->bindValue(":EndDate",    QDateTime::currentDateTime().toString(Qt::DateFormat::LocalDate));
-    #pragma GCC diagnostic pop
-
-    query->bindValue(":RouteColor", info.route_color_);
-
-    if(!query->exec()) {
-        qDebug() << "error insert into " << MAIN_TABLE;
-        qDebug() << query->lastError().text();
-     }
-     else {
-        qDebug() << query->lastQuery();
-    }
+    return db.isOpen();
 }
 
-void OrderDB::updateDistanceFromOrderTable(const QString& code, const int distance)
+QString OrderDB::lastError() const
 {
-    query->prepare("UPDATE " MAIN_TABLE " SET distance = :Distance WHERE code = :Code");
-    query->bindValue(":Distance", distance);
-    query->bindValue(":Code", code);
-
-    if(!query->exec()) {
-        qDebug() << "error updateDistance into " << MAIN_TABLE;
-        qDebug() << query->lastError().text();
-     }
-     else {
-        qDebug() << query->lastQuery();
-    }
-}
-
-void OrderDB::deleteFromOrderTable(const int index)
-{
-    deleteFromPathTable(index);
-
-    query->prepare("DELETE FROM " MAIN_TABLE " WHERE id = :Index");
-    query->bindValue(":Index", index);
-
-    if(!query->exec()) {
-        qDebug() << "error delete " << MAIN_TABLE;
-        qDebug() << query->lastError().text();
-     }
-     else {
-        qDebug() << "acept delete";
-    }
-}
-
-void OrderDB::updateColor(const int index, const QString& color)
-{
-    query->prepare("UPDATE " MAIN_TABLE " SET color = :Color WHERE id = :Id");
-    query->bindValue(":Id", index);
-    query->bindValue(":Color", color);
-
-    if(!query->exec()) {
-        qDebug() << "error update Color into " << MAIN_TABLE;
-        qDebug() << query->lastError().text();
-     }
-     else {
-        qDebug() << query->lastQuery();
-    }
+    return lastError_;
 }
 
 QColor OrderDB::selectColor(const int index) const
 {
-    query->prepare("SELECT color FROM " MAIN_TABLE " WHERE id = :Id");
-    query->bindValue(":Id", index);
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("SELECT color FROM ") + MAIN_TABLE + QStringLiteral(" WHERE id = :Id"));
+    query.bindValue(QStringLiteral(":Id"), index);
 
-    if (query->exec() && query->next()) {
-     /* qDebug() << query->value(0).toString();*///      path = query.value(0).toString();
+    if(!query.exec() || !query.next()) {
+        return QColor();
     }
 
-    return QColor(query->value(0).toString());
+    return QColor(query.value(0).toString());
 }
 
 QString OrderDB::selectPath(const QString& code) const
 {
-    query->prepare("SELECT path FROM " PATH_TABLE " WHERE main_code = :Code");
-    query->bindValue(":Code", code);
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("SELECT path FROM ") + PATH_TABLE + QStringLiteral(" WHERE main_code = :Code"));
+    query.bindValue(QStringLiteral(":Code"), code);
 
-    if (query->exec() && query->next()) {
-     /* qDebug() << query->value(0).toString();*///      path = query.value(0).toString();
+    if(!query.exec() || !query.next()) {
+        return QString();
     }
 
-    return query->value(0).toString();
+    return query.value(0).toString();
 }
 
-void OrderDB::insrtrIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cache)
+QVector<CargoRecord> OrderDB::selectCargo(const QString& warehouseCode) const
 {
-    QString path;
+    QVector<CargoRecord> cargo;
 
-    for(const auto& coordinate : position_cache) {
-        path += QString::number(coordinate.latitude(), 'f', 6) + " " + QString::number(coordinate.longitude(), 'f', 6) + " ";
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("SELECT code, weight, volume FROM ") + CARGO_TABLE +
+                  QStringLiteral(" WHERE warehouse_code = :Code"));
+    query.bindValue(QStringLiteral(":Code"), warehouseCode);
+
+    if(!query.exec()) {
+        return cargo;
     }
 
-    query->prepare("INSERT INTO " PATH_TABLE " ("         //
-                                           "main_code, "  //TODO: add error handling
-                                           "path) "       //
-                   "VALUES (:MainCode,  :Path)");
+    while(query.next()) {
+        CargoRecord record;
+        record.code_ = query.value(0).toULongLong();
+        record.weight_ = query.value(1).toDouble();
+        record.volume_ = query.value(2).toInt();
+        cargo.push_back(record);
+    }
 
-    query->bindValue(":MainCode", main_code);
-    query->bindValue(":Path", path);
-
-
-    if(!query->exec()) {
-        qDebug() << "error insert into " << PATH_TABLE;
-        qDebug() << query->lastError().text();
-     }
-     else {
-        qDebug() << query->lastQuery();
-     }
+    return cargo;
 }
 
-
-
-void OrderDB::insertIntoWarehouseTable(const uint64_t code, const QGeoCoordinate position)
+void OrderDB::deleteFromOrderTable(const int index)
 {
+    QSqlQuery select(db);
+    select.prepare(QStringLiteral("SELECT code FROM ") + MAIN_TABLE + QStringLiteral(" WHERE id = :Id"));
+    select.bindValue(QStringLiteral(":Id"), index);
 
-    query->prepare("INSERT INTO " WAREHOUSE_TABLE " ("          //
-                                                  "code, "      //TODO: add error handling
-                                                  "position) "  //
-                   "VALUES (:Code,  :Pos)");
+    QString code;
+    if(select.exec() && select.next()) {
+        code = select.value(0).toString();
+    }
 
-    qDebug() << QString::number(code) << QString::number(position.latitude(), 'f', 6) + " " + QString::number(position.longitude(), 'f', 6);
-    query->bindValue(":Code", QString::number(code));
-    query->bindValue(":Pos",  QString::number(position.latitude(), 'f', 6) + " " + QString::number(position.longitude(), 'f', 6));
+    if(!beginTransaction()) {
+        return;
+    }
 
+    if(!code.isEmpty()) {
+        QSqlQuery deletePath(db);
+        deletePath.prepare(QStringLiteral("DELETE FROM ") + PATH_TABLE + QStringLiteral(" WHERE main_code = :Code"));
+        deletePath.bindValue(QStringLiteral(":Code"), code);
+        if(!deletePath.exec()) {
+            setLastError(deletePath.lastError().text());
+            rollbackTransaction();
+            return;
+        }
+    }
 
-    if(!query->exec()) {
-        qDebug() << "error insert into " << WAREHOUSE_TABLE;
-        qDebug() << query->lastError().text();
-     }
-     else {
-        qDebug() << query->lastQuery();
+    QSqlQuery deleteOrder(db);
+    deleteOrder.prepare(QStringLiteral("DELETE FROM ") + MAIN_TABLE + QStringLiteral(" WHERE id = :Id"));
+    deleteOrder.bindValue(QStringLiteral(":Id"), index);
+    if(!deleteOrder.exec()) {
+        setLastError(deleteOrder.lastError().text());
+        rollbackTransaction();
+        return;
+    }
+
+    commitTransaction();
+}
+
+void OrderDB::updateColor(const int index, const QString& color)
+{
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("UPDATE ") + MAIN_TABLE +
+                  QStringLiteral(" SET color = :Color WHERE id = :Id"));
+    query.bindValue(QStringLiteral(":Color"), color);
+    query.bindValue(QStringLiteral(":Id"), index);
+
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
     }
 }
 
-void OrderDB::insertIntoDestinationTable(const uint64_t code, const QGeoCoordinate position)
+void OrderDB::updateDistanceFromOrderTable(const QString& code, const double distance)
 {
-    query->prepare("INSERT INTO " DESTINATION_TABLE " ("        //
-                                                  "code, "      //TODO: add error handling
-                                                  "position) "  //
-                   "VALUES (:Code,  :Pos)");
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("UPDATE ") + MAIN_TABLE +
+                  QStringLiteral(" SET distance = :Distance WHERE code = :Code"));
+    query.bindValue(QStringLiteral(":Distance"), distance);
+    query.bindValue(QStringLiteral(":Code"), code);
 
-    qDebug() << QString::number(code) << QString::number(position.latitude(), 'f', 6) + " " + QString::number(position.longitude(), 'f', 6);
-    query->bindValue(":Code", QString::number(code));
-    query->bindValue(":Pos",  QString::number(position.latitude(), 'f', 6) + " " + QString::number(position.longitude(), 'f', 6));
-
-
-    if(!query->exec()) {
-        qDebug() << "error insert into " << DESTINATION_TABLE;
-        qDebug() << query->lastError().text();
-     }
-     else {
-        qDebug() << query->lastQuery();
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
     }
 }
 
-std::optional<QSqlError> OrderDB::createTables()
+void OrderDB::insertIntoOrderTable(const RouteInfo& info)
 {
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("INSERT INTO ") + MAIN_TABLE +
+                  QStringLiteral(" (color, start_p, end_p, start_time, distance, end_time, code) "
+                                 "VALUES (:Color, :StartPos, :EndPos, :StartTime, :Distance, :EndTime, :Code)"));
 
-    query->prepare("CREATE TABLE " MAIN_TABLE " ("
-                                                "id INTEGER PRIMARY KEY, "
-                                                "color      CHAR, "
-                                                "start_p    CHAR, "
-                                                "end_p      CHAR, "
-                                                "start_time TEXT, "
-                                                "distance   INTEGER, "
-                                                "end_time   TEXT, "
-                                                "code       CHAR)");
-    if(!query->exec()){
-        return std::make_optional(query->lastError());
+    query.bindValue(QStringLiteral(":Color"), info.route_color_);
+    query.bindValue(QStringLiteral(":StartPos"), positionToString(info.start_route_point_));
+    query.bindValue(QStringLiteral(":EndPos"), positionToString(info.end_route_point_));
+    query.bindValue(QStringLiteral(":StartTime"), QDateTime::currentDateTime().toString(Qt::ISODate));
+    query.bindValue(QStringLiteral(":Distance"), 0.0);
+    query.bindValue(QStringLiteral(":EndTime"), QDateTime::currentDateTime().toString(Qt::ISODate));
+    query.bindValue(QStringLiteral(":Code"), info.code_);
+
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
     }
-
-    query->prepare("CREATE TABLE " PATH_TABLE " ("
-                                                "id         INTEGER PRIMARY KEY, "
-                                                "main_code  CHAR, "
-                                                "path       TEXT, "
-                                                "FOREIGN KEY (main_code) REFERENCES " MAIN_TABLE "(code))");
-
-    if(!query->exec()){
-         return std::make_optional(query->lastError());
-    }
-
-    query->prepare("CREATE TABLE " WAREHOUSE_TABLE " ("
-                                                   "id         INTEGER PRIMARY KEY, "
-                                                   "code       CHAR, "
-                                                   "position   CHAR )");
-
-    if(!query->exec()){
-         return std::make_optional(query->lastError());
-    }
-
-    query->prepare("CREATE TABLE " DESTINATION_TABLE " ("
-                                                   "id         INTEGER PRIMARY KEY, "
-                                                   "code       CHAR, "
-                                                   "position   CHAR )");
-
-    if(!query->exec()){
-         return std::make_optional(query->lastError());
-    }
-
-    return std::nullopt;
 }
 
-bool OrderDB::openDB(const QString& db_name)
+void OrderDB::insertIntoWarehouseTable(const uint64_t code, const QGeoCoordinate& position)
 {
-    db.setDatabaseName(db_name);
-    if(db.open()){
-        emit DbIsOpen();
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("INSERT INTO ") + WAREHOUSE_TABLE +
+                  QStringLiteral(" (code, position) VALUES (:Code, :Position)"));
+    query.bindValue(QStringLiteral(":Code"), QString::number(code));
+    query.bindValue(QStringLiteral(":Position"), positionToString(position));
+
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
+    }
+}
+
+void OrderDB::insertIntoDestinationTable(const uint64_t code, const QGeoCoordinate& position)
+{
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("INSERT INTO ") + DESTINATION_TABLE +
+                  QStringLiteral(" (code, position) VALUES (:Code, :Position)"));
+    query.bindValue(QStringLiteral(":Code"), QString::number(code));
+    query.bindValue(QStringLiteral(":Position"), positionToString(position));
+
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
+    }
+}
+
+void OrderDB::insertIntoPathTable(const QString& main_code, const QVector<QGeoCoordinate>& position_cache)
+{
+    QSqlQuery deleteQuery(db);
+    deleteQuery.prepare(QStringLiteral("DELETE FROM ") + PATH_TABLE + QStringLiteral(" WHERE main_code = :Code"));
+    deleteQuery.bindValue(QStringLiteral(":Code"), main_code);
+    if(!deleteQuery.exec()) {
+        setLastError(deleteQuery.lastError().text());
+        return;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("INSERT INTO ") + PATH_TABLE +
+                  QStringLiteral(" (main_code, path) VALUES (:Code, :Path)"));
+    query.bindValue(QStringLiteral(":Code"), main_code);
+    query.bindValue(QStringLiteral(":Path"), serializePath(position_cache));
+
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
+    }
+}
+
+void OrderDB::insertCargo(const QString& warehouseCode, const uint64_t code, const double weight, const int volume)
+{
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("INSERT INTO ") + CARGO_TABLE +
+                  QStringLiteral(" (warehouse_code, code, weight, volume) "
+                                 "VALUES (:WarehouseCode, :Code, :Weight, :Volume)"));
+    query.bindValue(QStringLiteral(":WarehouseCode"), warehouseCode);
+    query.bindValue(QStringLiteral(":Code"), QString::number(code));
+    query.bindValue(QStringLiteral(":Weight"), weight);
+    query.bindValue(QStringLiteral(":Volume"), volume);
+
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
+    }
+}
+
+bool OrderDB::initializeSchema()
+{
+    if(!tableExists(QStringLiteral(MAIN_TABLE))) {
+        return createTables();
+    }
+
+    const int version = schemaVersion();
+    if(version == 1) {
         return true;
     }
+
+    if(version == 0) {
+        return migrateLegacySchema();
+    }
+
+    setLastError(QStringLiteral("Unsupported database schema version: %1").arg(version));
     return false;
+}
+
+bool OrderDB::createTables()
+{
+    QSqlQuery query(db);
+
+    if(!exec(query, QStringLiteral("CREATE TABLE IF NOT EXISTS ") + MAIN_TABLE + QStringLiteral(" ("
+                                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                   "color TEXT, "
+                                   "start_p TEXT, "
+                                   "end_p TEXT, "
+                                   "start_time TEXT, "
+                                   "distance REAL DEFAULT 0, "
+                                   "end_time TEXT, "
+                                   "code TEXT UNIQUE NOT NULL)"))) {
+        return false;
+    }
+
+    if(!exec(query, QStringLiteral("CREATE TABLE IF NOT EXISTS ") + PATH_TABLE + QStringLiteral(" ("
+                                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                   "main_code TEXT NOT NULL UNIQUE, "
+                                   "path TEXT, "
+                                   "FOREIGN KEY (main_code) REFERENCES ") + MAIN_TABLE +
+                                       QStringLiteral("(code) ON DELETE CASCADE)"))) {
+        return false;
+    }
+
+    if(!exec(query, QStringLiteral("CREATE TABLE IF NOT EXISTS ") + WAREHOUSE_TABLE + QStringLiteral(" ("
+                                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                   "code TEXT UNIQUE NOT NULL, "
+                                   "position TEXT NOT NULL)"))) {
+        return false;
+    }
+
+    if(!exec(query, QStringLiteral("CREATE TABLE IF NOT EXISTS ") + DESTINATION_TABLE + QStringLiteral(" ("
+                                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                   "code TEXT UNIQUE NOT NULL, "
+                                   "position TEXT NOT NULL)"))) {
+        return false;
+    }
+
+    if(!exec(query, QStringLiteral("CREATE TABLE IF NOT EXISTS ") + CARGO_TABLE + QStringLiteral(" ("
+                                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                   "warehouse_code TEXT NOT NULL, "
+                                   "code TEXT NOT NULL, "
+                                   "weight REAL NOT NULL, "
+                                   "volume INTEGER NOT NULL, "
+                                   "FOREIGN KEY (warehouse_code) REFERENCES ") + WAREHOUSE_TABLE +
+                                       QStringLiteral("(code) ON DELETE CASCADE)"))) {
+        return false;
+    }
+
+    return setSchemaVersion(1);
+}
+
+bool OrderDB::migrateLegacySchema()
+{
+    db.close();
+
+    if(!backupDatabase(dbPath_)) {
+        return false;
+    }
+
+    if(!db.open()) {
+        setLastError(db.lastError().text());
+        return false;
+    }
+
+    QSqlQuery pragma(db);
+    exec(pragma, QStringLiteral("PRAGMA foreign_keys = ON"));
+    exec(pragma, QStringLiteral("PRAGMA busy_timeout = 5000"));
+
+    if(!beginTransaction()) {
+        return false;
+    }
+
+    const QString ordersLegacy = QStringLiteral(MAIN_TABLE) + QStringLiteral("_legacy");
+    const QString pathLegacy = QStringLiteral(PATH_TABLE) + QStringLiteral("_legacy");
+    const QString warehouseLegacy = QStringLiteral(WAREHOUSE_TABLE) + QStringLiteral("_legacy");
+    const QString destinationLegacy = QStringLiteral(DESTINATION_TABLE) + QStringLiteral("_legacy");
+
+    QSqlQuery query(db);
+    if(tableExists(QStringLiteral(MAIN_TABLE))) {
+        if(!exec(query, QStringLiteral("ALTER TABLE ") + MAIN_TABLE + QStringLiteral(" RENAME TO ") + ordersLegacy)) {
+            rollbackTransaction();
+            return false;
+        }
+    }
+    if(tableExists(QStringLiteral(PATH_TABLE))) {
+        if(!exec(query, QStringLiteral("ALTER TABLE ") + PATH_TABLE + QStringLiteral(" RENAME TO ") + pathLegacy)) {
+            rollbackTransaction();
+            return false;
+        }
+    }
+    if(tableExists(QStringLiteral(WAREHOUSE_TABLE))) {
+        if(!exec(query, QStringLiteral("ALTER TABLE ") + WAREHOUSE_TABLE + QStringLiteral(" RENAME TO ") + warehouseLegacy)) {
+            rollbackTransaction();
+            return false;
+        }
+    }
+    if(tableExists(QStringLiteral(DESTINATION_TABLE))) {
+        if(!exec(query, QStringLiteral("ALTER TABLE ") + DESTINATION_TABLE + QStringLiteral(" RENAME TO ") + destinationLegacy)) {
+            rollbackTransaction();
+            return false;
+        }
+    }
+
+    if(!createTables()) {
+        rollbackTransaction();
+        return false;
+    }
+
+    if(tableExists(ordersLegacy)) {
+        if(!exec(query, QStringLiteral("INSERT OR REPLACE INTO ") + MAIN_TABLE +
+                          QStringLiteral(" (id, color, start_p, end_p, start_time, distance, end_time, code) "
+                                         "SELECT id, color, start_p, end_p, start_time, distance, end_time, code "
+                                         "FROM ") + ordersLegacy +
+                          QStringLiteral(" WHERE code IS NOT NULL AND code <> ''"))) {
+            rollbackTransaction();
+            return false;
+        }
+    }
+
+    if(tableExists(pathLegacy)) {
+        QSqlQuery legacyPaths(db);
+        if(!legacyPaths.exec(QStringLiteral("SELECT main_code, path FROM ") + pathLegacy)) {
+            setLastError(legacyPaths.lastError().text());
+            rollbackTransaction();
+            return false;
+        }
+
+        while(legacyPaths.next()) {
+            const QString mainCode = legacyPaths.value(0).toString();
+            const QString legacyPath = legacyPaths.value(1).toString();
+
+            QSqlQuery orderExists(db);
+            orderExists.prepare(QStringLiteral("SELECT 1 FROM ") + MAIN_TABLE +
+                                QStringLiteral(" WHERE code = :Code"));
+            orderExists.bindValue(QStringLiteral(":Code"), mainCode);
+            if(!orderExists.exec() || !orderExists.next()) {
+                continue;
+            }
+
+            const QVector<QGeoCoordinate> points = deserializePath(legacyPath);
+            QSqlQuery insertPath(db);
+            insertPath.prepare(QStringLiteral("INSERT OR REPLACE INTO ") + PATH_TABLE +
+                               QStringLiteral(" (main_code, path) VALUES (:Code, :Path)"));
+            insertPath.bindValue(QStringLiteral(":Code"), mainCode);
+            insertPath.bindValue(QStringLiteral(":Path"), serializePath(points));
+            if(!insertPath.exec()) {
+                setLastError(insertPath.lastError().text());
+                rollbackTransaction();
+                return false;
+            }
+        }
+    }
+
+    if(tableExists(warehouseLegacy)) {
+        if(!exec(query, QStringLiteral("INSERT OR REPLACE INTO ") + WAREHOUSE_TABLE +
+                          QStringLiteral(" (id, code, position) SELECT id, code, position FROM ") +
+                          warehouseLegacy)) {
+            rollbackTransaction();
+            return false;
+        }
+    }
+
+    if(tableExists(destinationLegacy)) {
+        if(!exec(query, QStringLiteral("INSERT OR REPLACE INTO ") + DESTINATION_TABLE +
+                          QStringLiteral(" (id, code, position) SELECT id, code, position FROM ") +
+                          destinationLegacy)) {
+            rollbackTransaction();
+            return false;
+        }
+    }
+
+    if(tableExists(ordersLegacy)) {
+        exec(query, QStringLiteral("DROP TABLE ") + ordersLegacy);
+    }
+    if(tableExists(pathLegacy)) {
+        exec(query, QStringLiteral("DROP TABLE ") + pathLegacy);
+    }
+    if(tableExists(warehouseLegacy)) {
+        exec(query, QStringLiteral("DROP TABLE ") + warehouseLegacy);
+    }
+    if(tableExists(destinationLegacy)) {
+        exec(query, QStringLiteral("DROP TABLE ") + destinationLegacy);
+    }
+
+    return commitTransaction();
+}
+
+bool OrderDB::tableExists(const QString& table) const
+{
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("SELECT name FROM sqlite_master WHERE type = 'table' AND name = :Name"));
+    query.bindValue(QStringLiteral(":Name"), table);
+
+    return query.exec() && query.next();
+}
+
+int OrderDB::schemaVersion() const
+{
+    QSqlQuery query(db);
+    if(!query.exec(QStringLiteral("PRAGMA user_version")) || !query.next()) {
+        return -1;
+    }
+
+    return query.value(0).toInt();
+}
+
+bool OrderDB::setSchemaVersion(const int version)
+{
+    QSqlQuery query(db);
+    return exec(query, QStringLiteral("PRAGMA user_version = %1").arg(version));
+}
+
+bool OrderDB::exec(QSqlQuery& query, const QString& sql)
+{
+    if(!query.exec(sql)) {
+        setLastError(query.lastError().text());
+        return false;
+    }
+
+    return true;
+}
+
+bool OrderDB::beginTransaction()
+{
+    if(!db.transaction()) {
+        setLastError(db.lastError().text());
+        return false;
+    }
+
+    return true;
+}
+
+bool OrderDB::commitTransaction()
+{
+    if(!db.commit()) {
+        setLastError(db.lastError().text());
+        return false;
+    }
+
+    return true;
+}
+
+bool OrderDB::rollbackTransaction()
+{
+    return db.rollback();
+}
+
+QString OrderDB::serializePath(const QVector<QGeoCoordinate>& path) const
+{
+    QJsonArray array;
+    for(const auto& coordinate : path) {
+        QJsonArray point;
+        point.append(coordinate.latitude());
+        point.append(coordinate.longitude());
+        array.append(point);
+    }
+
+    return QString::fromUtf8(QJsonDocument(array).toJson(QJsonDocument::Compact));
+}
+
+QVector<QGeoCoordinate> OrderDB::deserializePath(const QString& text) const
+{
+    QVector<QGeoCoordinate> path;
+
+    QJsonParseError error;
+    const QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &error);
+    if(error.error == QJsonParseError::NoError && document.isArray()) {
+        for(const auto& value : document.array()) {
+            const QJsonArray point = value.toArray();
+            if(point.size() == 2) {
+                path.push_back(QGeoCoordinate(point.at(0).toDouble(), point.at(1).toDouble()));
+            }
+        }
+        return path;
+    }
+
+    const QStringList parts = text.split(' ', Qt::SkipEmptyParts);
+    for(int index = 0; index + 1 < parts.size(); index += 2) {
+        bool latitudeOk = false;
+        bool longitudeOk = false;
+        const double latitude = parts[index].toDouble(&latitudeOk);
+        const double longitude = parts[index + 1].toDouble(&longitudeOk);
+        if(latitudeOk && longitudeOk) {
+            path.push_back(QGeoCoordinate(latitude, longitude));
+        }
+    }
+
+    return path;
+}
+
+bool OrderDB::backupDatabase(const QString& path)
+{
+    if(!QFileInfo::exists(path)) {
+        return true;
+    }
+
+    const QString backupPath = path + QStringLiteral(".bak-") +
+                               QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-HHmmss-zzz"));
+    if(!QFile::copy(path, backupPath)) {
+        setLastError(QStringLiteral("Cannot create database backup: ") + backupPath);
+        return false;
+    }
+
+    return true;
+}
+
+void OrderDB::setLastError(const QString& error)
+{
+    lastError_ = error;
 }
 
 bool OrderDB::closeDB()
 {
-    if(!db.isOpen()){
+    if(!db.isOpen()) {
         return false;
     }
+
     db.close();
     emit DbIsClose();
     return true;
@@ -283,35 +615,25 @@ bool OrderDB::closeDB()
 
 bool OrderDB::importDB()
 {
-   QFile db_file = QFileDialog::getOpenFileName(nullptr ,tr("Open Database"), QDir::currentPath(),tr("*.db"));
-
-   return openDB(db_file.fileName());
-}
-
-void OrderDB::createDB(const QString& db_name)
-{
-    db.setDatabaseName(db_name);
-
-    if(db.open()){
-        if(createTables()){
-            //TODO: add create_tables_error handling
-        }
+    const QString fileName = QFileDialog::getOpenFileName(nullptr, tr("Open Database"),
+                                                          QDir::currentPath(), tr("SQLite databases (*.db)"));
+    if(fileName.isEmpty()) {
+        return false;
     }
-    else {
-      //TODO: add open_db_error handling
+
+    db.close();
+    db.setDatabaseName(fileName);
+    if(!db.open()) {
+        setLastError(db.lastError().text());
+        return false;
     }
-}
 
-void OrderDB::deleteFromPathTable(const int index)
-{
-    query->prepare("DELETE FROM " PATH_TABLE " WHERE id = :Index");
-    query->bindValue(":Index", index);
+    dbPath_ = fileName;
+    if(!initializeSchema()) {
+        db.close();
+        return false;
+    }
 
-    if(!query->exec()) {
-        qDebug() << "error delete " << PATH_TABLE;
-        qDebug() << query->lastError().text();
-     }
-     else {
-        qDebug() << "acept delete";
-     }
+    emit DbIsOpen();
+    return true;
 }

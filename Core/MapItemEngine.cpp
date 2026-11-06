@@ -7,6 +7,7 @@
 #include "common.h"
 #include "OrderDB.h"
 #include "ApplicationSettings.h"
+#include "Company.h"
 
 MapItemEngine::MapItemEngine(QObject* parent)
     : QObject(parent)
@@ -55,7 +56,7 @@ void MapItemEngine::restoreMap()
 
         for (int row = 0; row < table_model.rowCount(); ++row) {
 
-            map_Item_Info::WarehouseInfo info (table_model.data(table_model.index(row, 1)).toInt(),                               // code
+            map_Item_Info::WarehouseInfo info (table_model.data(table_model.index(row, 1)).toULongLong(),                          // code
                                 common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())); // position
 
             warehouse_model_.setWarehouse(info);
@@ -74,7 +75,7 @@ void MapItemEngine::restoreMap()
 
         for (int row = 0; row < table_model.rowCount(); ++row) {
 
-            map_Item_Info::DestinationInfo info (table_model.data(table_model.index(row, 1)).toInt(),                             // code
+            map_Item_Info::DestinationInfo info (table_model.data(table_model.index(row, 1)).toULongLong(),                        // code
                                 common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())); // position
 
             destination_modal_.setDestination(info);
@@ -86,9 +87,7 @@ void MapItemEngine::restoreMap()
         }
     }
 
-    if(!traffic_->trafficIsEmpty()) {
-        traffic_->start();
-    }
+    // Truck simulation is started explicitly from the DevTools menu (PR 5).
 }
 
 WarehouseModel& MapItemEngine::getWarehouseModel()
@@ -118,7 +117,7 @@ void MapItemEngine::OpenDb(const QString& name)
 
 void MapItemEngine::addRoute(const RouteInfo& info)
 {
-    route_db_->inserIntoOrderTable(info);
+    route_db_->insertIntoOrderTable(info);
     route_model_.setRoute(info);
     emit route_model_.addRoute();
 
@@ -139,9 +138,23 @@ void MapItemEngine::routeColorUpdate(const int db_index, const int map_index, co
     emit route_model_.colorChenged(map_index, color);
 }
 
-void MapItemEngine::addWarehouse(const uint64_t code, const QGeoCoordinate position)
+void MapItemEngine::addWarehouse(Warehouse* warehouse)
 {
+    if(!warehouse) {
+        return;
+    }
+
+    const uint64_t code = warehouse->getCode();
+    const QGeoCoordinate position = warehouse->getPosition();
+
     route_db_->insertIntoWarehouseTable(code, position);
+
+    for(const auto& [cargoCode, cargo] : warehouse->getCargo()) {
+        if(cargo) {
+            route_db_->insertCargo(QString::number(code), cargoCode, cargo->weight_, cargo->volume_);
+        }
+    }
+
     warehouse_model_.setWarehouse({code, position});
 
     emit warehouse_model_.addWarehouse();
@@ -160,7 +173,7 @@ void MapItemEngine::setPathCacheAndDistance()
     while(route_model_.checkRouteStatus() != UploadRouteStatus::Colpleted);
     QThread::sleep(1);
 
-    route_db_->insrtrIntoPathTable(route_model_.getInfo().code_, route_model_.getInfo().path_cache_);
+    route_db_->insertIntoPathTable(route_model_.getInfo().code_, route_model_.getInfo().path_cache_);
     route_db_->updateDistanceFromOrderTable(route_model_.getInfo().code_, route_model_.getInfo().path_distance_);
 
     emit distanceUpdated();

@@ -1,4 +1,7 @@
 #include <QtDebug>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonParseError>
 
 #include "RouteModel.h"
 #include "common.h"
@@ -123,7 +126,19 @@ RouteInfo::RouteInfo(const QString& name, const QGeoCoordinate start, const QGeo
         return;
     }
 
-    QStringList parts = path_cache.split(" ", Qt::SkipEmptyParts);
+    QJsonParseError error;
+    const QJsonDocument document = QJsonDocument::fromJson(path_cache.toUtf8(), &error);
+    if(error.error == QJsonParseError::NoError && document.isArray()) {
+        for(const auto& value : document.array()) {
+            const QJsonArray point = value.toArray();
+            if(point.size() == 2) {
+                path_cache_.push_back(QGeoCoordinate(point.at(0).toDouble(), point.at(1).toDouble()));
+            }
+        }
+        return;
+    }
+
+    const QStringList parts = path_cache.split(" ", Qt::SkipEmptyParts);
 
     if(parts.size() < 2) {
         return;

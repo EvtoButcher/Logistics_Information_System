@@ -48,10 +48,17 @@ void Company::restorCompany(const OrderDB* route_db)
          warehouses_.reserve(table_model.rowCount());
          for (int row = 0; row < table_model.rowCount(); ++row) {
 
-             addWarehouse(new Warehouse(table_model.data(table_model.index(row, 1)).toInt(),
-                                    common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())));
+             const uint64_t code = table_model.data(table_model.index(row, 1)).toULongLong();
+             auto* warehouse = new Warehouse(code,
+                                    common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()));
 
-             emit addedNewWarehouse(warehouses_.back());
+             const QVector<CargoRecord> cargo = route_db->selectCargo(QString::number(code));
+             for(const auto& record : cargo) {
+                 warehouse->addCargo(new Cargo(record.code_, record.weight_, record.volume_));
+             }
+
+             addWarehouse(warehouse);
+             emit addedNewWarehouse(warehouse);
          }
      }
 
@@ -62,10 +69,12 @@ void Company::restorCompany(const OrderDB* route_db)
          destinations_.reserve(table_model.rowCount());
          for (int row = 0; row < table_model.rowCount(); ++row) {
 
-             addDestination(new company_item::Destination(table_model.data(table_model.index(row, 1)).toInt(),
-                                              common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString())));
+             auto* destination = new company_item::Destination(
+                 table_model.data(table_model.index(row, 1)).toULongLong(),
+                 common::splitCoordinates(table_model.data(table_model.index(row, 2)).toString()));
 
-             emit addedNewDestination(destinations_.back());
+             addDestination(destination);
+             emit addedNewDestination(destination);
          }
      }
 }
@@ -92,13 +101,20 @@ void Warehouse::addCargo(Cargo* curgo)
     map_of_curgo_[curgo->code_] = curgo;
 }
 
-const std::unordered_map<uint64_t, Cargo*> Warehouse::getCargo() const
+const std::unordered_map<uint64_t, Cargo*>& Warehouse::getCargo() const
 {
     return map_of_curgo_;
 }
 
 Cargo::Cargo(const double weight, const int volume)
     : code_(common::createCode(weight, volume))
+    , weight_(weight)
+    , volume_(volume)
+{
+}
+
+Cargo::Cargo(const uint64_t code, const double weight, const int volume)
+    : code_(code)
     , weight_(weight)
     , volume_(volume)
 {

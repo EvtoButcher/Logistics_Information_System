@@ -51,9 +51,14 @@ run.bat release      :: запуск release-сборки
 3. Добавьте склады и пункты назначения (кнопки под таблицами).
 4. Нажмите **Create company** — откроется главное окно с картой.
 
-Рабочая папка при запуске через `run.bat` — корень проекта. Поэтому база
-данных (`.db`) и локальный файл настроек `LogisticsInformationSystem`
-создаются там. Оба файла добавлены в `.gitignore`.
+Данные приложения хранятся в `%APPDATA%\TheKramarch\LogisticsInformationSystem`:
+
+* `logistics.db` — база SQLite (схема v1);
+* резервные копии `logistics.db.bak-*` создаются перед миграцией старой схемы.
+
+Настройки (имя компании, путь к БД, локаль) хранятся в реестре Windows
+через `QSettings`:
+`HKEY_CURRENT_USER\Software\TheKramarch\LogisticsInformationSystem`.
 
 Кэш тайлов карты: `%LOCALAPPDATA%\cache\QtLocation\5.8\tiles\osm`.
 
@@ -61,12 +66,12 @@ run.bat release      :: запуск release-сборки
 
 * `QObject::connect(QQuickWindow, QDeclarativeGeoMap): invalid nullptr parameter` —
   безобидное предупреждение Qt Location при инициализации карты.
-* `QLayout: Attempting to add QLayout "" to OrderTable ""` — предупреждение
-  в `OrderTableWidget`; исправляется в рамках стабилизации v0.1.0.
 * `QObject: Cannot create children for a parent that is in a different thread` —
   `MainWindow` запускает `MapItemEngine::restoreMap` через `QtConcurrent::run`,
   а внутри создаётся `QSqlTableModel` с родителем из главного потока.
-  Исправляется в рамках v0.1.0.
+  Исправляется в PR 4 (модели и потоки).
+* `TypeError: Cannot read property 'RoutePath' of null` в `OrderMap.qml` —
+  следствие того же восстановления карты из фонового потока. Исправляется в PR 4.
 * Маршруты строятся через публичный OSRM (`router.project-osrm.org`) —
   при большом количестве запросов сервер может отвечать медленно.
 * При активном использовании тайлов OSM стоит соблюдать
