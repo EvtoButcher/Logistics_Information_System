@@ -35,6 +35,7 @@ public:
 signals:
     void addWarehouse();
     void restorWarehouse();
+    void removeWarehouse(int index);
 
 private:
     map_Item_Info::WarehouseInfo info_;

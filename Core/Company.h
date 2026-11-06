@@ -51,6 +51,8 @@ public:
     void setName(const QString& name);
     void addWarehouse(Warehouse* warehouse);
     void addDestination(company_item::Destination* destination);
+    bool removeWarehouse(uint64_t code);
+    bool removeDestination(uint64_t code);
 
     const QString getName() const;
 

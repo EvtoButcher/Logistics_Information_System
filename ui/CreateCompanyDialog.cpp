@@ -81,6 +81,8 @@ CreateCompanyDialog::CreateCompanyDialog(DestinationModel& destination_model, Wa
     connect(company_name_line_edit_, &QLineEdit::textEdited, this, &CreateCompanyDialog::trySetCompanyName);
     connect(warehouse_widget_, &WarehouseWidget::addWarehouseToCompany, this, &CreateCompanyDialog::addWarehouse);
     connect(destination_widget_, &DestinationWudget::addDestinationToCompany, this, &CreateCompanyDialog::addDestination);
+    connect(warehouse_widget_, &WarehouseWidget::removeWarehouseFromCompany, this, &CreateCompanyDialog::removeWarehouse);
+    connect(destination_widget_, &DestinationWudget::removeDestinationFromCompany, this, &CreateCompanyDialog::removeDestination);
 }
 
 Company* CreateCompanyDialog::getCompany()
@@ -98,6 +100,18 @@ void CreateCompanyDialog::addDestination(company_item::Destination* destination)
 {
     company_->addDestination(destination);
     emit addDestinationOnMap(destination->getCode(), destination->getPosition());
+}
+
+void CreateCompanyDialog::removeWarehouse(const uint64_t code, const int row)
+{
+    company_->removeWarehouse(code);
+    emit removeWarehouseOnMap(code, row);
+}
+
+void CreateCompanyDialog::removeDestination(const uint64_t code, const int row)
+{
+    company_->removeDestination(code);
+    emit removeDestinationOnMap(code, row);
 }
 
 void CreateCompanyDialog::trySetCompanyName()
@@ -119,7 +133,7 @@ void CreateCompanyDialog::trySetCompanyName()
 
 void CreateCompanyDialog::createComponyButtonClicked()
 {
-    this->close();
+    accept();
 }
 
 

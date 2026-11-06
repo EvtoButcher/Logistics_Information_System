@@ -43,6 +43,12 @@ Rectangle {
 
                Common.setNewCenter(warehouseModel.Lat, warehouseModel.Lng);
             }
+
+           function onRemoveWarehouse(index) {
+               if(index >= 0 && index < warehouseListModel.count) {
+                   warehouseListModel.remove(index);
+               }
+           }
     }
 
 
@@ -78,6 +84,12 @@ Rectangle {
 
                Common.setNewCenter(destinationModel.Lat, destinationModel.Lng);
             }
+
+           function onRemoveDestination(index) {
+               if(index >= 0 && index < destinationListModel.count) {
+                   destinationListModel.remove(index);
+               }
+           }
     }
 
 

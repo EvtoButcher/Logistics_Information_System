@@ -4,9 +4,8 @@
 #include <QObject>
 #include <QVector>
 #include <QGeoCoordinate>
-#include <QStateMachine>
 
-class QFinalState;
+class QTimer;
 
 enum class UploadTrifficStatus{
     Null,
@@ -33,7 +32,7 @@ struct TrafficInfo
     TravelStatus            travel_Status_ = TravelStatus::Null;
 };
 
-class AbstractTrifficModel : public QStateMachine
+class AbstractTrifficModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(double   PosLat    READ  posLat)
@@ -42,10 +41,10 @@ class AbstractTrifficModel : public QStateMachine
 
 public:
     explicit AbstractTrifficModel(QObject* parent = nullptr);
+    ~AbstractTrifficModel() override = default;
 
-    bool                         arrivedAtDestination(int index);
-    void                         setTraffic(const QVector<TrafficInfo>& tr);
-    bool                         trafficIsEmpty();
+    bool                         arrivedAtDestination(int index) const;
+    bool                         trafficIsEmpty() const;
     QVector<TrafficInfo>&        getTraffic();
 
     virtual void                 addTraffic(const TrafficInfo& info);
@@ -55,32 +54,21 @@ public:
     virtual UploadTrifficStatus  checkUploadStatus()       = 0;
     virtual TravelStatus         checkTravelStatus()       = 0;
 
-    virtual Q_INVOKABLE void     setUploadStatus(int current_status /*UploadTrifficStatus*/) = 0;
-    virtual Q_INVOKABLE void     setTravelStatus(int current_status /*TravelStatus*/)        = 0;
+    virtual void                 startSimulation(int simulation_speed) = 0;
+    virtual void                 stopSimulation() = 0;
+    virtual void                 resetSimulation() = 0;
+    virtual void                 setSimulationSpeed(int simulation_speed) = 0;
+
+    virtual Q_INVOKABLE void     setUploadStatus(int current_status) = 0;
+    virtual Q_INVOKABLE void     setTravelStatus(int current_status) = 0;
 
 signals:
-    void next_state();
-    void finished_state(int);
-
     void addCar();
     void nextPoint(int);
-    void arrived();
-    void finished();
+    void clearCars();
+    void simulationFinished();
 
-protected slots:
-    virtual void onInitializing()   = 0;
-    virtual void onWaiting()        = 0;
-    virtual void onOnWay()          = 0;
-    virtual void onArrived()        = 0;
-    virtual void onFinished()       = 0;
-
-private:
-    QState* initializing_;
-    QState* waiting_;
-    QState* on_way_;
-    QState* arrived_;
-    QState* finished_;
-
+protected:
     QVector<TrafficInfo> traffic_;
 };
 

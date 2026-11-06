@@ -62,16 +62,21 @@ run.bat release      :: запуск release-сборки
 
 Кэш тайлов карты: `%LOCALAPPDATA%\cache\QtLocation\5.8\tiles\osm`.
 
+### DevTools и симуляция
+
+Меню **DevTools** появляется только при запуске с флагом `--dev`:
+
+```bat
+build\debug\LogisticsInformationSystem.exe --dev
+```
+
+В меню доступны запуск/остановка симуляции, скорость (1x/2x/5x/10x) и сброс.
+Симуляция использует `QTimer` и не блокирует интерфейс.
+
 ## Известные особенности (не блокируют работу)
 
 * `QObject::connect(QQuickWindow, QDeclarativeGeoMap): invalid nullptr parameter` —
   безобидное предупреждение Qt Location при инициализации карты.
-* `QObject: Cannot create children for a parent that is in a different thread` —
-  `MainWindow` запускает `MapItemEngine::restoreMap` через `QtConcurrent::run`,
-  а внутри создаётся `QSqlTableModel` с родителем из главного потока.
-  Исправляется в PR 4 (модели и потоки).
-* `TypeError: Cannot read property 'RoutePath' of null` в `OrderMap.qml` —
-  следствие того же восстановления карты из фонового потока. Исправляется в PR 4.
 * Маршруты строятся через публичный OSRM (`router.project-osrm.org`) —
   при большом количестве запросов сервер может отвечать медленно.
 * При активном использовании тайлов OSM стоит соблюдать

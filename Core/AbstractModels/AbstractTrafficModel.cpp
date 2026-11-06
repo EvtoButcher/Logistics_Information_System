@@ -1,31 +1,8 @@
 #include "AbstractTrafficModel.h"
 
 AbstractTrifficModel::AbstractTrifficModel(QObject* parent)
-    : QStateMachine(parent)
+    : QObject(parent)
 {
-    initializing_ = new QState(this);
-    waiting_      = new QState(this);
-    on_way_       = new QState(this);
-    finished_     = new QState(this);
-    arrived_      = new QState(this);
-
-    // Initial states
-    setInitialState(initializing_);
-
-    // Transitions
-    initializing_   ->addTransition(this, &AbstractTrifficModel::next_state,      waiting_);
-    waiting_        ->addTransition(this, &AbstractTrifficModel::next_state,      on_way_);
-    on_way_         ->addTransition(this, &AbstractTrifficModel::next_state,      arrived_);
-    arrived_        ->addTransition(this, &AbstractTrifficModel::next_state,      on_way_);
-    on_way_         ->addTransition(this, &AbstractTrifficModel::finished_state,  finished_);
-    finished_       ->addTransition(this, &AbstractTrifficModel::next_state,      arrived_);
-
-    //Connect slots
-    connect(initializing_ , &QState::entered, this, &AbstractTrifficModel::onInitializing);
-    connect(waiting_      , &QState::entered, this, &AbstractTrifficModel::onWaiting);
-    connect(on_way_       , &QState::entered, this, &AbstractTrifficModel::onOnWay);
-    connect(arrived_      , &QState::entered, this, &AbstractTrifficModel::onArrived);
-    connect(finished_     , &QState::entered, this, &AbstractTrifficModel::onFinished);
 }
 
 void AbstractTrifficModel::addTraffic(const TrafficInfo& info)
@@ -38,12 +15,16 @@ QVector<TrafficInfo>& AbstractTrifficModel::getTraffic()
     return traffic_;
 }
 
-bool AbstractTrifficModel::arrivedAtDestination(int index)
+bool AbstractTrifficModel::arrivedAtDestination(int index) const
 {
+    if(index < 0 || index >= traffic_.size()) {
+        return false;
+    }
+
     return traffic_[index].travel_Status_ == TravelStatus::Arrived;
 }
 
-bool AbstractTrifficModel::trafficIsEmpty()
+bool AbstractTrifficModel::trafficIsEmpty() const
 {
     return traffic_.isEmpty();
 }

@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Repository bootstrap: build/run scripts, VS Code configuration, CI.
 - MIT license and third-party notices.
 - Project TODO and v0.1.0 roadmap.
+- DevTools menu (behind `--dev`) with start/stop/reset/speed for truck simulation.
+- Truck simulation moved to a non-blocking `QTimer` implementation.
 
 ### Changed
 
@@ -28,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cargo is persisted and restored with warehouses.
 - Path cache rows are deleted by order code instead of a row id.
 - 64-bit warehouse/destination codes are read without integer overflow.
+- Deleting a warehouse or destination updates the company, map and database.
+- Route name, coordinates and cargo values are validated before creation.
 
 ## [0.1.0] - TBD
 

@@ -174,6 +174,12 @@ Rectangle {
 
                warehouseListModel.append(newWarehouse);
            }
+
+           function onRemoveWarehouse(index) {
+               if(index >= 0 && index < warehouseListModel.count) {
+                   warehouseListModel.remove(index);
+               }
+           }
     }
 
     Component{
@@ -213,6 +219,11 @@ Rectangle {
                destinationListModel.append(newDestination);
             }
 
+           function onRemoveDestination(index) {
+               if(index >= 0 && index < destinationListModel.count) {
+                   destinationListModel.remove(index);
+               }
+           }
     }
 
 
@@ -264,6 +275,10 @@ Rectangle {
 
                trafficListModel.remove(index);
                trafficListModel.insert(index, newTraffic);
+           }
+
+           function onClearCars() {
+               trafficListModel.clear();
            }
     }
 

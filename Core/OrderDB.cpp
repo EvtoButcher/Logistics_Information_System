@@ -270,6 +270,28 @@ void OrderDB::insertCargo(const QString& warehouseCode, const uint64_t code, con
     }
 }
 
+void OrderDB::deleteWarehouse(const uint64_t code)
+{
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("DELETE FROM ") + WAREHOUSE_TABLE + QStringLiteral(" WHERE code = :Code"));
+    query.bindValue(QStringLiteral(":Code"), QString::number(code));
+
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
+    }
+}
+
+void OrderDB::deleteDestination(const uint64_t code)
+{
+    QSqlQuery query(db);
+    query.prepare(QStringLiteral("DELETE FROM ") + DESTINATION_TABLE + QStringLiteral(" WHERE code = :Code"));
+    query.bindValue(QStringLiteral(":Code"), QString::number(code));
+
+    if(!query.exec()) {
+        setLastError(query.lastError().text());
+    }
+}
+
 bool OrderDB::initializeSchema()
 {
     if(!tableExists(QStringLiteral(MAIN_TABLE))) {

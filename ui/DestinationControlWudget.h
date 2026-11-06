@@ -18,9 +18,11 @@ public:
 
 signals:
     void addDestinationToCompany(company_item::Destination*);
+    void removeDestinationFromCompany(const uint64_t code, const int row);
 
 private slots:
     void addDestination(company_item::Destination* destination);
+    void deleteDestinationButtonClicked();
 
 private:
     QLabel*                  destination_label_;
