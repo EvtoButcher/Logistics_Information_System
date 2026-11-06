@@ -17,6 +17,7 @@ class CreateDestinationDialog : public QDialog
     Q_OBJECT
 public:
     explicit CreateDestinationDialog(QWidget* parent = nullptr);
+    ~CreateDestinationDialog() override;
 
 signals:
     void createDestination(company_item::Destination*);
@@ -31,7 +32,7 @@ private:
     void enabledAddDestination(bool status);
 
 private:
-    company_item::Destination* destination_;
+    company_item::Destination* destination_ = nullptr;
 
     QLineEdit*      destination_code_;
     QLineEdit*      destination_lat_;

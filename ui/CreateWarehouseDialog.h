@@ -15,6 +15,7 @@ class CreateWarehouseDialog : public QDialog
     Q_OBJECT
 public:
     explicit CreateWarehouseDialog(QWidget* parent = nullptr);
+    ~CreateWarehouseDialog() override;
 
 signals:
     void createWarehouse(Warehouse*);
@@ -30,7 +31,7 @@ private:
     void enabledAddCurgo(bool status);
 
 private:
-    Warehouse* warehouse_;
+    Warehouse* warehouse_ = nullptr;
 
     QLabel*         curgo_table_label_;
     QLabel*         curgo_weight_label_;

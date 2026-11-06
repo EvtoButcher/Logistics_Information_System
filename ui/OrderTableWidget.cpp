@@ -34,7 +34,7 @@ OrderTable::OrderTable(const OrderDB* db, QWidget *parent)
     table_view_->setColumnHidden(2,true);//StartPos
     table_view_->setColumnHidden(3,true);//EndPos
 
-    auto button_lay = new QHBoxLayout(this);
+    auto button_lay = new QHBoxLayout();
     button_lay->setSpacing(5);
 
     add_order_button_ = new QPushButton(tr("Create an order"), this);
@@ -70,10 +70,13 @@ void OrderTable::onTableViewColorClicked(const QModelIndex &index)
     QItemSelectionModel* selectionModel = table_view_->selectionModel();
     QModelIndexList indexes = selectionModel->selectedRows();
 
-    auto color_dialog = new QColorDialog(table_model_->data(indexes.at(0)).toInt() ,this);
-    color_dialog->exec();
+    QColorDialog color_dialog(QColor(table_model_->data(index).toString()), this);
+    if(color_dialog.exec() != QDialog::Accepted) {
+        table_view_->clearSelection();
+        return;
+    }
 
-    auto color = color_dialog->currentColor().name();
+    const auto color = color_dialog.currentColor().name();
 
     emit updateColor(indexes.at(0).data(Qt::DisplayRole).toInt(), index.row(), color);
 

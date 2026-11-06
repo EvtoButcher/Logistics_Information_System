@@ -16,20 +16,19 @@
 - [x] Добавить шаблоны issue/PR
 - [x] Добавить `CHANGELOG.md`
 - [x] Обновить `SETUP.md` под бренд
-- [ ] Собрать, запустить, закоммитить, открыть PR, дождаться CI, squash-merge
+- [x] Собрать, запустить, закоммитить, открыть PR, дождаться CI, squash-merge
 
 ## PR 2 — `fix/stability-p0`
 
-- [ ] `Company::~Company` — убрать двойное удаление складов
-- [ ] `CarSimulatorModel` — вернуть корректный `checkTravelStatus`, убрать UB
-- [ ] `common::createCode` — убрать `reinterpret_cast`/UB, добавить тесты
-- [ ] Проверить пустые `path_`/`path_cache_` и границы индексов
-- [ ] `OrderTable` — layout warning, утечка `QColorDialog`, начальный цвет
-- [ ] `CreateWarehouseDialog` / `CreateDestinationDialog` — утечки объектов
-- [ ] Удаление склада/назначения — синхронизация UI, компании, карты, БД
-- [ ] Валидация координат, имени маршрута, веса/объёма
-- [ ] `RouteModel::checkPathCacheStatus` — возвращать правильный статус
-- [ ] Убрать warning’и компилятора
+- [x] `Company::~Company` — убрать двойное удаление складов
+- [x] `CarSimulatorModel` — вернуть корректный `checkTravelStatus`, убрать UB
+- [x] `common::createCode` — убрать `reinterpret_cast`/UB
+- [x] Проверить пустые `path_`/`path_cache_` и границы индексов
+- [x] `OrderTable` — layout warning, утечка `QColorDialog`, начальный цвет
+- [x] `CreateWarehouseDialog` / `CreateDestinationDialog` — утечки объектов
+- [x] `RouteModel::checkPathCacheStatus` — возвращать правильный статус
+- [x] Убрать warning’и компилятора
+- [ ] Тесты для `createCode` и парсинга путей (PR 6)
 
 ## PR 3 — `refactor/data-layer`
 
@@ -55,7 +54,8 @@
 - [ ] Меню DevTools за флагом `--dev`
 - [ ] Симуляция на `QTimer` без busy-wait
 - [ ] Start/Stop/Speed/Reset симуляции
-- [ ] Валидация форм и сброс полей
+- [ ] Удаление склада/назначения — синхронизация UI, компании, карты, БД
+- [ ] Валидация координат, имени маршрута, веса/объёма и сброс полей
 - [ ] Инфраструктура переводов (English по умолчанию, RU позже)
 - [ ] Переименования: `Triffic`, `Colpleted`, `Wudget`, `inserInto`
 
