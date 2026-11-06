@@ -39,9 +39,6 @@ private slots:
     void rowSelected();
 
 private:
-    void setPathCacheAndDistance();
-
-private:
     QSqlTableModel*  table_model_;
     QTableView*      table_view_;
     TableDelegate    table_delegate;

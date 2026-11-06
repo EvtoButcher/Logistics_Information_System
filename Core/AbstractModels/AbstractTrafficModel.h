@@ -5,8 +5,6 @@
 #include <QVector>
 #include <QGeoCoordinate>
 
-class QTimer;
-
 enum class UploadTrifficStatus{
     Null,
     Colpleted,

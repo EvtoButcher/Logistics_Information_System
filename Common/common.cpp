@@ -1,6 +1,3 @@
-#include <QFileInfo>
-#include <QTime>
-#include <QCoreApplication>
 #include <QStringList>
 #include <QCryptographicHash>
 
@@ -21,17 +18,6 @@ uint64_t codeFromKey(const QByteArray& key)
 }
 
 } // namespace
-
-bool common::fileExists(const QString& path)
-{
-    QFileInfo check_file(path);
-    if (check_file.exists() && check_file.isFile()) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
 
 QGeoCoordinate common::splitCoordinates(const QString& input)
 {
@@ -70,12 +56,4 @@ uint64_t common::createCode(double weight, int volume)
                                .toUtf8();
 
     return codeFromKey(key);
-}
-
-void common::delay()
-{
-    QTime dieTime= QTime::currentTime().addMSecs(10);
-    while (QTime::currentTime() < dieTime) {
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 1);
-    }
 }

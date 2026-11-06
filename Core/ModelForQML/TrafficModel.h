@@ -1,4 +1,0 @@
-#ifndef TRAFFICMODEL_H
-#define TRAFFICMODEL_H
-
-#endif // TRAFFICMODEL_H
