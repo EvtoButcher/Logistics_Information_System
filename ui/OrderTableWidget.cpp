@@ -138,10 +138,4 @@ void OrderTable::routeOnMapUnselected()
     table_view_->clearSelection();
 }
 
-void OrderTable::setPathCacheAndDistance()
-{
-    table_model_->select();
-}
-
-
 
