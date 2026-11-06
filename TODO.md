@@ -28,7 +28,7 @@
 - [x] `CreateWarehouseDialog` / `CreateDestinationDialog` — утечки объектов
 - [x] `RouteModel::checkPathCacheStatus` — возвращать правильный статус
 - [x] Убрать warning’и компилятора
-- [ ] Тесты для `createCode` и парсинга путей (PR 6)
+- [x] Тесты для `createCode` и парсинга путей (PR 6)
 
 ## PR 3 — `refactor/data-layer`
 
